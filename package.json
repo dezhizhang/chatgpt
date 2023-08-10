@@ -13,6 +13,7 @@
     "app:build": "yarn tauri build",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
+    "pm2": "ENABLE_NODE_LOG=YES pm2 start ecosystem.config.js",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
