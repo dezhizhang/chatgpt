@@ -5,27 +5,20 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-09 04:46:11
  * :last editor: 张德志
- * :date last edited: 2023-08-09 22:54:31
+ * :date last edited: 2023-08-11 06:32:25
  */
 "use client";
 
 require("../polyfill");
-
 import { useState, useEffect } from "react";
-
 import styles from "./home.module.scss";
-
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-
 import { getCSSVar, useMobileScreen } from "../utils";
-
 import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
-
 import { getLang } from "../locales";
-
 import {
   HashRouter as Router,
   Routes,
@@ -132,10 +125,9 @@ function Screen() {
     <div
       className={
         styles.container +
-        ` ${
-          config.tightBorder && !isMobileScreen
-            ? styles["tight-container"]
-            : styles.container
+        ` ${config.tightBorder && !isMobileScreen
+          ? styles["tight-container"]
+          : styles.container
         } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
       }
     >
@@ -146,7 +138,6 @@ function Screen() {
       ) : (
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-
           <div className={styles["window-content"]} id={SlotID.AppBody}>
             <Routes>
               <Route path={Path.Home} element={<Chat />} />
@@ -177,7 +168,6 @@ export function useLoadData() {
 export function Home() {
   useSwitchTheme();
   useLoadData();
-
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
@@ -190,7 +180,8 @@ export function Home() {
   return (
     <ErrorBoundary>
       <Router>
-        <Screen />
+      <Screen />
+
       </Router>
     </ErrorBoundary>
   );

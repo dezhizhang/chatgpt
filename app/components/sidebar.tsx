@@ -1,7 +1,14 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/sidebar.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-11 06:28:40
+ */
 import { useEffect, useRef } from "react";
-
 import styles from "./home.module.scss";
-
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
@@ -11,9 +18,7 @@ import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
-
 import Locale from "../locales";
-
 import { useAppConfig, useChatStore } from "../store";
 
 import {
@@ -21,7 +26,6 @@ import {
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
   Path,
-  REPO_URL,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -174,9 +178,9 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank">
+            <Link to={Path.Auth}>
               <IconButton icon={<GithubIcon />} shadow />
-            </a>
+            </Link>
           </div>
         </div>
         <div>

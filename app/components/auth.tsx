@@ -1,6 +1,14 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/auth.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-11 06:34:32
+ */
 import styles from "./auth.module.scss";
 import { IconButton } from "./button";
-
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { useAccessStore } from "../store";
