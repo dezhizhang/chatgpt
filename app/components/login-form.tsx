@@ -5,19 +5,19 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-13 17:04:29
+ * :date last edited: 2023-08-13 19:53:22
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
   FormControl,
   Flex,
   Input,
-
   Button,
   FormErrorMessage,
   Box,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
+import {postLogin} from '../api/user';
 import { PageTypeEnum } from "../constant";
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
@@ -37,12 +37,37 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormType>();
+  const [requesting, setRequesting] = useState(false);
+  const onclickLogin = useCallback(
+    async ({ username, password }: LoginFormType) => {
+      setRequesting(true);
+      try {
+        loginSuccess(
+          await postLogin({
+            username,
+            password
+          })
+        );
+        // toast({
+        //   title: '登录成功',
+        //   status: 'success'
+        // });
+      } catch (error: any) {
+        // toast({
+        //   title: error.message || '登录异常',
+        //   status: 'error'
+        // });
+      }
+      setRequesting(false);
+    },
+    [loginSuccess]
+  );
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
         登录晓智GPT
       </Box>
-      <form>
+      <form onSubmit={handleSubmit(onclickLogin)}>
         <FormControl mt={8} isInvalid={!!errors.username}>
           <Input
             placeholder="邮箱/手机号"

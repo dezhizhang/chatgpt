@@ -5,14 +5,14 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-13 17:25:16
+ * :date last edited: 2023-08-13 20:02:05
  */
 import { GET, POST, PUT } from './request';
-// import { createHashPassword, Obj2Query } from '@/utils/tools';
+import { createHashPassword, Obj2Query } from '../utils/index';
 // import { ResLogin, PromotionRecordType } from './response/user';
 // import { UserAuthTypeEnum } from '@/constants/common';
-// import { UserBillType, UserType, UserUpdateParams } from '@/types/user';
-// import type { PagingData, RequestPaging } from '@/types';
+import { UserBillType, UserType, UserUpdateParams } from '../types/user';
+import type { PagingData, RequestPaging } from '../types';
 // import { informSchema, PaySchema } from '@/types/mongoSchema';
 
 export const sendAuthCode = (data: {
@@ -46,7 +46,7 @@ export const postRegister = ({
     username,
     code,
     inviterId,
-    // password: createHashPassword(password)
+    password: createHashPassword(password)
   });
 
 export const postFindPassword = ({
@@ -61,33 +61,33 @@ export const postFindPassword = ({
   POST<any>('/user/updatePasswordByCode', {
     username,
     code,
-    // password: createHashPassword(password)
+    password: createHashPassword(password)
   });
 
-// export const postLogin = ({ username, password }: { username: string; password: string }) =>
-//   POST<ResLogin>('/user/loginByPassword', {
-//     username,
-//     password: createHashPassword(password)
-//   });
+export const postLogin = ({ username, password }: { username: string; password: string }) =>
+  POST<any>('/user/loginByPassword', {
+    username,
+    password: createHashPassword(password)
+  });
 
-// export const loginOut = () => GET('/user/loginout');
+export const loginOut = () => GET('/user/loginout');
 
-// export const putUserInfo = (data: UserUpdateParams) => PUT('/user/update', data);
+export const putUserInfo = (data: UserUpdateParams) => PUT('/user/update', data);
 
-// export const getUserBills = (data: RequestPaging) =>
-//   POST<PagingData<UserBillType>>(`/user/getBill`, data);
+export const getUserBills = (data: RequestPaging) =>
+  POST<PagingData<UserBillType>>(`/user/getBill`, data);
 
-// export const getPayOrders = () => GET<PaySchema[]>(`/user/getPayOrders`);
+export const getPayOrders = () => GET<any[]>(`/user/getPayOrders`);
 
-// export const getPayCode = (amount: number) =>
-//   GET<{
-//     codeUrl: string;
-//     payId: string;
-//   }>(`/user/getPayCode?amount=${amount}`);
+export const getPayCode = (amount: number) =>
+  GET<{
+    codeUrl: string;
+    payId: string;
+  }>(`/user/getPayCode?amount=${amount}`);
 
-// export const checkPayResult = (payId: string) => GET<number>(`/user/checkPayResult?payId=${payId}`);
+export const checkPayResult = (payId: string) => GET<number>(`/user/checkPayResult?payId=${payId}`);
 
-// /* promotion records */
+/* promotion records */
 // export const getPromotionRecords = (data: RequestPaging) =>
 //   GET<PromotionRecordType>(`/user/promotion/getPromotions?${Obj2Query(data)}`);
 
