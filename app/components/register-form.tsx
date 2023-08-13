@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:12:11
  * :last editor: 张德志
- * :date last edited: 2023-08-13 16:26:50
+ * :date last edited: 2023-08-13 17:03:52
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import { PageTypeEnum } from "../constant";
@@ -26,7 +26,13 @@ interface Props {
 
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
-export function RegisterForm() {
+export interface RegisterProps {
+  setPageType: Dispatch<`${PageTypeEnum}`>;
+}
+
+export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
+
+  const [requesting, setRequesting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -36,10 +42,12 @@ export function RegisterForm() {
   } = useForm<any>({
     mode: "onBlur",
   });
+
+
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
-        注册 FastGPT 账号
+        注册晓智GPT账号
       </Box>
       <form onSubmit={() => {}}>
         <FormControl mt={5} isInvalid={!!errors.username}>
@@ -127,7 +135,7 @@ export function RegisterForm() {
           color={"myBlue.600"}
           cursor={"pointer"}
           _hover={{ textDecoration: "underline" }}
-        //   onClick={() => setPageType("login")}
+          onClick={() => setPageType(PageTypeEnum.login)}
         >
           已有账号，去登录
         </Box>
@@ -137,7 +145,7 @@ export function RegisterForm() {
           w={"100%"}
           size={["md", "lg"]}
           colorScheme="blue"
-        //   isLoading={requesting}
+          isLoading={requesting}
         >
           确认注册
         </Button>

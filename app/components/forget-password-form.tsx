@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:32:53
  * :last editor: 张德志
- * :date last edited: 2023-08-13 16:44:09
+ * :date last edited: 2023-08-13 16:53:32
  */
 
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
@@ -17,11 +17,17 @@ import {
   FormErrorMessage,
   Flex,
 } from "@chakra-ui/react";
+import { PageTypeEnum } from "../constant";
 import { useForm } from "react-hook-form";
 
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
-export function ForgetPasswordForm() {
+interface ForgetProps {
+  setPageType: Dispatch<`${PageTypeEnum}`>;
+  loginSuccess: (e: any) => void;
+}
+
+export function ForgetPasswordForm({ setPageType }: ForgetProps) {
   const {
     register,
     handleSubmit,
@@ -34,7 +40,7 @@ export function ForgetPasswordForm() {
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
-        找回 FastGPT 账号
+        找回晓智GPT账号
       </Box>
       <form
 
@@ -43,7 +49,7 @@ export function ForgetPasswordForm() {
         <FormControl
           mt={5}
 
-          //   isInvalid={!!errors.username}
+        //   isInvalid={!!errors.username}
         >
           <Input
             placeholder="邮箱/手机号"
@@ -63,7 +69,7 @@ export function ForgetPasswordForm() {
         </FormControl>
         <FormControl
           mt={8}
-          //   isInvalid={!!errors.username}
+        //   isInvalid={!!errors.username}
         >
           <Flex>
             <Input
@@ -131,7 +137,7 @@ export function ForgetPasswordForm() {
           color={"myBlue.600"}
           cursor={"pointer"}
           _hover={{ textDecoration: "underline" }}
-        //   onClick={() => setPageType("login")}
+          onClick={() => setPageType(PageTypeEnum.login)}
         >
           去登录
         </Box>

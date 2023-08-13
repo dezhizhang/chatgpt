@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 16:35:46
+ * :date last edited: 2023-08-13 16:49:36
  */
 import styles from "./login.module.scss";
 import { useState, useCallback } from "react";
@@ -18,7 +18,7 @@ import { theme } from "../theme";
 import dynamic from "next/dynamic";
 import { PageTypeEnum } from "../constant";
 import { useAccessStore } from "../store";
-import { LoginForm } from "./loginForm";
+import { LoginForm } from "./login-form";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -44,7 +44,7 @@ export function LoginPage() {
   const access = useAccessStore();
 
   const [pageType, setPageType] = useState<`${PageTypeEnum}`>(
-    PageTypeEnum.forgetPassword,
+    PageTypeEnum.login,
   );
 
   const goHome = () => navigate(Path.Home);
@@ -60,7 +60,7 @@ export function LoginPage() {
 
     const Component = TypeMap[type];
 
-    return <Component />;
+    return <Component setPageType={setPageType}/>;
   }
 
   return (

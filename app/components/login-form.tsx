@@ -1,11 +1,11 @@
 /*
  * :file description:
- * :name: /chatgpt/app/components/loginForm.tsx
+ * :name: /chatgpt/app/components/login-form.tsx
  * :author: 张德志
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-13 16:03:43
+ * :date last edited: 2023-08-13 17:04:29
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
@@ -17,17 +17,21 @@ import {
   FormErrorMessage,
   Box,
 } from "@chakra-ui/react";
-import { IconButton } from './button';
 import { useForm } from "react-hook-form";
-
+import { PageTypeEnum } from "../constant";
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
+
+export interface LoginProps {
+  setPageType: Dispatch<`${PageTypeEnum}`>;
+  loginSuccess: (e: any) => void;
+}
 
 interface LoginFormType {
   username: string;
   password: string;
 }
 
-export function LoginForm() {
+export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
   const {
     register,
     handleSubmit,
@@ -36,7 +40,7 @@ export function LoginForm() {
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
-        登录 FastGPT
+        登录晓智GPT
       </Box>
       <form>
         <FormControl mt={8} isInvalid={!!errors.username}>
@@ -86,7 +90,7 @@ export function LoginForm() {
           <Box
             cursor={"pointer"}
             _hover={{ textDecoration: "underline" }}
-            //   onClick={() => setPageType('forgetPassword')}
+            onClick={() => setPageType(PageTypeEnum.forgetPassword)}
             fontSize="sm"
           >
             忘记密码?
@@ -94,7 +98,7 @@ export function LoginForm() {
           <Box
             cursor={"pointer"}
             _hover={{ textDecoration: "underline" }}
-            //   onClick={() => setPageType('register')}
+              onClick={() => setPageType(PageTypeEnum.register)}
             fontSize="sm"
           >
             注册账号
