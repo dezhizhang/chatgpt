@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 15:53:30
+ * :date last edited: 2023-08-13 16:07:59
  */
 import styles from "./login.module.scss";
 import { useState, useCallback } from "react";
@@ -16,7 +16,6 @@ import { theme } from "../theme";
 import { PageTypeEnum } from "../constant";
 import { useAccessStore } from "../store";
 import { LoginForm } from "./loginForm";
-import LoginLeft from "../icons/loginLeft.svg";
 export function LoginPage() {
   const isPc = true;
   const navigate = useNavigate();
@@ -65,7 +64,7 @@ export function LoginPage() {
           gap={5}
         >
           <Image
-            src={LoginLeft.src}
+            src={'https://fastgpt.run/icon/loginLeft.svg'}
             // order={pageType === PageTypeEnum.login ? 0 : 2}
             flex={"1 0 0"}
             w="0"
