@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-09 04:46:11
  * :last editor: 张德志
- * :date last edited: 2023-08-11 06:32:25
+ * :date last edited: 2023-08-13 10:20:32
  */
 "use client";
 
@@ -27,7 +27,7 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
-import { AuthPage } from "./auth";
+import { LoginPage } from "./login";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
@@ -114,7 +114,7 @@ function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
-  const isAuth = location.pathname === Path.Auth;
+  const isLogin = location.pathname === Path.Login;
   const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
@@ -122,34 +122,32 @@ function Screen() {
   }, []);
 
   return (
-    <div
-      className={
-        styles.container +
-        ` ${config.tightBorder && !isMobileScreen
-          ? styles["tight-container"]
-          : styles.container
-        } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
-      }
-    >
-      {isAuth ? (
-        <>
-          <AuthPage />
-        </>
-      ) : (
-        <>
-          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-          <div className={styles["window-content"]} id={SlotID.AppBody}>
-            <Routes>
-              <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              <Route path={Path.Masks} element={<MaskPage />} />
-              <Route path={Path.Chat} element={<Chat />} />
-              <Route path={Path.Settings} element={<Settings />} />
-            </Routes>
+    <>
+      {
+        isLogin ? <LoginPage /> :
+          <div
+            className={
+              styles.container +
+              ` ${config.tightBorder && !isMobileScreen
+                ? styles["tight-container"]
+                : styles.container
+              } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
+            }
+          >
+            <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+            <div className={styles["window-content"]} id={SlotID.AppBody}>
+              <Routes>
+                <Route path={Path.Home} element={<Chat />} />
+                <Route path={Path.NewChat} element={<NewChat />} />
+                <Route path={Path.Masks} element={<MaskPage />} />
+                <Route path={Path.Chat} element={<Chat />} />
+                <Route path={Path.Settings} element={<Settings />} />
+              </Routes>
+            </div>
           </div>
-        </>
-      )}
-    </div>
+      }
+    </>
+
   );
 }
 
@@ -180,8 +178,7 @@ export function Home() {
   return (
     <ErrorBoundary>
       <Router>
-      <Screen />
-
+        <Screen />
       </Router>
     </ErrorBoundary>
   );
