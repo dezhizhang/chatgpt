@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 16:25:09
+ * :date last edited: 2023-08-13 16:35:46
  */
 import styles from "./login.module.scss";
 import { useState, useCallback } from "react";
@@ -20,10 +20,6 @@ import { PageTypeEnum } from "../constant";
 import { useAccessStore } from "../store";
 import { LoginForm } from "./loginForm";
 
-// const RegisterForm = dynamic(() => import('./components/RegisterForm'));
-// const ForgetPasswordForm = dynamic(() => import('./components/ForgetPasswordForm'));
-
-
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={styles["loading-content"] + " no-dark"}>
@@ -37,6 +33,10 @@ const RegisterForm = dynamic(async () => (await import("./register-form")).Regis
   loading: () => <Loading noLogo />,
 });
 
+const ForgetPasswordForm = dynamic(async () => (await import("./forget-password-form")).ForgetPasswordForm, {
+  loading: () => <Loading noLogo />,
+})
+
 
 export function LoginPage() {
   const isPc = true;
@@ -44,7 +44,7 @@ export function LoginPage() {
   const access = useAccessStore();
 
   const [pageType, setPageType] = useState<`${PageTypeEnum}`>(
-    PageTypeEnum.register,
+    PageTypeEnum.forgetPassword,
   );
 
   const goHome = () => navigate(Path.Home);
@@ -55,7 +55,7 @@ export function LoginPage() {
     const TypeMap = {
       [PageTypeEnum.login]: LoginForm,
       [PageTypeEnum.register]: RegisterForm,
-      [PageTypeEnum.forgetPassword]: LoginForm,
+      [PageTypeEnum.forgetPassword]: ForgetPasswordForm,
     };
 
     const Component = TypeMap[type];
