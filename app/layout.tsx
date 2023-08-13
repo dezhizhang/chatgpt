@@ -4,7 +4,7 @@ import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
 import { type Metadata } from 'next';
-const { ChakraProvider } = require('@chakra-ui/react');
+const { ChakraProvider,extendTheme } = require('@chakra-ui/react');
 
 export const metadata: Metadata = {
   title: "晓智gpt",
@@ -24,6 +24,8 @@ export const metadata: Metadata = {
   },
 };
 
+
+
 export default function RootLayout({
   children,
 }: {
@@ -37,9 +39,7 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>
-        <ChakraProvider>
-          {children}
-        </ChakraProvider>
+      {children}
       </body>
     </html>
   );

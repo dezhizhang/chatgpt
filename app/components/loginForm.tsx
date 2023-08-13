@@ -5,18 +5,22 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-13 15:32:04
+ * :date last edited: 2023-08-13 16:03:43
  */
-import React, { useState, Dispatch, useCallback } from "react";
+import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
   FormControl,
   Flex,
   Input,
+
   Button,
   FormErrorMessage,
   Box,
 } from "@chakra-ui/react";
+import { IconButton } from './button';
 import { useForm } from "react-hook-form";
+
+const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
 interface LoginFormType {
   username: string;
@@ -38,7 +42,7 @@ export function LoginForm() {
         <FormControl mt={8} isInvalid={!!errors.username}>
           <Input
             placeholder="邮箱/手机号"
-            size={["md"]}
+            style={inputStyle as CSSProperties}
             {...register("username", {
               required: "邮箱/手机号不能为空",
               pattern: {
@@ -55,8 +59,7 @@ export function LoginForm() {
         <FormControl mt={8} isInvalid={!!errors.password}>
           <Input
             type={"password"}
-            size={["md"]}
-            style={{maxWidth:'100%'}}
+            style={inputStyle as CSSProperties}
             placeholder="密码"
             {...register("password", {
               required: "密码不能为空",
@@ -103,7 +106,7 @@ export function LoginForm() {
           w={"100%"}
           size={["md", "lg"]}
           colorScheme="blue"
-          // isLoading={requesting}
+        // isLoading={requesting}
         >
           登录
         </Button>
