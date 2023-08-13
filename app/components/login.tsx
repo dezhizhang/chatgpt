@@ -5,24 +5,46 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 16:07:59
+ * :date last edited: 2023-08-13 16:25:09
  */
 import styles from "./login.module.scss";
 import { useState, useCallback } from "react";
+import BotIcon from "../icons/bot.svg";
 import { Box, Flex, Image, ChakraProvider } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import LoadingIcon from "../icons/three-dots.svg";
 import { Path } from "../constant";
 import { theme } from "../theme";
+import dynamic from "next/dynamic";
 import { PageTypeEnum } from "../constant";
 import { useAccessStore } from "../store";
 import { LoginForm } from "./loginForm";
+
+// const RegisterForm = dynamic(() => import('./components/RegisterForm'));
+// const ForgetPasswordForm = dynamic(() => import('./components/ForgetPasswordForm'));
+
+
+export function Loading(props: { noLogo?: boolean }) {
+  return (
+    <div className={styles["loading-content"] + " no-dark"}>
+      {!props.noLogo && <BotIcon />}
+      <LoadingIcon />
+    </div>
+  );
+}
+
+const RegisterForm = dynamic(async () => (await import("./register-form")).RegisterForm, {
+  loading: () => <Loading noLogo />,
+});
+
+
 export function LoginPage() {
   const isPc = true;
   const navigate = useNavigate();
   const access = useAccessStore();
 
   const [pageType, setPageType] = useState<`${PageTypeEnum}`>(
-    PageTypeEnum.login,
+    PageTypeEnum.register,
   );
 
   const goHome = () => navigate(Path.Home);
@@ -32,7 +54,7 @@ export function LoginPage() {
   function DynamicComponent({ type }: { type: `${PageTypeEnum}` }) {
     const TypeMap = {
       [PageTypeEnum.login]: LoginForm,
-      [PageTypeEnum.register]: LoginForm,
+      [PageTypeEnum.register]: RegisterForm,
       [PageTypeEnum.forgetPassword]: LoginForm,
     };
 
@@ -65,7 +87,7 @@ export function LoginPage() {
         >
           <Image
             src={'https://fastgpt.run/icon/loginLeft.svg'}
-            // order={pageType === PageTypeEnum.login ? 0 : 2}
+            order={pageType === PageTypeEnum.login ? 0 : 2}
             flex={"1 0 0"}
             w="0"
             maxW={"600px"}
