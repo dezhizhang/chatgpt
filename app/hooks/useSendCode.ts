@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 21:23:04
  * :last editor: 张德志
- * :date last edited: 2023-08-13 23:51:16
+ * :date last edited: 2023-08-13 23:53:08
  */
 import { useState, useMemo, useCallback } from 'react';
 import { sendAuthCode } from '../api/user';
@@ -17,9 +17,7 @@ import { useGlobalStore } from '../store/global';
 let timer: any;
 
 export const useSendCode = () => {
-  const {
-    initData: { googleVerKey }
-  } = useGlobalStore();
+
   const { toast } = useToast();
   const [codeSending, setCodeSending] = useState(false);
   const [codeCountDown, setCodeCountDown] = useState(0);
@@ -40,7 +38,7 @@ export const useSendCode = () => {
         await sendAuthCode({
           username,
           // type,
-          googleToken: await getClientToken(googleVerKey)
+          googleToken: await getClientToken('123')
         });
         setCodeCountDown(60);
         timer = setInterval(() => {
@@ -64,7 +62,7 @@ export const useSendCode = () => {
       }
       setCodeSending(false);
     },
-    [googleVerKey, toast]
+    [toast]
   );
 
   return {

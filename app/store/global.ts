@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 21:29:22
  * :last editor: 张德志
- * :date last edited: 2023-08-13 21:39:57
+ * :date last edited: 2023-08-13 23:53:15
  */
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
@@ -22,4 +22,6 @@ type State = {
   isPc: boolean;
 };
 
-export const useGlobalStore = create<any>()();
+export const useGlobalStore = () =>{
+  return {}
+}
