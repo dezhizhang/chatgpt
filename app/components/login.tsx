@@ -5,55 +5,91 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 10:18:48
+ * :date last edited: 2023-08-13 14:56:24
  */
-import styles from "./auth.module.scss";
+import styles from "./login.module.scss";
 import { IconButton } from "./button";
+import { useState, useCallback } from "react";
+import { Box, Flex, Image } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
+import { PageTypeEnum } from '../constant';
 import { useAccessStore } from "../store";
+import {LoginForm} from './loginForm';
 import Locale from "../locales";
-
+import LoginLeft from '../icons/loginLeft.svg';
 import BotIcon from "../icons/bot.svg";
 
 
 export function LoginPage() {
-  return <div>LoginPage</div>
+  const isPc = true;
+  const navigate = useNavigate();
+  const access = useAccessStore();
+
+  const [pageType, setPageType] = useState<`${PageTypeEnum}`>(PageTypeEnum.login);
+
+  const goHome = () => navigate(Path.Home);
+
+
+  const loginSuccess = useCallback(() =>{},[]);
+
+  function DynamicComponent({ type }: { type: `${PageTypeEnum}` }) {
+    const TypeMap = {
+      [PageTypeEnum.login]: LoginForm,
+      [PageTypeEnum.register]: LoginForm,
+      [PageTypeEnum.forgetPassword]: LoginForm
+    };
+
+    const Component = TypeMap[type];
+
+    return <Component />;
+  }
+
+  return (
+    <Flex
+      alignItems={'center'}
+      justifyContent={'center'}
+      className={styles['login-page']}
+      h={'100%'}
+      px={[0, '10vw']}
+    >
+      <Flex
+        height="100%"
+        w={'100%'}
+        maxW={'1240px'}
+        maxH={['auto', 'max(660px,80vh)']}
+        backgroundColor={'#fff'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        py={[5, 10]}
+        px={'5vw'}
+        borderRadius={isPc ? 'md' : 'none'}
+        gap={5}
+      >
+       <Image
+            src={LoginLeft.src}
+            // order={pageType === PageTypeEnum.login ? 0 : 2}
+            flex={'1 0 0'}
+            w="0"
+            maxW={'600px'}
+            height={'100%'}
+            maxH={'450px'}
+            alt=""
+          />
+
+        <Box
+          order={1}
+          flex={`0 0 ${isPc ? '400px' : '100%'}`}
+          height={'100%'}
+          border="1px"
+          borderColor="gray.200"
+          py={5}
+          px={10}
+          borderRadius={isPc ? 'md' : 'none'}
+        >
+          <DynamicComponent type={pageType} />
+        </Box>
+      </Flex>
+    </Flex>
+  );
 }
-
-// export function AuthPage() {
-//   const navigate = useNavigate();
-//   const access = useAccessStore();
-
-//   const goHome = () => navigate(Path.Home);
-
-//   return (
-//     <div className={styles["auth-page"]}>
-//       <div className={`no-dark ${styles["auth-logo"]}`}>
-//         <BotIcon />
-//       </div>
-
-//       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
-//       <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
-
-//       <input
-//         className={styles["auth-input"]}
-//         type="password"
-//         placeholder={Locale.Auth.Input}
-//         value={access.accessCode}
-//         onChange={(e) => {
-//           access.updateCode(e.currentTarget.value);
-//         }}
-//       />
-
-//       <div className={styles["auth-actions"]}>
-//         <IconButton
-//           text={Locale.Auth.Confirm}
-//           type="primary"
-//           onClick={goHome}
-//         />
-//         <IconButton text={Locale.Auth.Later} onClick={goHome} />
-//       </div>
-//     </div>
-//   );
-// }

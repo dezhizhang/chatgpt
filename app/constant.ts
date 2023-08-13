@@ -38,6 +38,12 @@ export enum StoreKey {
   Sync = "sync",
 }
 
+export enum PageTypeEnum {
+  login = 'login',
+  register = 'register',
+  forgetPassword = 'forgetPassword'
+}
+
 export const MAX_SIDEBAR_WIDTH = 500;
 export const MIN_SIDEBAR_WIDTH = 230;
 export const NARROW_SIDEBAR_WIDTH = 100;
