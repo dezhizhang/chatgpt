@@ -23,6 +23,11 @@ export enum SlotID {
   AppBody = "app-body",
 }
 
+export enum UserAuthTypeEnum {
+  register = 'register',
+  findPassword = 'findPassword'
+}
+
 export enum FileName {
   Masks = "masks.json",
   Prompts = "prompts.json",

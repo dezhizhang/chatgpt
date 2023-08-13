@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:32:53
  * :last editor: 张德志
- * :date last edited: 2023-08-13 16:53:32
+ * :date last edited: 2023-08-13 21:42:57
  */
 
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
@@ -17,17 +17,28 @@ import {
   FormErrorMessage,
   Flex,
 } from "@chakra-ui/react";
+import { ResLogin } from '../typing';
+import { useSendCode } from '../hooks/useSendCode';
+import { postFindPassword } from '../api/user';
+import { useToast } from '../hooks/useToast';
 import { PageTypeEnum } from "../constant";
 import { useForm } from "react-hook-form";
 
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
-interface ForgetProps {
-  setPageType: Dispatch<`${PageTypeEnum}`>;
-  loginSuccess: (e: any) => void;
+interface RegisterType {
+  username: string;
+  code: string;
+  password: string;
+  password2: string;
 }
 
-export function ForgetPasswordForm({ setPageType }: ForgetProps) {
+interface ForgetProps {
+  setPageType: Dispatch<`${PageTypeEnum}`>;
+  loginSuccess: (e: ResLogin) => void;
+}
+
+export function ForgetPasswordForm({ setPageType, loginSuccess }: ForgetProps) {
   const {
     register,
     handleSubmit,
@@ -37,19 +48,56 @@ export function ForgetPasswordForm({ setPageType }: ForgetProps) {
   } = useForm<any>({
     mode: "onBlur",
   });
+  const { toast } = useToast();
+  const [requesting, setRequesting] = useState(false);
+  const { codeSending, sendCodeText, sendCode, codeCountDown } = useSendCode();
+  const onclickFindPassword = useCallback(
+    async ({ username, code, password }: RegisterType) => {
+      setRequesting(true);
+      try {
+        loginSuccess(
+          await postFindPassword({
+            username,
+            code,
+            password
+          })
+        );
+        toast({
+          title: `密码已找回`,
+          status: 'success'
+        });
+      } catch (error: any) {
+        toast({
+          title: error.message || '修改密码异常',
+          status: 'error'
+        });
+      }
+      setRequesting(false);
+    },
+    [loginSuccess, toast]
+  );
+
+  const onclickSendCode = useCallback(async () => {
+    const check = await trigger('username');
+    if (!check) return;
+    sendCode({
+      username: getValues('username'),
+      type: 'findPassword'
+    });
+  }, [getValues, sendCode, trigger]);
+
+
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
         找回晓智GPT账号
       </Box>
       <form
-
-      // onSubmit={handleSubmit(onclickFindPassword)}
+        onSubmit={handleSubmit(onclickFindPassword)}
       >
         <FormControl
           mt={5}
-
-        //   isInvalid={!!errors.username}
+          isInvalid={!!errors.username}
         >
           <Input
             placeholder="邮箱/手机号"
@@ -64,12 +112,12 @@ export function ForgetPasswordForm({ setPageType }: ForgetProps) {
             })}
           ></Input>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.username && errors.username.message} */}
+            {!!(errors as any).username && (errors as any).username.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl
           mt={8}
-        //   isInvalid={!!errors.username}
+          isInvalid={!!errors.username}
         >
           <Flex>
             <Input
@@ -84,15 +132,15 @@ export function ForgetPasswordForm({ setPageType }: ForgetProps) {
               ml={5}
               w={"145px"}
               maxW={"50%"}
-            //   onClick={onclickSendCode}
-            //   isDisabled={codeCountDown > 0}
-            //   isLoading={codeSending}
+            onClick={onclickSendCode}
+            isDisabled={codeCountDown > 0}
+            isLoading={codeSending}
             >
               {/* {sendCodeText} */}
             </Button>
           </Flex>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.code && errors.code.message} */}
+            {!!(errors as any).code && (errors as any).code.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl mt={8} isInvalid={!!errors.password}>
@@ -113,7 +161,7 @@ export function ForgetPasswordForm({ setPageType }: ForgetProps) {
             })}
           ></Input>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.password && errors.password.message} */}
+            {!!(errors as any).password && (errors as any).password!.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl mt={8} isInvalid={!!errors.password2}>
@@ -127,7 +175,7 @@ export function ForgetPasswordForm({ setPageType }: ForgetProps) {
             })}
           ></Input>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.password2 && errors.password2.message} */}
+            {!!(errors as any).password2 && (errors as any).password2.message}
           </FormErrorMessage>
         </FormControl>
         <Box
@@ -147,7 +195,7 @@ export function ForgetPasswordForm({ setPageType }: ForgetProps) {
           w={"100%"}
           size={["md", "lg"]}
           colorScheme="blue"
-        //   isLoading={requesting}
+          isLoading={requesting}
         >
           找回密码
         </Button>

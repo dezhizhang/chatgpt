@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-13 20:26:57
+ * :date last edited: 2023-08-13 21:32:32
  */
 import { GET, POST, PUT } from './request';
 import { createHashPassword, Obj2Query } from '../utils/index';
@@ -94,3 +94,11 @@ export const checkPayResult = (payId: string) => GET<number>(`/user/checkPayResu
 
 export const getUnreadCount = () => GET<number>(`/user/inform/countUnread`);
 export const readInform = (id: string) => GET(`/user/inform/read`, { id });
+
+
+export const getInitData = () => GET<any>('/system/getInitData');
+
+export const getSystemModelList = () => GET<any[]>('/system/getModels');
+
+export const uploadImg = (base64Img: string) => POST<string>('/system/uploadImage', { base64Img });
+

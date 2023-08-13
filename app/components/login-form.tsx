@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-13 20:32:06
+ * :date last edited: 2023-08-13 20:57:45
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { postLogin } from '../api/user';
+import { useToast } from '../hooks/useToast';
 import { PageTypeEnum } from "../constant";
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
@@ -37,6 +38,7 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormType>();
+  const { toast } = useToast();
   const [requesting, setRequesting] = useState(false);
   const onclickLogin = useCallback(
     async ({ username, password }: LoginFormType) => {
@@ -48,15 +50,15 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
             password
           })
         );
-        // toast({
-        //   title: '登录成功',
-        //   status: 'success'
-        // });
+        toast({
+          title: '登录成功',
+          status: 'success'
+        });
       } catch (error: any) {
-        // toast({
-        //   title: error.message || '登录异常',
-        //   status: 'error'
-        // });
+        toast({
+          title: error.message || '登录异常',
+          status: 'error'
+        });
       }
       setRequesting(false);
     },

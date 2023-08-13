@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 20:25:18
+ * :date last edited: 2023-08-13 21:03:47
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -19,6 +19,9 @@ export interface UserType {
         rate: number;
     };
 }
+export interface ResLogin {
+    user: UserType;
+  }
 
 export interface UserUpdateParams {
     balance?: number;
