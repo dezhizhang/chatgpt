@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:12:11
  * :last editor: 张德志
- * :date last edited: 2023-08-13 17:03:52
+ * :date last edited: 2023-08-13 17:29:41
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import { PageTypeEnum } from "../constant";
@@ -19,15 +19,13 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-interface Props {
-  loginSuccess: (e: any) => void;
-  setPageType: Dispatch<`${PageTypeEnum}`>;
-}
+
 
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
 export interface RegisterProps {
   setPageType: Dispatch<`${PageTypeEnum}`>;
+  loginSuccess: (e: any) => any;
 }
 
 export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
@@ -42,6 +40,30 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
   } = useForm<any>({
     mode: "onBlur",
   });
+
+  const onclickRegister = useCallback(
+    async ({ username, password, code }: any) => {
+      setRequesting(true);
+      try {
+        // loginSuccess();
+        // toast({
+        //   title: `注册成功`,
+        //   status: 'success'
+        // });
+        // aut register a model
+        // postCreateModel({
+        //   name: '应用1'
+        // });
+      } catch (error: any) {
+        // toast({
+        //   title: error.message || '注册异常',
+        //   status: 'error'
+        // });
+      }
+      setRequesting(false);
+    },
+    [loginSuccess]
+  );
 
 
   return (
