@@ -5,15 +5,13 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-13 20:02:05
+ * :date last edited: 2023-08-13 20:26:57
  */
 import { GET, POST, PUT } from './request';
 import { createHashPassword, Obj2Query } from '../utils/index';
 // import { ResLogin, PromotionRecordType } from './response/user';
 // import { UserAuthTypeEnum } from '@/constants/common';
-import { UserBillType, UserType, UserUpdateParams } from '../types/user';
-import type { PagingData, RequestPaging } from '../types';
-// import { informSchema, PaySchema } from '@/types/mongoSchema';
+import { UserBillType, UserUpdateParams,PagingData, RequestPaging } from '../typing';
 
 export const sendAuthCode = (data: {
   username: string;
