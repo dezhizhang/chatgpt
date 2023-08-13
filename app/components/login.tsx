@@ -5,10 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 17:27:04
+ * :date last edited: 2023-08-13 20:31:03
  */
 import styles from "./login.module.scss";
-import { useState, useCallback,useEffect } from "react";
+import { useState, useCallback } from "react";
 import BotIcon from "../icons/bot.svg";
 import { Box, Flex, Image, ChakraProvider } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";

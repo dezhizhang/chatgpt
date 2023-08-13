@@ -5,10 +5,11 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:12:11
  * :last editor: 张德志
- * :date last edited: 2023-08-13 17:29:41
+ * :date last edited: 2023-08-13 20:53:38
  */
-import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
+import React, { useState, Dispatch, useCallback, CSSProperties,useMemo } from "react";
 import { PageTypeEnum } from "../constant";
+import { postRegister } from '../api/user';
 import { useForm } from "react-hook-form";
 import {
   FormControl,
@@ -19,9 +20,14 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-
-
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
+
+interface RegisterType {
+  username: string;
+  password: string;
+  password2: string;
+  code: string;
+}
 
 export interface RegisterProps {
   setPageType: Dispatch<`${PageTypeEnum}`>;
@@ -29,28 +35,48 @@ export interface RegisterProps {
 }
 
 export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
-
   const [requesting, setRequesting] = useState(false);
   const {
     register,
     handleSubmit,
     getValues,
     trigger,
-    formState: { errors },
+    formState: { errors }
   } = useForm<any>({
     mode: "onBlur",
   });
+  const [codeCountDown, setCodeCountDown] = useState(0);
+
+  console.log({errors});
+  
+
+  const sendCodeText = useMemo(() => {
+    if (codeCountDown >= 10) {
+      return `${codeCountDown}s后重新获取`;
+    }
+    if (codeCountDown > 0) {
+      return `0${codeCountDown}s后重新获取`;
+    }
+    return '获取验证码';
+  }, [codeCountDown]);
 
   const onclickRegister = useCallback(
-    async ({ username, password, code }: any) => {
+    async ({ username, password, code }: RegisterType) => {
       setRequesting(true);
       try {
-        // loginSuccess();
+        loginSuccess(
+          await postRegister({
+            username,
+            code,
+            password,
+            inviterId: localStorage.getItem('inviterId') || ''
+          })
+        );
         // toast({
         //   title: `注册成功`,
         //   status: 'success'
         // });
-        // aut register a model
+        // // aut register a model
         // postCreateModel({
         //   name: '应用1'
         // });
@@ -71,7 +97,7 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
         注册晓智GPT账号
       </Box>
-      <form onSubmit={() => {}}>
+      <form onSubmit={handleSubmit(onclickRegister)}>
         <FormControl mt={5} isInvalid={!!errors.username}>
           <Input
             placeholder="邮箱/手机号"
@@ -108,7 +134,7 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
             //   isDisabled={codeCountDown > 0}
             //   isLoading={codeSending}
             >
-              {/* {sendCodeText} */}
+              {sendCodeText}
             </Button>
           </Flex>
           <FormErrorMessage position={"absolute"} fontSize="xs">
@@ -133,7 +159,7 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
             })}
           ></Input>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.password && errors.password.message} */}
+            {!!(errors as any).password && (errors as any).password.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl mt={8} isInvalid={!!errors.password2}>
@@ -147,7 +173,7 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
             })}
           ></Input>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.password2 && errors.password2.message} */}
+            {!!(errors as any).password2 && (errors as any).password2.message}
           </FormErrorMessage>
         </FormControl>
         <Box

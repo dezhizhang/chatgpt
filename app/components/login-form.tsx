@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-13 19:53:22
+ * :date last edited: 2023-08-13 20:32:06
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
@@ -17,7 +17,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import {postLogin} from '../api/user';
+import { postLogin } from '../api/user';
 import { PageTypeEnum } from "../constant";
 const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
@@ -123,7 +123,7 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
           <Box
             cursor={"pointer"}
             _hover={{ textDecoration: "underline" }}
-              onClick={() => setPageType(PageTypeEnum.register)}
+            onClick={() => setPageType(PageTypeEnum.register)}
             fontSize="sm"
           >
             注册账号
@@ -135,7 +135,7 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
           w={"100%"}
           size={["md", "lg"]}
           colorScheme="blue"
-        // isLoading={requesting}
+          isLoading={requesting}
         >
           登录
         </Button>
