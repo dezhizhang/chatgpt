@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 20:31:03
+ * :date last edited: 2023-08-15 23:24:06
  */
 import styles from "./login.module.scss";
 import { useState, useCallback } from "react";
@@ -47,9 +47,9 @@ export function LoginPage() {
     PageTypeEnum.login,
   );
 
-  const goHome = () => navigate(Path.Home);
-
-  const loginSuccess = useCallback(() => { }, []);
+  const loginSuccess = useCallback(() => { 
+    navigate(Path.Home)
+  }, []);
 
   function DynamicComponent({ type }: { type: `${PageTypeEnum}` }) {
     const TypeMap = {
@@ -59,7 +59,6 @@ export function LoginPage() {
     };
 
     const Component = TypeMap[type];
-
     return <Component setPageType={setPageType} loginSuccess={loginSuccess}/>;
   }
 

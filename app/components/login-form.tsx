@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-13 20:57:45
+ * :date last edited: 2023-08-15 23:22:44
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
@@ -16,7 +16,9 @@ import {
   FormErrorMessage,
   Box,
 } from "@chakra-ui/react";
+import { Path } from "../constant";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { postLogin } from '../api/user';
 import { useToast } from '../hooks/useToast';
 import { PageTypeEnum } from "../constant";
@@ -39,21 +41,27 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
     formState: { errors },
   } = useForm<LoginFormType>();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [requesting, setRequesting] = useState(false);
   const onclickLogin = useCallback(
     async ({ username, password }: LoginFormType) => {
       setRequesting(true);
       try {
-        loginSuccess(
-          await postLogin({
-            username,
-            password
-          })
-        );
-        toast({
-          title: '登录成功',
-          status: 'success'
+        const res = await  postLogin({
+          username,
+          password
         });
+        const { user } = res;
+        if(user?._id) {
+          toast({
+            title: '登录成功',
+            status: 'success'
+          });
+          localStorage.setItem('user',JSON.stringify(user))
+          setTimeout(() => {
+            navigate(Path.Home)
+          },500);
+        }
       } catch (error: any) {
         toast({
           title: error.message || '登录异常',
