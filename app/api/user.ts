@@ -5,17 +5,17 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-13 21:32:32
+ * :date last edited: 2023-08-15 23:42:55
  */
 import { GET, POST, PUT } from './request';
 import { createHashPassword, Obj2Query } from '../utils/index';
 // import { ResLogin, PromotionRecordType } from './response/user';
-// import { UserAuthTypeEnum } from '@/constants/common';
+import { UserAuthTypeEnum } from '../constant';
 import { UserBillType, UserUpdateParams,PagingData, RequestPaging } from '../typing';
 
 export const sendAuthCode = (data: {
   username: string;
-  // type: `${UserAuthTypeEnum}`;
+  type: `${UserAuthTypeEnum}`;
   googleToken: string;
 }) => POST('/user/sendAuthCode', data);
 

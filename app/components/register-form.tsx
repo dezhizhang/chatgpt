@@ -5,12 +5,16 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:12:11
  * :last editor: 张德志
- * :date last edited: 2023-08-13 20:53:38
+ * :date last edited: 2023-08-16 00:14:37
  */
-import React, { useState, Dispatch, useCallback, CSSProperties,useMemo } from "react";
+import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import { PageTypeEnum } from "../constant";
 import { postRegister } from '../api/user';
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { Path } from "../constant";
+import { useToast } from '../hooks/useToast';
+import { useSendCode } from '../hooks/useSendCode';
 import {
   FormControl,
   Box,
@@ -31,10 +35,9 @@ interface RegisterType {
 
 export interface RegisterProps {
   setPageType: Dispatch<`${PageTypeEnum}`>;
-  loginSuccess: (e: any) => any;
 }
 
-export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
+export function RegisterForm({ setPageType }: RegisterProps) {
   const [requesting, setRequesting] = useState(false);
   const {
     register,
@@ -45,50 +48,46 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
   } = useForm<any>({
     mode: "onBlur",
   });
-  const [codeCountDown, setCodeCountDown] = useState(0);
-
-  console.log({errors});
-  
-
-  const sendCodeText = useMemo(() => {
-    if (codeCountDown >= 10) {
-      return `${codeCountDown}s后重新获取`;
-    }
-    if (codeCountDown > 0) {
-      return `0${codeCountDown}s后重新获取`;
-    }
-    return '获取验证码';
-  }, [codeCountDown]);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { codeSending, sendCodeText, sendCode, codeCountDown } = useSendCode();
+  const onclickSendCode = useCallback(async () => {
+    const check = await trigger('username');
+    if (!check) return;
+    sendCode({
+      username: getValues('username'),
+      type: 'register'
+    });
+  }, [getValues, sendCode, trigger]);
 
   const onclickRegister = useCallback(
     async ({ username, password, code }: RegisterType) => {
       setRequesting(true);
-      try {
-        loginSuccess(
-          await postRegister({
-            username,
-            code,
-            password,
-            inviterId: localStorage.getItem('inviterId') || ''
-          })
-        );
-        // toast({
-        //   title: `注册成功`,
-        //   status: 'success'
-        // });
-        // // aut register a model
-        // postCreateModel({
-        //   name: '应用1'
-        // });
-      } catch (error: any) {
-        // toast({
-        //   title: error.message || '注册异常',
-        //   status: 'error'
-        // });
+      const res = await postRegister({
+        username,
+        code,
+        password,
+        inviterId: localStorage.getItem('inviterId') || ''
+      });
+      if (res.code === 200) {
+        toast({
+          title: `注册成功`,
+          status: 'success'
+        });
+        setTimeout(() => {
+          setTimeout(() => {
+            navigate(Path.Login)
+          }, 500);
+        }, 500);
+        return
       }
+      toast({
+        title: res.message || '注册异常',
+        status: 'error'
+      });
       setRequesting(false);
     },
-    [loginSuccess]
+    []
   );
 
 
@@ -119,7 +118,7 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
           <Flex>
             <Input
               flex={1}
-           
+
               placeholder="验证码"
               {...register("code", {
                 required: "验证码不能为空",
@@ -129,16 +128,16 @@ export function RegisterForm({ setPageType, loginSuccess }:RegisterProps) {
               ml={5}
               w={"145px"}
               maxW={"50%"}
-            
-            //   onClick={onclickSendCode}
-            //   isDisabled={codeCountDown > 0}
-            //   isLoading={codeSending}
+
+              onClick={onclickSendCode}
+              isDisabled={codeCountDown > 0}
+              isLoading={codeSending}
             >
               {sendCodeText}
             </Button>
           </Flex>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.code && errors.code.message} */}
+            {!!(errors as any).code && (errors as any).code.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl mt={8} isInvalid={!!errors.password}>

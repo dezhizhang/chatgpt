@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 21:23:04
  * :last editor: 张德志
- * :date last edited: 2023-08-13 23:53:08
+ * :date last edited: 2023-08-15 23:41:36
  */
 import { useState, useMemo, useCallback } from 'react';
 import { sendAuthCode } from '../api/user';
@@ -37,7 +37,7 @@ export const useSendCode = () => {
       try {
         await sendAuthCode({
           username,
-          // type,
+          type,
           googleToken: await getClientToken('123')
         });
         setCodeCountDown(60);

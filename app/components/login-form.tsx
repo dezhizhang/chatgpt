@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-15 23:22:44
+ * :date last edited: 2023-08-15 23:59:57
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
@@ -95,6 +95,7 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
             {!!errors.username && errors.username.message}
           </FormErrorMessage>
         </FormControl>
+        
         <FormControl mt={8} isInvalid={!!errors.password}>
           <Input
             type={"password"}

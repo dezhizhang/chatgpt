@@ -1,11 +1,11 @@
 /*
  * :file description: 
- * :name: /chatgpt/app/api/request.TS
+ * :name: /chatgpt/app/api/request.ts
  * :author: 张德志
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:15:43
  * :last editor: 张德志
- * :date last edited: 2023-08-13 17:24:05
+ * :date last edited: 2023-08-16 00:11:24
  */
 import axios, { Method, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 // import { clearCookie } from '@/utils/user';
@@ -65,14 +65,14 @@ function responseError(err: any) {
     return Promise.reject({ message: err });
   }
 //   // 有报错响应
-//   if (err?.code in TOKEN_ERROR_CODE) {
-//     clearCookie();
-//     window.location.replace(
-//       `/login?lastRoute=${encodeURIComponent(location.pathname + location.search)}`
-//     );
-//     return Promise.reject({ message: 'token过期，重新登录' });
-//   }
-  return Promise.reject(err);
+  // if (err?.code in TOKEN_ERROR_CODE) {
+  //   //clearCookie();
+  //   window.location.replace(
+  //     `/login?lastRoute=${encodeURIComponent(location.pathname + location.search)}`
+  //   );
+  //   return Promise.reject({ message: 'token过期，重新登录' });
+  // }
+  return err;
 }
 
 /* 创建请求实例 */
