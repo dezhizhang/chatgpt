@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-15 23:59:57
+ * :date last edited: 2023-08-16 04:16:33
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
@@ -26,7 +26,6 @@ const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
 
 export interface LoginProps {
   setPageType: Dispatch<`${PageTypeEnum}`>;
-  loginSuccess: (e: any) => void;
 }
 
 interface LoginFormType {
@@ -34,7 +33,7 @@ interface LoginFormType {
   password: string;
 }
 
-export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
+export function LoginForm({ setPageType }: LoginProps) {
   const {
     register,
     handleSubmit,
@@ -70,7 +69,7 @@ export function LoginForm({ setPageType, loginSuccess }: LoginProps) {
       }
       setRequesting(false);
     },
-    [loginSuccess]
+    []
   );
   return (
     <>

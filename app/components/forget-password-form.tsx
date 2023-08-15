@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:32:53
  * :last editor: 张德志
- * :date last edited: 2023-08-13 21:42:57
+ * :date last edited: 2023-08-16 04:22:54
  */
 
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
@@ -17,14 +17,14 @@ import {
   FormErrorMessage,
   Flex,
 } from "@chakra-ui/react";
-import { ResLogin } from '../typing';
-import { useSendCode } from '../hooks/useSendCode';
-import { postFindPassword } from '../api/user';
-import { useToast } from '../hooks/useToast';
+import { ResLogin } from "../typing";
+import { useSendCode } from "../hooks/useSendCode";
+import { postFindPassword } from "../api/user";
+import { useToast } from "../hooks/useToast";
 import { PageTypeEnum } from "../constant";
 import { useForm } from "react-hook-form";
 
-const inputStyle = { maxWidth: '100%', borderRadius: '4px', textAlign: 'left' }
+const inputStyle = { maxWidth: "100%", borderRadius: "4px", textAlign: "left" };
 
 interface RegisterType {
   username: string;
@@ -35,10 +35,9 @@ interface RegisterType {
 
 interface ForgetProps {
   setPageType: Dispatch<`${PageTypeEnum}`>;
-  loginSuccess: (e: ResLogin) => void;
 }
 
-export function ForgetPasswordForm({ setPageType, loginSuccess }: ForgetProps) {
+export function ForgetPasswordForm({ setPageType }: ForgetProps) {
   const {
     register,
     handleSubmit,
@@ -54,51 +53,45 @@ export function ForgetPasswordForm({ setPageType, loginSuccess }: ForgetProps) {
   const onclickFindPassword = useCallback(
     async ({ username, code, password }: RegisterType) => {
       setRequesting(true);
-      try {
-        loginSuccess(
-          await postFindPassword({
-            username,
-            code,
-            password
-          })
-        );
+      const res = await postFindPassword({
+        username,
+        code,
+        password,
+      });
+      const { user } = res || {};
+      setRequesting(false);
+      if (user?._id) {
         toast({
           title: `密码已找回`,
-          status: 'success'
+          status: "success",
         });
-      } catch (error: any) {
-        toast({
-          title: error.message || '修改密码异常',
-          status: 'error'
-        });
+        setPageType(PageTypeEnum.login);
+        return;
       }
-      setRequesting(false);
+      toast({
+        title: res.message || "修改密码异常",
+        status: "error",
+      });
     },
-    [loginSuccess, toast]
+    [toast],
   );
 
   const onclickSendCode = useCallback(async () => {
-    const check = await trigger('username');
+    const check = await trigger("username");
     if (!check) return;
     sendCode({
-      username: getValues('username'),
-      type: 'findPassword'
+      username: getValues("username"),
+      type: "findPassword",
     });
   }, [getValues, sendCode, trigger]);
-
 
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
         找回晓智GPT账号
       </Box>
-      <form
-        onSubmit={handleSubmit(onclickFindPassword)}
-      >
-        <FormControl
-          mt={5}
-          isInvalid={!!errors.username}
-        >
+      <form onSubmit={handleSubmit(onclickFindPassword)}>
+        <FormControl mt={5} isInvalid={!!errors.username}>
           <Input
             placeholder="邮箱/手机号"
             style={inputStyle as CSSProperties}
@@ -115,10 +108,7 @@ export function ForgetPasswordForm({ setPageType, loginSuccess }: ForgetProps) {
             {!!(errors as any).username && (errors as any).username.message}
           </FormErrorMessage>
         </FormControl>
-        <FormControl
-          mt={8}
-          isInvalid={!!errors.username}
-        >
+        <FormControl mt={8} isInvalid={!!errors.username}>
           <Flex>
             <Input
               flex={1}
@@ -132,11 +122,11 @@ export function ForgetPasswordForm({ setPageType, loginSuccess }: ForgetProps) {
               ml={5}
               w={"145px"}
               maxW={"50%"}
-            onClick={onclickSendCode}
-            isDisabled={codeCountDown > 0}
-            isLoading={codeSending}
+              onClick={onclickSendCode}
+              isDisabled={codeCountDown > 0}
+              isLoading={codeSending}
             >
-              {/* {sendCodeText} */}
+              {sendCodeText}
             </Button>
           </Flex>
           <FormErrorMessage position={"absolute"} fontSize="xs">

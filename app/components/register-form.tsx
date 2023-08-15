@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:12:11
  * :last editor: 张德志
- * :date last edited: 2023-08-16 00:14:37
+ * :date last edited: 2023-08-16 04:24:49
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import { PageTypeEnum } from "../constant";
@@ -74,11 +74,7 @@ export function RegisterForm({ setPageType }: RegisterProps) {
           title: `注册成功`,
           status: 'success'
         });
-        setTimeout(() => {
-          setTimeout(() => {
-            navigate(Path.Login)
-          }, 500);
-        }, 500);
+        setPageType(PageTypeEnum.login);
         return
       }
       toast({
@@ -111,7 +107,7 @@ export function RegisterForm({ setPageType }: RegisterProps) {
             })}
           ></Input>
           <FormErrorMessage position={"absolute"} fontSize="xs">
-            {/* {!!errors.username && errors.username.message} */}
+            {!!(errors as any).username && (errors as any).username.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl mt={8} isInvalid={!!errors.username}>
