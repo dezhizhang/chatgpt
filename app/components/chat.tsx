@@ -143,7 +143,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
           extraListItems={
             session.mask.modelConfig.sendMemory ? (
               <ListItem
-                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
+                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session?.messages?.length})`}
                 subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
               ></ListItem>
             ) : (
@@ -163,7 +163,7 @@ function PromptToast(props: {
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const context = session.mask.context;
+  const context = session?.mask?.context;
 
   return (
     <div className={styles["prompt-toast"]} key="prompt-toast">
@@ -175,7 +175,7 @@ function PromptToast(props: {
         >
           <BrainIcon />
           <span className={styles["prompt-toast-content"]}>
-            {Locale.Context.Toast(context.length)}
+            {Locale.Context.Toast(context?.length)}
           </span>
         </div>
       )}
@@ -237,13 +237,13 @@ export function PromptHints(props: {
   prompts: RenderPompt[];
   onPromptSelect: (prompt: RenderPompt) => void;
 }) {
-  const noPrompts = props.prompts.length === 0;
+  const noPrompts = props?.prompts?.length === 0;
   const [selectIndex, setSelectIndex] = useState(0);
   const selectedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setSelectIndex(0);
-  }, [props.prompts.length]);
+  }, [props?.prompts?.length]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -256,7 +256,7 @@ export function PromptHints(props: {
         e.preventDefault();
         const nextIndex = Math.max(
           0,
-          Math.min(props.prompts.length - 1, selectIndex + delta),
+          Math.min(props?.prompts?.length - 1, selectIndex + delta),
         );
         setSelectIndex(nextIndex);
         selectedRef.current?.scrollIntoView({
@@ -280,7 +280,7 @@ export function PromptHints(props: {
 
     return () => window.removeEventListener("keydown", onKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.prompts.length, selectIndex]);
+  }, [props?.prompts?.length, selectIndex]);
 
   if (noPrompts) return null;
   return (
@@ -418,7 +418,7 @@ export function ChatActions(props: {
   function nextTheme() {
     const themes = [Theme.Auto, Theme.Light, Theme.Dark];
     const themeIndex = themes.indexOf(theme);
-    const nextIndex = (themeIndex + 1) % themes.length;
+    const nextIndex = (themeIndex + 1) % themes?.length;
     const nextTheme = themes[nextIndex];
     config.update((config) => (config.theme = nextTheme));
   }
@@ -498,10 +498,10 @@ export function ChatActions(props: {
         icon={<BreakIcon />}
         onClick={() => {
           chatStore.updateCurrentSession((session) => {
-            if (session.clearContextIndex === session.messages.length) {
+            if (session.clearContextIndex === session?.messages?.length) {
               session.clearContextIndex = undefined;
             } else {
-              session.clearContextIndex = session.messages.length;
+              session.clearContextIndex = session?.messages?.length;
               session.memoryPrompt = ""; // will clear memory
             }
           });
@@ -539,7 +539,7 @@ export function ChatActions(props: {
 export function EditMessageModal(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const [messages, setMessages] = useState(session.messages.slice());
+  const [messages, setMessages] = useState((session?.messages || [])?.slice());
 
   return (
     <div className="modal-mask">
@@ -588,7 +588,7 @@ export function EditMessageModal(props: { onClose: () => void }) {
         <ContextPrompts
           context={messages}
           updateContext={(updater) => {
-            const newMessages = messages.slice();
+            const newMessages = messages?.slice();
             updater(newMessages);
             setMessages(newMessages);
           }}
@@ -602,7 +602,9 @@ function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
   const chatStore = useChatStore();
+ 
   const session = chatStore.currentSession();
+  console.log('session',session);
   const config = useAppConfig();
   const fontSize = config.fontSize;
 
@@ -658,7 +660,7 @@ function _Chat() {
     next: () => chatStore.nextSession(1),
     clear: () =>
       chatStore.updateCurrentSession(
-        (session) => (session.clearContextIndex = session.messages.length),
+        (session) => (session.clearContextIndex = session?.messages?.length),
       ),
     del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
   });
@@ -667,7 +669,7 @@ function _Chat() {
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
     setUserInput(text);
-    const n = text.trim().length;
+    const n = text.trim()?.length;
 
     // clear search results
     if (n === 0) {
@@ -677,7 +679,7 @@ function _Chat() {
     } else if (!config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
       // check if need to trigger auto completion
       if (text.startsWith("/")) {
-        let searchText = text.slice(1);
+        let searchText = text?.slice(1);
         onSearch(searchText);
       }
     }
@@ -733,7 +735,7 @@ function _Chat() {
             m.streaming = false;
           }
 
-          if (m.content.length === 0) {
+          if (m?.content?.length === 0) {
             m.isError = true;
             m.content = prettyObject({
               error: true,
@@ -757,14 +759,14 @@ function _Chat() {
     // if ArrowUp and no userInput, fill with last input
     if (
       e.key === "ArrowUp" &&
-      userInput.length <= 0 &&
+      userInput?.length <= 0 &&
       !(e.metaKey || e.altKey || e.ctrlKey)
     ) {
       setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
       e.preventDefault();
       return;
     }
-    if (shouldSubmit(e) && promptHints.length === 0) {
+    if (shouldSubmit(e) && promptHints?.length === 0) {
       doSubmit(userInput);
       e.preventDefault();
     }
@@ -772,7 +774,7 @@ function _Chat() {
   const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
     if (selectOrCopy(e.currentTarget, message.content)) {
-      if (userInput.length === 0) {
+      if (userInput?.length === 0) {
         setUserInput(message.content);
       }
 
@@ -802,7 +804,7 @@ function _Chat() {
       (m) => m.id === message.id,
     );
 
-    if (resendingIndex <= 0 || resendingIndex >= session.messages.length) {
+    if (resendingIndex <= 0 || resendingIndex >= session?.messages?.length) {
       console.error("[Chat] failed to find resending message", message);
       return;
     }
@@ -822,7 +824,7 @@ function _Chat() {
     } else if (message.role === "user") {
       // if it is resending a user's input, find the bot's response
       userMessage = message;
-      for (let i = resendingIndex; i < session.messages.length; i += 1) {
+      for (let i = resendingIndex; i < session?.messages?.length; i += 1) {
         if (session.messages[i].role === "assistant") {
           botMessage = session.messages[i];
           break;
@@ -859,24 +861,28 @@ function _Chat() {
   };
 
   const context: RenderMessage[] = useMemo(() => {
-    return session.mask.hideContext ? [] : session.mask.context.slice();
+    return session.mask.hideContext ? [] : (session.mask?.context || [])?.slice();
   }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
 
   if (
-    context.length === 0 &&
+    context?.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
-    }
+
+    //todo登录功能
+
+    // if (!accessStore.isAuthorized()) {
+    //   copiedHello.content = Locale.Error.Unauthorized;
+    // }
     context.push(copiedHello);
   }
 
   // preview messages
   const renderMessages = useMemo(() => {
-    return context
+    console.log({context});
+    return (context || [])
       .concat(session.messages as RenderMessage[])
       .concat(
         isLoading
@@ -892,7 +898,7 @@ function _Chat() {
           : [],
       )
       .concat(
-        userInput.length > 0 && config.sendPreviewBubble
+        userInput?.length > 0 && config.sendPreviewBubble
           ? [
               {
                 ...createMessage({
@@ -913,10 +919,10 @@ function _Chat() {
   ]);
 
   const [msgRenderIndex, _setMsgRenderIndex] = useState(
-    Math.max(0, renderMessages.length - CHAT_PAGE_SIZE),
+    Math.max(0, renderMessages?.length - CHAT_PAGE_SIZE),
   );
   function setMsgRenderIndex(newIndex: number) {
-    newIndex = Math.min(renderMessages.length - CHAT_PAGE_SIZE, newIndex);
+    newIndex = Math.min(renderMessages?.length - CHAT_PAGE_SIZE, newIndex);
     newIndex = Math.max(0, newIndex);
     _setMsgRenderIndex(newIndex);
   }
@@ -924,9 +930,9 @@ function _Chat() {
   const messages = useMemo(() => {
     const endRenderIndex = Math.min(
       msgRenderIndex + 3 * CHAT_PAGE_SIZE,
-      renderMessages.length,
+      renderMessages?.length,
     );
-    return renderMessages.slice(msgRenderIndex, endRenderIndex);
+    return (renderMessages || [])?.slice(msgRenderIndex, endRenderIndex);
   }, [msgRenderIndex, renderMessages]);
 
   const onChatBodyScroll = (e: HTMLElement) => {
@@ -951,14 +957,14 @@ function _Chat() {
   };
 
   function scrollToBottom() {
-    setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
+    setMsgRenderIndex(renderMessages?.length - CHAT_PAGE_SIZE);
     scrollDomToBottom();
   }
 
   // clear context index = context length + index in messages
   const clearContextIndex =
     (session.clearContextIndex ?? -1) >= 0
-      ? session.clearContextIndex! + context.length - msgRenderIndex
+      ? session.clearContextIndex! + context?.length - msgRenderIndex
       : -1;
 
   const [showPromptModal, setShowPromptModal] = useState(false);
@@ -1037,7 +1043,7 @@ function _Chat() {
             {!session.topic ? DEFAULT_TOPIC : session.topic}
           </div>
           <div className="window-header-sub-title">
-            {Locale.Chat.SubTitle(session.messages.length)}
+            {Locale.Chat.SubTitle(session?.messages?.length)}
           </div>
         </div>
         <div className="window-actions">
@@ -1094,10 +1100,10 @@ function _Chat() {
       >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
-          const isContext = i < context.length;
+          const isContext = i < context?.length;
           const showActions =
             i > 0 &&
-            !(message.preview || message.content.length === 0) &&
+            !(message.preview || message?.content?.length === 0) &&
             !isContext;
           const showTyping = message.preview || message.streaming;
 
@@ -1189,7 +1195,7 @@ function _Chat() {
                       content={message.content}
                       loading={
                         (message.preview || message.streaming) &&
-                        message.content.length === 0 &&
+                        message.content?.length === 0 &&
                         !isUser
                       }
                       onContextMenu={(e) => onRightClick(e, message)}
@@ -1199,7 +1205,7 @@ function _Chat() {
                       }}
                       fontSize={fontSize}
                       parentRef={scrollRef}
-                      defaultShow={i >= messages.length - 6}
+                      defaultShow={i >= messages?.length - 6}
                     />
                   </div>
 
@@ -1225,7 +1231,7 @@ function _Chat() {
           hitBottom={hitBottom}
           showPromptHints={() => {
             // Click again to close
-            if (promptHints.length > 0) {
+            if (promptHints?.length > 0) {
               setPromptHints([]);
               return;
             }
