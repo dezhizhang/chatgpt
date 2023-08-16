@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 13:59:27
  * :last editor: 张德志
- * :date last edited: 2023-08-16 04:16:33
+ * :date last edited: 2023-08-16 22:44:50
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import {
@@ -58,7 +58,7 @@ export function LoginForm({ setPageType }: LoginProps) {
           });
           localStorage.setItem('user',JSON.stringify(user))
           setTimeout(() => {
-            navigate(Path.Home)
+            navigate(Path.NewChat)
           },500);
         }
       } catch (error: any) {

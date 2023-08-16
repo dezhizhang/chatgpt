@@ -5,15 +5,13 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-16 04:16:15
+ * :date last edited: 2023-08-16 22:43:46
  */
 import styles from "./login.module.scss";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import BotIcon from "../icons/bot.svg";
 import { Box, Flex, Image, ChakraProvider } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import LoadingIcon from "../icons/three-dots.svg";
-import { Path } from "../constant";
 import { theme } from "../theme";
 import dynamic from "next/dynamic";
 import { PageTypeEnum } from "../constant";
@@ -40,16 +38,12 @@ const ForgetPasswordForm = dynamic(async () => (await import("./forget-password-
 
 export function LoginPage() {
   const isPc = true;
-  const navigate = useNavigate();
+
   const access = useAccessStore();
 
   const [pageType, setPageType] = useState<`${PageTypeEnum}`>(
     PageTypeEnum.login,
   );
-
-  const loginSuccess = useCallback(() => { 
-    navigate(Path.Home)
-  }, []);
 
   function DynamicComponent({ type }: { type: `${PageTypeEnum}` }) {
     const TypeMap = {

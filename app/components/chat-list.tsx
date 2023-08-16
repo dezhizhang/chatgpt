@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/chat-list.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-16 22:21:20
+ */
 import DeleteIcon from "../icons/delete.svg";
 import BotIcon from "../icons/bot.svg";
 
@@ -117,7 +126,7 @@ export function ChatList(props: { narrow?: boolean }) {
 
     moveSession(source.index, destination.index);
   };
-
+  
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="chat-list">

@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/new-chat.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-16 22:35:03
+ */
 import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
 import { IconButton } from "./button";
@@ -16,17 +25,6 @@ import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
 import { showConfirm } from "./ui-lib";
 import { BUILTIN_MASK_STORE } from "../masks";
-
-function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
-  const xmin = Math.max(aRect.x, bRect.x);
-  const xmax = Math.min(aRect.x + aRect.width, bRect.x + bRect.width);
-  const ymin = Math.max(aRect.y, bRect.y);
-  const ymax = Math.min(aRect.y + aRect.height, bRect.y + bRect.height);
-  const width = xmax - xmin;
-  const height = ymax - ymin;
-  const intersectionArea = width < 0 || height < 0 ? 0 : width * height;
-  return intersectionArea;
-}
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
   return (
@@ -84,6 +82,7 @@ export function NewChat() {
   const maskStore = useMaskStore();
 
   const masks = maskStore.getAll();
+  console.log('masks',masks);
   const groups = useMaskGroup(masks);
 
   const navigate = useNavigate();
@@ -117,6 +116,8 @@ export function NewChat() {
         (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
     }
   }, [groups]);
+
+  console.log('groups',groups);
 
   return (
     <div className={styles["new-chat"]}>
