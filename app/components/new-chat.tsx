@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-16 23:45:54
+ * :date last edited: 2023-08-17 06:52:35
  */
 import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
@@ -38,7 +38,7 @@ export function NewChat() {
   const [groups, setGroups] = useState<Mask[][]>([]); 
   const chatStore = useChatStore();
   const maskStore = useMaskStore();
-
+  
   const navigate = useNavigate();
   const config = useAppConfig();
 

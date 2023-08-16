@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/emoji.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-17 07:06:02
+ */
 import EmojiPicker, {
   Emoji,
   EmojiStyle,
@@ -40,10 +49,11 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       </div>
     );
   }
-
+  //判断是否是一段链
+  const isAvatar = (props.avatar?.indexOf('http') != -1 ||  props.avatar?.indexOf('https') !=-1);
   return (
     <div className="user-avatar">
-      {props.avatar && <EmojiAvatar avatar={props.avatar} />}
+      {isAvatar ? <EmojiAvatar avatar={props.avatar as string} />:<BlackBotIcon/>}
     </div>
   );
 }
