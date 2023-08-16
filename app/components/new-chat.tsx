@@ -5,18 +5,17 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-16 22:35:03
+ * :date last edited: 2023-08-16 23:45:54
  */
 import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
 import { IconButton } from "./button";
 import { EmojiAvatar } from "./emoji";
 import styles from "./new-chat.module.scss";
-
 import LeftIcon from "../icons/left.svg";
 import LightningIcon from "../icons/lightning.svg";
 import EyeIcon from "../icons/eye.svg";
-
+import { getModelList } from '../api/chat';
 import { useLocation, useNavigate } from "react-router-dom";
 import { Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
@@ -35,10 +34,40 @@ function MaskItem(props: { mask: Mask; onClick?: () => void }) {
   );
 }
 
-function useMaskGroup(masks: Mask[]) {
-  const [groups, setGroups] = useState<Mask[][]>([]);
+export function NewChat() {
+  const [groups, setGroups] = useState<Mask[][]>([]); 
+  const chatStore = useChatStore();
+  const maskStore = useMaskStore();
 
-  useEffect(() => {
+  const navigate = useNavigate();
+  const config = useAppConfig();
+
+  const maskRef = useRef<HTMLDivElement>(null);
+
+  const { state } = useLocation();
+
+  const startChat = (mask?: Mask) => {
+    setTimeout(() => {
+      chatStore.newSession(mask);
+      navigate(Path.Chat);
+    }, 10);
+  };
+
+  useCommand({
+    mask: (id) => {
+      try {
+        const mask = maskStore.get(id) ?? BUILTIN_MASK_STORE.get(id);
+        startChat(mask ?? undefined);
+      } catch {
+        console.error("[New Chat] failed to create chat from mask id=", id);
+      }
+    },
+  });
+
+  const fetchModelList = async() => {
+    const res = await getModelList();
+    const masks = res.myModels || [];
+
     const computeGroup = () => {
       const appBody = document.getElementById(SlotID.AppBody);
       if (!appBody || masks.length === 0) return;
@@ -71,44 +100,12 @@ function useMaskGroup(masks: Mask[]) {
 
     window.addEventListener("resize", computeGroup);
     return () => window.removeEventListener("resize", computeGroup);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  return groups;
-}
+  }
 
-export function NewChat() {
-  const chatStore = useChatStore();
-  const maskStore = useMaskStore();
-
-  const masks = maskStore.getAll();
-  console.log('masks',masks);
-  const groups = useMaskGroup(masks);
-
-  const navigate = useNavigate();
-  const config = useAppConfig();
-
-  const maskRef = useRef<HTMLDivElement>(null);
-
-  const { state } = useLocation();
-
-  const startChat = (mask?: Mask) => {
-    setTimeout(() => {
-      chatStore.newSession(mask);
-      navigate(Path.Chat);
-    }, 10);
-  };
-
-  useCommand({
-    mask: (id) => {
-      try {
-        const mask = maskStore.get(id) ?? BUILTIN_MASK_STORE.get(id);
-        startChat(mask ?? undefined);
-      } catch {
-        console.error("[New Chat] failed to create chat from mask id=", id);
-      }
-    },
-  });
+  useEffect(() => {
+    fetchModelList();
+  },[])
 
   useEffect(() => {
     if (maskRef.current) {
@@ -116,8 +113,6 @@ export function NewChat() {
         (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
     }
   }, [groups]);
-
-  console.log('groups',groups);
 
   return (
     <div className={styles["new-chat"]}>
