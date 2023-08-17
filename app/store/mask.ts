@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/store/mask.ts
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-17 21:04:01
+ */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { BUILTIN_MASKS } from "../masks";
@@ -8,7 +17,7 @@ import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
 
 export type Mask = {
-  id: string;
+  _id: string;
   createdAt: number;
   avatar: string;
   name: string;
@@ -37,7 +46,7 @@ type MaskStore = MaskState & {
 export const DEFAULT_MASK_AVATAR = "gpt-bot";
 export const createEmptyMask = () =>
   ({
-    id: nanoid(),
+    _id: nanoid(),
     avatar: DEFAULT_MASK_AVATAR,
     name: DEFAULT_TOPIC,
     context: [],
@@ -59,7 +68,7 @@ export const useMaskStore = create<MaskStore>()(
         masks[id] = {
           ...createEmptyMask(),
           ...mask,
-          id,
+          _id:id,
           builtin: false,
         };
 
@@ -116,13 +125,13 @@ export const useMaskStore = create<MaskStore>()(
 
         // migrate mask id to nanoid
         if (version < 3) {
-          Object.values(newState.masks).forEach((m) => (m.id = nanoid()));
+          Object.values(newState.masks).forEach((m) => (m._id = nanoid()));
         }
 
         if (version < 3.1) {
           const updatedMasks: Record<string, Mask> = {};
           Object.values(newState.masks).forEach((m) => {
-            updatedMasks[m.id] = m;
+            updatedMasks[m._id] = m;
           });
           newState.masks = updatedMasks;
         }

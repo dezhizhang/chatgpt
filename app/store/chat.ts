@@ -1,8 +1,16 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/store/chat.ts
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-17 21:12:24
+ */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
 import { trimTopic } from "../utils";
-
+import { Types } from 'mongoose';
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
@@ -13,26 +21,22 @@ import {
   StoreKey,
 } from "../constant";
 import { api, RequestMessage } from "../client/api";
+import { postChatCompletions } from '../api/chat';
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 
 export type ChatMessage = RequestMessage & {
-  date: string;
   streaming?: boolean;
-  isError?: boolean;
   id: string;
-  model?: ModelType;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
   return {
     id: nanoid(),
-    date: new Date().toLocaleString(),
     role: "user",
     content: "",
-    ...override,
   };
 }
 
@@ -43,7 +47,7 @@ export interface ChatStat {
 }
 
 export interface ChatSession {
-  id: string;
+  _id: string;
   topic: string;
 
   memoryPrompt: string;
@@ -64,7 +68,7 @@ export const BOT_HELLO: ChatMessage = createMessage({
 
 function createEmptySession(): ChatSession {
   return {
-    id: nanoid(),
+    _id: String(new Types.ObjectId()),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
     messages: [],
@@ -277,8 +281,10 @@ export const useChatStore = create<ChatStore>()(
       async onUserInput(content) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+        const { _id: appId } = session.mask || {}
 
         const userContent = fillTemplateWith(content, modelConfig);
+
         console.log("[User Input] after template: ", userContent);
 
         const userMessage: ChatMessage = createMessage({
@@ -289,9 +295,10 @@ export const useChatStore = create<ChatStore>()(
         const botMessage: ChatMessage = createMessage({
           role: "assistant",
           streaming: true,
-          model: modelConfig.model,
         });
 
+        // const params = { appId, chatId: '', messages: [userMessage, botMessage], model: "", stream: true };
+        // console.log(params);
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
@@ -303,63 +310,67 @@ export const useChatStore = create<ChatStore>()(
             ...userMessage,
             content,
           };
-          session.messages = session.messages.concat([
+          session.messages = session?.messages?.concat([
             savedUserMessage,
             botMessage,
           ]);
         });
 
-        // make request
-        api.llm.chat({
-          messages: sendMessages,
-          config: { ...modelConfig, stream: true },
-          onUpdate(message) {
-            botMessage.streaming = true;
-            if (message) {
-              botMessage.content = message;
-            }
-            get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
-            });
-          },
-          onFinish(message) {
-            botMessage.streaming = false;
-            if (message) {
-              botMessage.content = message;
-              get().onNewMessage(botMessage);
-            }
-            ChatControllerPool.remove(session.id, botMessage.id);
-          },
-          onError(error) {
-            const isAborted = error.message.includes("aborted");
-            botMessage.content +=
-              "\n\n" +
-              prettyObject({
-                error: true,
-                message: error.message,
-              });
-            botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
-            get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
-            });
-            ChatControllerPool.remove(
-              session.id,
-              botMessage.id ?? messageIndex,
-            );
+        console.log({sendMessages});
+        // console.log('session', session);
+        // postChatCompletions(params);
 
-            console.error("[Chat] failed ", error);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ChatControllerPool.addController(
-              session.id,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
-        });
+        // // make request
+        // api.llm.chat({
+        //   messages: sendMessages,
+        //   config: { ...modelConfig, stream: true },
+        //   onUpdate(message) {
+        //     botMessage.streaming = true;
+        //     if (message) {
+        //       botMessage.content = message;
+        //     }
+        //     get().updateCurrentSession((session) => {
+        //       session.messages = session.messages.concat();
+        //     });
+        //   },
+        //   onFinish(message) {
+        //     botMessage.streaming = false;
+        //     if (message) {
+        //       botMessage.content = message;
+        //       get().onNewMessage(botMessage);
+        //     }
+        //     ChatControllerPool.remove(session.id, botMessage.id);
+        //   },
+        //   onError(error) {
+        //     const isAborted = error.message.includes("aborted");
+        //     botMessage.content +=
+        //       "\n\n" +
+        //       prettyObject({
+        //         error: true,
+        //         message: error.message,
+        //       });
+        //     botMessage.streaming = false;
+        //     userMessage.isError = !isAborted;
+        //     botMessage.isError = !isAborted;
+        //     get().updateCurrentSession((session) => {
+        //       session.messages = session.messages.concat();
+        //     });
+        //     ChatControllerPool.remove(
+        //       session.id,
+        //       botMessage.id ?? messageIndex,
+        //     );
+
+        //     console.error("[Chat] failed ", error);
+        //   },
+        //   onController(controller) {
+        //     // collect controller for stop/retry
+        //     ChatControllerPool.addController(
+        //       session.id,
+        //       botMessage.id ?? messageIndex,
+        //       controller,
+        //     );
+        //   },
+        // });
       },
 
       getMemoryPrompt() {
@@ -371,7 +382,6 @@ export const useChatStore = create<ChatStore>()(
             session.memoryPrompt.length > 0
               ? Locale.Store.Prompt.History(session.memoryPrompt)
               : "",
-          date: "",
         } as ChatMessage;
       },
 
@@ -379,24 +389,21 @@ export const useChatStore = create<ChatStore>()(
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
         const clearContextIndex = session.clearContextIndex ?? 0;
-        const messages = session.messages.slice();
-        const totalMessageCount = session.messages.length;
-
-        // in-context prompts
-        const contextPrompts = session.mask.context.slice();
-
+        const messages = session?.messages?.slice();
+        const totalMessageCount = session?.messages?.length;
+        
         // system prompts, to get close to OpenAI Web ChatGPT
         const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
         const systemPrompts = shouldInjectSystemPrompts
           ? [
-              createMessage({
-                role: "system",
-                content: fillTemplateWith("", {
-                  ...modelConfig,
-                  template: DEFAULT_SYSTEM_TEMPLATE,
-                }),
+            createMessage({
+              role: "system",
+              content: fillTemplateWith("", {
+                ...modelConfig,
+                template: DEFAULT_SYSTEM_TEMPLATE,
               }),
-            ]
+            }),
+          ]
           : [];
         if (shouldInjectSystemPrompts) {
           console.log(
@@ -443,7 +450,7 @@ export const useChatStore = create<ChatStore>()(
           i -= 1
         ) {
           const msg = messages[i];
-          if (!msg || msg.isError) continue;
+          if (!msg) continue;
           tokenCount += estimateTokenLength(msg.content);
           reversedRecentMessages.push(msg);
         }
@@ -452,7 +459,6 @@ export const useChatStore = create<ChatStore>()(
         const recentMessages = [
           ...systemPrompts,
           ...longTermMemoryPrompts,
-          ...contextPrompts,
           ...reversedRecentMessages.reverse(),
         ];
 
@@ -504,8 +510,8 @@ export const useChatStore = create<ChatStore>()(
             onFinish(message) {
               get().updateCurrentSession(
                 (session) =>
-                  (session.topic =
-                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                (session.topic =
+                  message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
               );
             },
           });
@@ -517,7 +523,7 @@ export const useChatStore = create<ChatStore>()(
           session.clearContextIndex ?? 0,
         );
         let toBeSummarizedMsgs = messages
-          .filter((msg) => !msg.isError)
+        
           .slice(summarizeIndex);
 
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
@@ -550,7 +556,6 @@ export const useChatStore = create<ChatStore>()(
               createMessage({
                 role: "system",
                 content: Locale.Store.Prompt.Summarize,
-                date: "",
               }),
             ),
             config: { ...modelConfig, stream: true, model: "gpt-3.5-turbo" },
@@ -612,7 +617,7 @@ export const useChatStore = create<ChatStore>()(
         if (version < 3) {
           // migrate id to nanoid
           newState.sessions.forEach((s) => {
-            s.id = nanoid();
+            s._id = nanoid();
             s.messages.forEach((m) => (m.id = nanoid()));
           });
         }

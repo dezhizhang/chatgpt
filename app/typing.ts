@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-13 21:03:47
+ * :date last edited: 2023-08-17 20:36:43
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -27,6 +27,28 @@ export interface UserUpdateParams {
     balance?: number;
     avatar?: string;
     openaiKey?: string;
+}
+
+//模型初始化参数
+export interface ChatInitParams {
+  modelId:string,
+  chatId?:string
+}
+
+export interface ChatMessagesParams {
+  content:string;
+  role:string;
+  _id?:string;
+
+}
+
+// 聊天记录
+export interface ChatCompletionsParams {
+  appId:string;
+  chatId:string;
+  messages:ChatMessagesParams[];
+  model:string;
+  stream:boolean;
 }
 
 export interface UserBillType {

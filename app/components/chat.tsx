@@ -59,6 +59,7 @@ import dynamic from "next/dynamic";
 
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
+import { getChatInit } from '../api/chat';
 import Locale from "../locales";
 
 import { IconButton } from "./button";
@@ -602,9 +603,8 @@ function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
   const chatStore = useChatStore();
- 
+
   const session = chatStore.currentSession();
-  console.log('session',session);
   const config = useAppConfig();
   const fontSize = config.fontSize;
 
@@ -725,25 +725,35 @@ function _Chat() {
     ChatControllerPool.stop(session.id, messageId);
   };
 
+  // 初始化聊天
+  const fetchChatInit = async (modelId: string) => {
+    const res = await getChatInit({ modelId });
+    console.log('res', res);
+  }
+
+  //getChatInit
   useEffect(() => {
     chatStore.updateCurrentSession((session) => {
-      const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
-      session.messages.forEach((m) => {
-        // check if should stop all stale messages
-        if (m.isError || new Date(m.date).getTime() < stopTiming) {
-          if (m.streaming) {
-            m.streaming = false;
-          }
+      fetchChatInit((session?.mask as any)?._id);
+      // debugger;
+      // console.log({session});
+      // const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
+      // session.messages.forEach((m) => {
+      //   // check if should stop all stale messages
+      //   if (m.isError || new Date(m.date).getTime() < stopTiming) {
+      //     if (m.streaming) {
+      //       m.streaming = false;
+      //     }
 
-          if (m?.content?.length === 0) {
-            m.isError = true;
-            m.content = prettyObject({
-              error: true,
-              message: "empty response",
-            });
-          }
-        }
-      });
+      //     if (m?.content?.length === 0) {
+      //       m.isError = true;
+      //       m.content = prettyObject({
+      //         error: true,
+      //         message: "empty response",
+      //       });
+      //     }
+      //   }
+      // });
 
       // auto sync mask config from global config
       if (session.mask.syncGlobalConfig) {
@@ -881,33 +891,32 @@ function _Chat() {
 
   // preview messages
   const renderMessages = useMemo(() => {
-    console.log({context});
     return (context || [])
       .concat(session.messages as RenderMessage[])
       .concat(
         isLoading
           ? [
-              {
-                ...createMessage({
-                  role: "assistant",
-                  content: "……",
-                }),
-                preview: true,
-              },
-            ]
+            {
+              ...createMessage({
+                role: "assistant",
+                content: "……",
+              }),
+              preview: true,
+            },
+          ]
           : [],
       )
       .concat(
         userInput?.length > 0 && config.sendPreviewBubble
           ? [
-              {
-                ...createMessage({
-                  role: "user",
-                  content: userInput,
-                }),
-                preview: true,
-              },
-            ]
+            {
+              ...createMessage({
+                role: "user",
+                content: userInput,
+              }),
+              preview: true,
+            },
+          ]
           : [],
       );
   }, [
@@ -999,7 +1008,7 @@ function _Chat() {
         if (payload.key || payload.url) {
           showConfirm(
             Locale.URLCommand.Settings +
-              `\n${JSON.stringify(payload, null, 4)}`,
+            `\n${JSON.stringify(payload, null, 4)}`,
           ).then((res) => {
             if (!res) return;
             if (payload.key) {
@@ -1210,9 +1219,8 @@ function _Chat() {
                   </div>
 
                   <div className={styles["chat-message-action-date"]}>
-                    {isContext
-                      ? Locale.Chat.IsContext
-                      : message.date.toLocaleString()}
+                    {/* {isContext
+                      ? Locale.Chat.IsContext} */}
                   </div>
                 </div>
               </div>
