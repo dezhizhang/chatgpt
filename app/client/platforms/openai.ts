@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/client/platforms/openai.ts
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-17 23:28:08
+ */
 import {
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
@@ -5,7 +14,6 @@ import {
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import Locale from "../../locales";
 import {
@@ -34,9 +42,10 @@ export class ChatGPTApi implements LLMApi {
     if (openaiUrl.endsWith("/")) {
       openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
     }
-    if (!openaiUrl.startsWith("http") && !openaiUrl.startsWith("/api/openai")) {
-      openaiUrl = "https://" + openaiUrl;
-    }
+    openaiUrl = 'https://xzgpt.fkvip.club/api/openapi/v1'
+    // if (!openaiUrl.startsWith("http") && !openaiUrl.startsWith("api/openapi")) {
+     
+    // }
     return [openaiUrl, path].join("/");
   }
 
@@ -55,6 +64,9 @@ export class ChatGPTApi implements LLMApi {
       ...useChatStore.getState().currentSession().mask.modelConfig,
       ...{
         model: options.config.model,
+        appId: options.config.appId,
+        chatId: options.config.chatId,
+
       },
     };
 
@@ -62,10 +74,12 @@ export class ChatGPTApi implements LLMApi {
       messages,
       stream: options.config.stream,
       model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
+      appId: modelConfig.appId,
+      chatId: modelConfig.chatId,
+      // temperature: modelConfig.temperature,
+      // presence_penalty: modelConfig.presence_penalty,
+      // frequency_penalty: modelConfig.frequency_penalty,
+      // top_p: modelConfig.top_p,
     };
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -129,7 +143,7 @@ export class ChatGPTApi implements LLMApi {
               try {
                 const resJson = await res.clone().json();
                 extraInfo = prettyObject(resJson);
-              } catch {}
+              } catch { }
 
               if (res.status === 401) {
                 responseTexts.push(Locale.Error.Unauthorized);

@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 20:36:43
+ * :date last edited: 2023-08-17 22:37:48
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -41,6 +41,18 @@ export interface ChatMessagesParams {
   _id?:string;
 
 }
+
+
+export interface StreamFetchProps {
+  data: any;
+  onMessage: (text: string) => void;
+  abortSignal: AbortController;
+}
+
+export type ChatResponseType = {
+  newChatId: string;
+  quoteLen?: number;
+};
 
 // 聊天记录
 export interface ChatCompletionsParams {

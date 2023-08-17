@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 21:12:24
+ * :date last edited: 2023-08-17 23:39:44
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -13,7 +13,7 @@ import { trimTopic } from "../utils";
 import { Types } from 'mongoose';
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelConfig, ModelType, useAppConfig } from "./config";
+import { ModelConfig, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import {
   DEFAULT_INPUT_TEMPLATE,
@@ -21,7 +21,6 @@ import {
   StoreKey,
 } from "../constant";
 import { api, RequestMessage } from "../client/api";
-import { postChatCompletions } from '../api/chat';
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
@@ -29,12 +28,12 @@ import { nanoid } from "nanoid";
 
 export type ChatMessage = RequestMessage & {
   streaming?: boolean;
-  id: string;
+  _id: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
   return {
-    id: nanoid(),
+    _id: String(new Types.ObjectId()),
     role: "user",
     content: "",
   };
@@ -281,7 +280,7 @@ export const useChatStore = create<ChatStore>()(
       async onUserInput(content) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
-        const { _id: appId } = session.mask || {}
+        const { _id: modelId } = session.mask || {}
 
         const userContent = fillTemplateWith(content, modelConfig);
 
@@ -315,62 +314,58 @@ export const useChatStore = create<ChatStore>()(
             botMessage,
           ]);
         });
+        // make request
+        api.llm.chat({
+          messages: sendMessages,
+        
+          config: {  stream: true,  appId:modelId,model:'',chatId:'' },
+          onUpdate(message) {
+            botMessage.streaming = true;
+            if (message) {
+              botMessage.content = message;
+            }
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+          },
+          onFinish(message) {
+            botMessage.streaming = false;
+            if (message) {
+              botMessage.content = message;
+              get().onNewMessage(botMessage);
+            }
+            ChatControllerPool.remove(session._id, botMessage._id);
+          },
+          onError(error) {
+            const isAborted = error.message.includes("aborted");
+            botMessage.content +=
+              "\n\n" +
+              prettyObject({
+                error: true,
+                message: error.message,
+              });
+            botMessage.streaming = false;
+            userMessage.isError = !isAborted;
+            botMessage.isError = !isAborted;
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+            ChatControllerPool.remove(
+              session._id,
+              botMessage._id ?? messageIndex,
+            );
 
-        console.log({sendMessages});
-        // console.log('session', session);
-        // postChatCompletions(params);
-
-        // // make request
-        // api.llm.chat({
-        //   messages: sendMessages,
-        //   config: { ...modelConfig, stream: true },
-        //   onUpdate(message) {
-        //     botMessage.streaming = true;
-        //     if (message) {
-        //       botMessage.content = message;
-        //     }
-        //     get().updateCurrentSession((session) => {
-        //       session.messages = session.messages.concat();
-        //     });
-        //   },
-        //   onFinish(message) {
-        //     botMessage.streaming = false;
-        //     if (message) {
-        //       botMessage.content = message;
-        //       get().onNewMessage(botMessage);
-        //     }
-        //     ChatControllerPool.remove(session.id, botMessage.id);
-        //   },
-        //   onError(error) {
-        //     const isAborted = error.message.includes("aborted");
-        //     botMessage.content +=
-        //       "\n\n" +
-        //       prettyObject({
-        //         error: true,
-        //         message: error.message,
-        //       });
-        //     botMessage.streaming = false;
-        //     userMessage.isError = !isAborted;
-        //     botMessage.isError = !isAborted;
-        //     get().updateCurrentSession((session) => {
-        //       session.messages = session.messages.concat();
-        //     });
-        //     ChatControllerPool.remove(
-        //       session.id,
-        //       botMessage.id ?? messageIndex,
-        //     );
-
-        //     console.error("[Chat] failed ", error);
-        //   },
-        //   onController(controller) {
-        //     // collect controller for stop/retry
-        //     ChatControllerPool.addController(
-        //       session.id,
-        //       botMessage.id ?? messageIndex,
-        //       controller,
-        //     );
-        //   },
-        // });
+            console.error("[Chat] failed ", error);
+          },
+          onController(controller) {
+            // collect controller for stop/retry
+            ChatControllerPool.addController(
+              session._id,
+              botMessage._id ?? messageIndex,
+              controller,
+            );
+          },
+        });
       },
 
       getMemoryPrompt() {
@@ -618,7 +613,7 @@ export const useChatStore = create<ChatStore>()(
           // migrate id to nanoid
           newState.sessions.forEach((s) => {
             s._id = nanoid();
-            s.messages.forEach((m) => (m.id = nanoid()));
+            s.messages.forEach((m) => (m._id = nanoid()));
           });
         }
 

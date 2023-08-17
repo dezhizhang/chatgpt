@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/utils/index.ts
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-13 19:48:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-17 23:34:38
+ */
 import crypto from 'crypto';
 import dayjs from 'dayjs';
 
@@ -32,6 +41,7 @@ export const useCopyData = () => {
     }
   };
 };
+
 
 /**
  * 密码加密
