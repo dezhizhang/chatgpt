@@ -5,11 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:15:43
  * :last editor: 张德志
- * :date last edited: 2023-08-16 00:11:24
+ * :date last edited: 2023-08-19 00:25:24
  */
 import axios, { Method, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-// import { clearCookie } from '@/utils/user';
-// import { TOKEN_ERROR_CODE } from '@/service/errorCode';
+import { TOKEN_ERROR_CODE } from '../constant';
 
 interface ConfigType {
   headers?: { [key: string]: string };
@@ -64,14 +63,11 @@ function responseError(err: any) {
   if (typeof err === 'string') {
     return Promise.reject({ message: err });
   }
-//   // 有报错响应
-  // if (err?.code in TOKEN_ERROR_CODE) {
-  //   //clearCookie();
-  //   window.location.replace(
-  //     `/login?lastRoute=${encodeURIComponent(location.pathname + location.search)}`
-  //   );
-  //   return Promise.reject({ message: 'token过期，重新登录' });
-  // }
+  if(err?.code in TOKEN_ERROR_CODE) {
+    window.location.replace(
+      `/#/login`
+    );
+  }
   return err;
 }
 

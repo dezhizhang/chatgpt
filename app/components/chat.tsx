@@ -722,7 +722,7 @@ function _Chat() {
 
   // stop response
   const onUserStop = (messageId: string) => {
-    ChatControllerPool.stop(session.id, messageId);
+    ChatControllerPool.stop(session._id, messageId);
   };
 
   // 初始化聊天
@@ -811,7 +811,7 @@ function _Chat() {
     // 4. resend the user's input
 
     const resendingIndex = session.messages.findIndex(
-      (m) => m.id === message.id,
+      (m) => m._id === message._id,
     );
 
     if (resendingIndex <= 0 || resendingIndex >= session?.messages?.length) {
@@ -848,8 +848,8 @@ function _Chat() {
     }
 
     // delete the original messages
-    deleteMessage(userMessage.id);
-    deleteMessage(botMessage?.id);
+    deleteMessage(userMessage._id);
+    deleteMessage(botMessage?._id);
 
     // resend the message
     setIsLoading(true);
@@ -874,18 +874,15 @@ function _Chat() {
     return session.mask.hideContext ? [] : (session.mask?.context || [])?.slice();
   }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
-
   if (
     context?.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
 
-    //todo登录功能
-
-    // if (!accessStore.isAuthorized()) {
-    //   copiedHello.content = Locale.Error.Unauthorized;
-    // }
+    if (!accessStore.isAuthorized()) {
+      copiedHello.content = Locale.Error.Unauthorized;
+    }
     context.push(copiedHello);
   }
 

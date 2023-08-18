@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 23:33:19
+ * :date last edited: 2023-08-19 00:23:38
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -76,6 +76,11 @@ export const OpenaiPath = {
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
 };
+
+export const TOKEN_ERROR_CODE: Record<number, string> = {
+  403: '登录状态无效,请重新登录'
+};
+
 
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang

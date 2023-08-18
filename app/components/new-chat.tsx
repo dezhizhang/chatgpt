@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 07:11:39
+ * :date last edited: 2023-08-19 00:19:45
  */
 import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
@@ -66,6 +66,7 @@ export function NewChat() {
 
   const fetchModelList = async() => {
     const res = await getModelList();
+    console.log({res});
     const masks = res.myModels || [];
 
     const computeGroup = () => {

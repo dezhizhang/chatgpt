@@ -27,7 +27,7 @@ export interface AccessControlStore {
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const DEFAULT_OPENAI_URL =
-  getClientConfig()?.buildMode === "export" ? DEFAULT_API_HOST : "/api/openai/";
+  getClientConfig()?.buildMode === "export" ? DEFAULT_API_HOST : "/api/openapi/";
 console.log("[API] default openai url", DEFAULT_OPENAI_URL);
 
 export const useAccessStore = create<AccessControlStore>()(
@@ -67,8 +67,8 @@ export const useAccessStore = create<AccessControlStore>()(
       fetch() {
         if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
         fetchState = 1;
-        fetch("/api/config", {
-          method: "post",
+        fetch("/api/user/tokenLogin", {
+          method: "get",
           body: null,
           headers: {
             ...getHeaders(),
