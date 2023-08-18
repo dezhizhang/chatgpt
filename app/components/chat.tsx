@@ -39,9 +39,7 @@ import {
   ChatMessage,
   SubmitKey,
   useChatStore,
-  BOT_HELLO,
   createMessage,
-  useAccessStore,
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
@@ -59,9 +57,7 @@ import dynamic from "next/dynamic";
 
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
-import { getChatInit } from '../api/chat';
 import Locale from "../locales";
-
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
 
@@ -74,19 +70,16 @@ import {
   showPrompt,
   showToast,
 } from "./ui-lib";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
   LAST_INPUT_KEY,
-  MAX_RENDER_MSG_COUNT,
   Path,
-  REQUEST_TIMEOUT_MS,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
-import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 
@@ -725,45 +718,6 @@ function _Chat() {
     ChatControllerPool.stop(session._id, messageId);
   };
 
-  // 初始化聊天
-  const fetchChatInit = async (modelId: string) => {
-    const res = await getChatInit({ modelId });
-    console.log('res', res);
-  }
-
-  //getChatInit
-  useEffect(() => {
-    chatStore.updateCurrentSession((session) => {
-      fetchChatInit((session?.mask as any)?._id);
-      // debugger;
-      // console.log({session});
-      // const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
-      // session.messages.forEach((m) => {
-      //   // check if should stop all stale messages
-      //   if (m.isError || new Date(m.date).getTime() < stopTiming) {
-      //     if (m.streaming) {
-      //       m.streaming = false;
-      //     }
-
-      //     if (m?.content?.length === 0) {
-      //       m.isError = true;
-      //       m.content = prettyObject({
-      //         error: true,
-      //         message: "empty response",
-      //       });
-      //     }
-      //   }
-      // });
-
-      // auto sync mask config from global config
-      if (session.mask.syncGlobalConfig) {
-        console.log("[Mask] syncing from global, name = ", session.mask.name);
-        session.mask.modelConfig = { ...config.modelConfig };
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // if ArrowUp and no userInput, fill with last input
@@ -873,20 +827,7 @@ function _Chat() {
   const context: RenderMessage[] = useMemo(() => {
     return session.mask.hideContext ? [] : (session.mask?.context || [])?.slice();
   }, [session.mask.context, session.mask.hideContext]);
-  const accessStore = useAccessStore();
-  if (
-    context?.length === 0 &&
-    session.messages.at(0)?.content !== BOT_HELLO.content
-  ) {
-    const copiedHello = Object.assign({}, BOT_HELLO);
-
-    if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
-    }
-    context.push(copiedHello);
-  }
-
-  // preview messages
+ 
   const renderMessages = useMemo(() => {
     return (context || [])
       .concat(session.messages as RenderMessage[])
@@ -989,7 +930,7 @@ function _Chat() {
       console.log("[Command] got code from url: ", text);
       showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
         if (res) {
-          accessStore.updateCode(text);
+          // accessStore.updateCode(text);
         }
       });
     },
@@ -1009,10 +950,10 @@ function _Chat() {
           ).then((res) => {
             if (!res) return;
             if (payload.key) {
-              accessStore.updateToken(payload.key);
+              // accessStore.updateToken(payload.key);
             }
             if (payload.url) {
-              accessStore.updateOpenAiUrl(payload.url);
+              // accessStore.updateOpenAiUrl(payload.url);
             }
           });
         }
@@ -1026,7 +967,7 @@ function _Chat() {
   const [isEditingMessage, setIsEditingMessage] = useState(false);
 
   return (
-    <div className={styles.chat} key={session.id}>
+    <div className={styles.chat} key={session?._id}>
       <div className="window-header" data-tauri-drag-region>
         {isMobileScreen && (
           <div className="window-actions">
@@ -1116,7 +1057,7 @@ function _Chat() {
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
 
           return (
-            <Fragment key={message.id}>
+            <Fragment key={message._id}>
               <div
                 className={
                   isUser ? styles["chat-message-user"] : styles["chat-message"]
@@ -1136,7 +1077,7 @@ function _Chat() {
                             );
                             chatStore.updateCurrentSession((session) => {
                               const m = session.messages.find(
-                                (m) => m.id === message.id,
+                                (m) => m._id === message._id,
                               );
                               if (m) {
                                 m.content = newMessage;
