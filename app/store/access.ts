@@ -5,11 +5,11 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 17:10:05
+ * :date last edited: 2023-08-19 17:22:44
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { DEFAULT_API_HOST, DEFAULT_MODELS, StoreKey,TOKEN_ERROR_CODE } from "../constant";
+import { DEFAULT_API_HOST, StoreKey,TOKEN_ERROR_CODE } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 
@@ -100,12 +100,6 @@ export const useAccessStore = create<AccessControlStore>()(
               return;
             }
             set(() => ({ ...data }));
-
-            if (res.disableGPT4) {
-              DEFAULT_MODELS.forEach(
-                (m: any) => (m.available = !m.name.startsWith("gpt-4")),
-              );
-            }
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");
