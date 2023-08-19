@@ -749,7 +749,7 @@ function _Chat() {
   const deleteMessage = (msgId?: string) => {
     chatStore.updateCurrentSession(
       (session) =>
-        (session.messages = session.messages.filter((m) => m.id !== msgId)),
+        (session.messages = session.messages.filter((m) => m._id !== msgId)),
     );
   };
 
@@ -1100,7 +1100,7 @@ function _Chat() {
                             <ChatAction
                               text={Locale.Chat.Actions.Stop}
                               icon={<StopIcon />}
-                              onClick={() => onUserStop(message.id ?? i)}
+                              onClick={() => onUserStop(message._id ?? i)}
                             />
                           ) : (
                             <>
@@ -1113,7 +1113,7 @@ function _Chat() {
                               <ChatAction
                                 text={Locale.Chat.Actions.Delete}
                                 icon={<DeleteIcon />}
-                                onClick={() => onDelete(message.id ?? i)}
+                                onClick={() => onDelete(message._id ?? i)}
                               />
 
                               <ChatAction

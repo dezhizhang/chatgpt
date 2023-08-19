@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-16 22:21:20
+ * :date last edited: 2023-08-19 13:54:12
  */
 import DeleteIcon from "../icons/delete.svg";
 import BotIcon from "../icons/bot.svg";
@@ -141,8 +141,8 @@ export function ChatList(props: { narrow?: boolean }) {
                 title={item.topic}
                 time={new Date(item.lastUpdate).toLocaleString()}
                 count={item.messages.length}
-                key={item.id}
-                id={item.id}
+                key={item?._id}
+                id={item._id}
                 index={i}
                 selected={i === selectedIndex}
                 onClick={() => {

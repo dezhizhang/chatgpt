@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 23:39:44
+ * :date last edited: 2023-08-19 14:09:36
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -29,6 +29,7 @@ import { nanoid } from "nanoid";
 export type ChatMessage = RequestMessage & {
   streaming?: boolean;
   _id: string;
+  date:string
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -36,6 +37,7 @@ export function createMessage(override: Partial<ChatMessage>): ChatMessage {
     _id: String(new Types.ObjectId()),
     role: "user",
     content: "",
+    date:'',
   };
 }
 
@@ -345,8 +347,8 @@ export const useChatStore = create<ChatStore>()(
                 message: error.message,
               });
             botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
+            // userMessage.isError = !isAborted;
+            // botMessage.isError = !isAborted;
             get().updateCurrentSession((session) => {
               session.messages = session.messages.concat();
             });
@@ -501,6 +503,8 @@ export const useChatStore = create<ChatStore>()(
             messages: topicMessages,
             config: {
               model: "gpt-3.5-turbo",
+              appId: "",
+              chatId: ""
             },
             onFinish(message) {
               get().updateCurrentSession(
@@ -553,7 +557,11 @@ export const useChatStore = create<ChatStore>()(
                 content: Locale.Store.Prompt.Summarize,
               }),
             ),
-            config: { ...modelConfig, stream: true, model: "gpt-3.5-turbo" },
+            config: {
+              ...modelConfig, stream: true, model: "gpt-3.5-turbo",
+              appId: "",
+              chatId: ""
+            },
             onUpdate(message) {
               session.memoryPrompt = message;
             },

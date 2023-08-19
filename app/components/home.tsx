@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-09 04:46:11
  * :last editor: 张德志
- * :date last edited: 2023-08-13 10:35:25
+ * :date last edited: 2023-08-19 14:05:18
  */
 "use client";
 
@@ -131,7 +131,7 @@ function Screen() {
               ` ${config.tightBorder && !isMobileScreen
                 ? styles["tight-container"]
                 : styles.container
-              } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
+              } `
             }
           >
             <SideBar className={isHome ? styles["sidebar-show"] : ""} />

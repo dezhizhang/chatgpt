@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/exporter.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-19 13:57:06
+ */
 /* eslint-disable @next/next/no-img-element */
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
@@ -149,7 +158,7 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
-    ret.push(...session.messages.filter((m, i) => selection.has(m.id)));
+    ret.push(...session.messages.filter((m, i) => selection.has(m._id)));
     return ret;
   }, [
     exportConfig.includeContext,
@@ -245,9 +254,9 @@ export function RenderExport(props: {
     }
 
     const renderMsgs = messages.map((v, i) => {
-      const [role, _] = v.id.split(":");
+      const [role, _] = v?.id.split(":");
       return {
-        id: i.toString(),
+        _id: i.toString(),
         role: role as any,
         content: role === "user" ? v.textContent ?? "" : v.innerHTML,
         date: "",
@@ -492,9 +501,6 @@ export function ImagePreviewer(props: {
             </div>
             <div className={styles["chat-info-item"]}>
               {Locale.Exporter.Time}:{" "}
-              {new Date(
-                props.messages.at(-1)?.date ?? Date.now(),
-              ).toLocaleString()}
             </div>
           </div>
         </div>

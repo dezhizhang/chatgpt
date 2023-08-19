@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/locales/en.ts
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-19 14:06:16
+ */
 import { SubmitKey } from "../store/config";
 import { LocaleType } from "./index";
 
@@ -144,6 +153,8 @@ const en: LocaleType = {
       All: "All Languages",
     },
     Avatar: "Avatar",
+    Username:"'Username",
+    Balance:'Balance',
     FontSize: {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",

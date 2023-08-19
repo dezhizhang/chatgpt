@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/message-selector.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-19 14:00:06
+ */
 import { useEffect, useState } from "react";
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import { Updater } from "../typing";
@@ -72,10 +81,10 @@ export function MessageSelector(props: {
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const isValid = (m: ChatMessage) => m.content && !m.isError && !m.streaming;
+  const isValid = (m: ChatMessage) => m.content &&  !m.streaming;
   const messages = session.messages.filter(
     (m, i) =>
-      m.id && // message must have id
+      m?._id && // message must have id
       isValid(m) &&
       (i >= session.messages.length - 1 || isValid(session.messages[i + 1])),
   );
@@ -91,7 +100,7 @@ export function MessageSelector(props: {
     const searchResults = new Set<string>();
     if (text.length > 0) {
       messages.forEach((m) =>
-        m.content.includes(text) ? searchResults.add(m.id!) : null,
+        m.content.includes(text) ? searchResults.add(m?._id!) : null,
       );
     }
     setSearchIds(searchResults);
@@ -102,7 +111,7 @@ export function MessageSelector(props: {
 
   const selectAll = () => {
     props.updateSelection((selection) =>
-      messages.forEach((m) => selection.add(m.id!)),
+      messages.forEach((m) => selection.add(m?._id!)),
     );
   };
 
@@ -120,7 +129,7 @@ export function MessageSelector(props: {
     const [start, end] = [startIndex, endIndex].sort((a, b) => a - b);
     props.updateSelection((selection) => {
       for (let i = start; i <= end; i += 1) {
-        selection.add(messages[i].id ?? i);
+        selection.add(messages[i]?._id ?? i);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -158,7 +167,7 @@ export function MessageSelector(props: {
                 selection.clear();
                 messages
                   .slice(messageCount - LATEST_COUNT)
-                  .forEach((m) => selection.add(m.id!));
+                  .forEach((m) => selection.add(m?._id!));
               })
             }
           />
@@ -175,17 +184,17 @@ export function MessageSelector(props: {
 
       <div className={styles["messages"]}>
         {messages.map((m, i) => {
-          if (!isInSearchResult(m.id!)) return null;
+          if (!isInSearchResult(m?._id!)) return null;
 
           return (
             <div
               className={`${styles["message"]} ${
-                props.selection.has(m.id!) && styles["message-selected"]
+                props.selection.has(m?._id!) && styles["message-selected"]
               }`}
               key={i}
               onClick={() => {
                 props.updateSelection((selection) => {
-                  const id = m.id ?? i;
+                  const id = m?._id ?? i;
                   selection.has(id) ? selection.delete(id) : selection.add(id);
                 });
                 onClickIndex(i);
@@ -200,7 +209,7 @@ export function MessageSelector(props: {
               </div>
               <div className={styles["body"]}>
                 <div className={styles["date"]}>
-                  {new Date(m.date).toLocaleString()}
+                  {/* {new Date(m.date).toLocaleString()} */}
                 </div>
                 <div className={`${styles["content"]} one-line`}>
                   {m.content}

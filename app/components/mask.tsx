@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 06:57:50
+ * :date last edited: 2023-08-19 13:59:18
  */
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
@@ -96,7 +96,7 @@ export function MaskConfig(props: {
   };
 
   const copyMaskLink = () => {
-    const maskLink = `${location.protocol}//${location.host}/#${Path.NewChat}?mask=${props.mask.id}`;
+    const maskLink = `${location.protocol}//${location.host}/#${Path.NewChat}?mask=${props.mask._id}`;
     copyToClipboard(maskLink);
   };
 
@@ -319,9 +319,9 @@ export function ContextPrompts(props: {
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {context.map((c, i) => (
                   <Draggable
-                    draggableId={c.id || i.toString()}
+                    draggableId={c?._id || i.toString()}
                     index={i}
-                    key={c.id}
+                    key={c?._id}
                   >
                     {(provided) => (
                       <div
@@ -342,7 +342,7 @@ export function ContextPrompts(props: {
                               createMessage({
                                 role: "user",
                                 content: "",
-                                date: new Date().toLocaleString(),
+                                // date: new Date().toLocaleString(),
                               }),
                               i + 1,
                             );
@@ -372,7 +372,7 @@ export function ContextPrompts(props: {
                   createMessage({
                     role: "user",
                     content: "",
-                    date: "",
+                    // date: "",
                   }),
                   props.context.length,
                 )
@@ -517,14 +517,14 @@ export function MaskPage() {
               bordered
               onClick={() => {
                 const createdMask = maskStore.create();
-                setEditingMaskId(createdMask.id);
+                setEditingMaskId(createdMask?._id);
               }}
             />
           </div>
 
           <div>
             {masks.map((m) => (
-              <div className={styles["mask-item"]} key={m.id}>
+              <div className={styles["mask-item"]} key={m?._id}>
                 <div className={styles["mask-header"]}>
                   <div className={styles["mask-icon"]}>
                     <MaskAvatar mask={m} />
@@ -551,13 +551,13 @@ export function MaskPage() {
                     <IconButton
                       icon={<EyeIcon />}
                       text={Locale.Mask.Item.View}
-                      onClick={() => setEditingMaskId(m.id)}
+                      onClick={() => setEditingMaskId(m?._id)}
                     />
                   ) : (
                     <IconButton
                       icon={<EditIcon />}
                       text={Locale.Mask.Item.Edit}
-                      onClick={() => setEditingMaskId(m.id)}
+                      onClick={() => setEditingMaskId(m?._id)}
                     />
                   )}
                   {!m.builtin && (
@@ -566,7 +566,7 @@ export function MaskPage() {
                       text={Locale.Mask.Item.Delete}
                       onClick={async () => {
                         if (await showConfirm(Locale.Mask.Item.DeleteConfirm)) {
-                          maskStore.delete(m.id);
+                          maskStore.delete(m?._id);
                         }
                       }}
                     />
