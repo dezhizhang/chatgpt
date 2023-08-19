@@ -1,6 +1,15 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/store/access.ts
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-19 17:10:05
+ */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { DEFAULT_API_HOST, DEFAULT_MODELS, StoreKey } from "../constant";
+import { DEFAULT_API_HOST, DEFAULT_MODELS, StoreKey,TOKEN_ERROR_CODE } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 
@@ -84,7 +93,12 @@ export const useAccessStore = create<AccessControlStore>()(
           .then((res) => res.json())
           .then((res) => {
             const data = res?.data;
-            console.log("[Config] got config from server", data);
+            if(res?.code in TOKEN_ERROR_CODE) {
+              window.location.replace(
+                `/#/login`
+              );
+              return;
+            }
             set(() => ({ ...data }));
 
             if (res.disableGPT4) {
