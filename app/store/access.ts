@@ -2,13 +2,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { DEFAULT_API_HOST, DEFAULT_MODELS, StoreKey } from "../constant";
 import { getHeaders } from "../client/api";
-import { BOT_HELLO } from "./chat";
 import { getClientConfig } from "../config/client";
 
 export interface AccessControlStore {
+  balance: number;
+  username: string;
   accessCode: string;
   token: string;
-
+  avatar:string,
   needCode: boolean;
   hideUserApiKey: boolean;
   hideBalanceQuery: boolean;
@@ -35,6 +36,10 @@ export const useAccessStore = create<AccessControlStore>()(
     (set, get) => ({
       token: "",
       accessCode: "",
+      avatar:"",
+      balance:0,
+      createTime:0,
+      username:'',
       needCode: true,
       hideUserApiKey: false,
       hideBalanceQuery: false,
@@ -47,6 +52,8 @@ export const useAccessStore = create<AccessControlStore>()(
 
         return get().needCode;
       },
+     
+      
       updateCode(code: string) {
         set(() => ({ accessCode: code?.trim() }));
       },
@@ -75,9 +82,10 @@ export const useAccessStore = create<AccessControlStore>()(
           },
         })
           .then((res) => res.json())
-          .then((res: DangerConfig) => {
-            console.log("[Config] got config from server", res);
-            set(() => ({ ...res }));
+          .then((res) => {
+            const data = res?.data;
+            console.log("[Config] got config from server", data);
+            set(() => ({ ...data }));
 
             if (res.disableGPT4) {
               DEFAULT_MODELS.forEach(

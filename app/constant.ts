@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 00:23:38
+ * :date last edited: 2023-08-19 12:04:04
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -61,6 +61,9 @@ export enum PageTypeEnum {
 export const MAX_SIDEBAR_WIDTH = 500;
 export const MIN_SIDEBAR_WIDTH = 230;
 export const NARROW_SIDEBAR_WIDTH = 100;
+
+export const PRICE_SCALE = 100000;
+
 
 export const ACCESS_CODE_PREFIX = "ak-";
 

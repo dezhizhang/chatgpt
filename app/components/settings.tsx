@@ -1,7 +1,16 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/settings.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-19 12:13:04
+ */
 import { useState, useEffect, useMemo } from "react";
 
 import styles from "./settings.module.scss";
-
+import { formatPrice } from '../utils/index';
 import ResetIcon from "../icons/reload.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
@@ -365,6 +374,11 @@ export function Settings() {
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
   const showUsage = accessStore.isAuthorized();
+  // const userInfo = accessStore.data;
+  // const userInfo = accessStore.fetch();
+  // console.log(accessStore);
+
+
   useEffect(() => {
     // checks per minutes
     checkUpdate();
@@ -387,6 +401,8 @@ export function Settings() {
 
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
+
+  console.log(accessStore.avatar);
 
   return (
     <ErrorBoundary>
@@ -414,52 +430,28 @@ export function Settings() {
       <div className={styles["settings"]}>
         <List>
           <ListItem title={Locale.Settings.Avatar}>
-            <Popover
-              onClose={() => setShowEmojiPicker(false)}
-              content={
-                <AvatarPicker
-                  onEmojiClick={(avatar: string) => {
-                    updateConfig((config) => (config.avatar = avatar));
-                    setShowEmojiPicker(false);
-                  }}
-                />
-              }
-              open={showEmojiPicker}
+            <div
+              className={styles.avatar}
             >
-              <div
-                className={styles.avatar}
-                onClick={() => setShowEmojiPicker(true)}
-              >
-                <Avatar avatar={config.avatar} />
-              </div>
-            </Popover>
+             <Avatar avatar={config.avatar} />
+            </div>
           </ListItem>
-
-          <ListItem
-            title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
-            subTitle={
-              checkingUpdate
-                ? Locale.Settings.Update.IsChecking
-                : hasNewVersion
-                ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
-                : Locale.Settings.Update.IsLatest
-            }
-          >
-            {checkingUpdate ? (
-              <LoadingIcon />
-            ) : hasNewVersion ? (
-              <Link href={updateUrl} target="_blank" className="link">
-                {Locale.Settings.Update.GoToUpdate}
-              </Link>
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Update.CheckUpdate}
-                onClick={() => checkUpdate(true)}
-              />
-            )}
+          <ListItem title={Locale.Settings.Username}>
+            <div
+              className={styles.avatar}
+            
+            >
+              {accessStore.username}
+            </div>
           </ListItem>
-
+          <ListItem title={Locale.Settings.Balance}>
+            <div
+              className={styles.avatar}
+            
+            >
+              {formatPrice(accessStore.balance)}&nbsp;元
+            </div>
+          </ListItem>
           <ListItem title={Locale.Settings.SendKey}>
             <Select
               value={config.submitKey}
@@ -557,8 +549,8 @@ export function Settings() {
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.dontShowMaskSplashScreen =
-                      !e.currentTarget.checked),
+                  (config.dontShowMaskSplashScreen =
+                    !e.currentTarget.checked),
                 )
               }
             ></input>
@@ -671,9 +663,9 @@ export function Settings() {
                   ? loadingUsage
                     ? Locale.Settings.Usage.IsChecking
                     : Locale.Settings.Usage.SubTitle(
-                        usage?.used ?? "[?]",
-                        usage?.subscription ?? "[?]",
-                      )
+                      usage?.used ?? "[?]",
+                      usage?.subscription ?? "[?]",
+                    )
                   : Locale.Settings.Usage.NoAccess
               }
             >

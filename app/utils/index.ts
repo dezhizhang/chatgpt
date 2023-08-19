@@ -5,10 +5,11 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 19:48:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 23:34:38
+ * :date last edited: 2023-08-19 12:03:32
  */
 import crypto from 'crypto';
 import dayjs from 'dayjs';
+import { PRICE_SCALE } from '../constant';
 
 /**
  * copy text data
@@ -136,3 +137,11 @@ export const delay = (ms: number) =>
       resolve('');
     }, ms);
   });
+
+  /**
+ * 把数据库读取到的price，转化成元
+ */
+export const formatPrice = (val = 0, multiple = 1) => {
+  return Number(((val / PRICE_SCALE) * multiple).toFixed(10));
+};
+

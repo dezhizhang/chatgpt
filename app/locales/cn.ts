@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-15 22:42:50
+ * :date last edited: 2023-08-19 11:48:51
  */
 import { SubmitKey } from "../store/config";
 
@@ -151,6 +151,8 @@ const cn = {
       All: "所有语言",
     },
     Avatar: "头像",
+    Username: '账号',
+    Balance: '余额',
     FontSize: {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
@@ -364,8 +366,8 @@ const cn = {
 
 type DeepPartial<T> = T extends object
   ? {
-      [P in keyof T]?: DeepPartial<T[P]>;
-    }
+    [P in keyof T]?: DeepPartial<T[P]>;
+  }
   : T;
 
 export type LocaleType = typeof cn;
