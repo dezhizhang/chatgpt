@@ -5,9 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 19:48:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 12:39:52
+ * :date last edited: 2023-08-19 14:17:28
  */
 import dayjs from 'dayjs';
+import crypto from 'crypto';
 import { PRICE_SCALE } from '../constant';
 
 /**
@@ -47,7 +48,7 @@ export const useCopyData = () => {
  * 密码加密
  */
 export const createHashPassword = (text: string) => {
-  // const hash = crypto.createHash('sha256').update(text).digest('hex');
+  const hash = crypto.createHash('sha256').update(text).digest('hex');
   return text;
 };
 
