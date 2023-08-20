@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 23:11:26
+ * :date last edited: 2023-08-20 23:17:26
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 

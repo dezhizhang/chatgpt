@@ -5,11 +5,12 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 22:07:03
  * :last editor: 张德志
- * :date last edited: 2023-08-20 22:59:59
+ * :date last edited: 2023-08-20 23:39:13
  */
 
 import React, { useState, useCallback } from "react";
-import QRCode from 'qrcodejs';
+//@ts-ignore
+import QRCode from "qrcodejs2"; 
 import {
   Modal,
   ModalOverlay,
@@ -37,9 +38,6 @@ export function PayModal({ onClose }: { onClose: () => void }) {
     setLoading(true);
     // 获取支付二维码
     const res = await getPayCode(inputVal);
-
-    // // debugger
-    // console.log( QRCode.CorrectLevel);
 
 
     new QRCode(document.getElementById('payQRCode') as HTMLElement, {
