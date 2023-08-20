@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 10:53:13
+ * :date last edited: 2023-08-20 14:23:09
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -25,6 +25,9 @@ export interface AccessControlStore {
   disableGPT4: boolean;
 
   openaiUrl: string;
+  promotion?:{
+    rate:number
+  };
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;

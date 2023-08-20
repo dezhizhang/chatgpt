@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-09 04:46:11
  * :last editor: 张德志
- * :date last edited: 2023-08-20 10:29:39
+ * :date last edited: 2023-08-20 13:58:11
  */
 "use client";
 
@@ -45,6 +45,10 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
 });
 
 const Chat = dynamic(async () => (await import("./chat")).Chat, {
+  loading: () => <Loading noLogo />,
+});
+
+const Number = dynamic(async () => (await import("./number")).Number, {
   loading: () => <Loading noLogo />,
 });
 
@@ -140,6 +144,7 @@ function Screen() {
                 <Route path={Path.NewChat} element={<NewChat />} />
                 <Route path={Path.Masks} element={<MaskPage />} />
                 <Route path={Path.Chat} element={<Chat />} />
+                <Route path={Path.Number} element={<Number/>}/>
                 <Route path={Path.Settings} element={<Settings />} />
               </Routes>
             </div>

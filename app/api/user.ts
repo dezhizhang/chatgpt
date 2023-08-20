@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-16 23:15:25
+ * :date last edited: 2023-08-20 14:24:52
  */
 import { GET, POST, PUT } from './request';
 import { createHashPassword, Obj2Query } from '../utils/index';
@@ -98,6 +98,8 @@ export const readInform = (id: string) => GET(`/user/inform/read`, { id });
 export const getInitData = () => GET<any>('/system/getInitData');
 
 export const getSystemModelList = () => GET<any[]>('/system/getModels');
+
+
 
 export const uploadImg = (base64Img: string) => POST<string>('/system/uploadImage', { base64Img });
 

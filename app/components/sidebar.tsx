@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-11 06:28:40
+ * :date last edited: 2023-08-20 14:02:36
  */
 import { useEffect, useRef } from "react";
 import styles from "./home.module.scss";
@@ -178,7 +178,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <Link to={Path.Auth}>
+            <Link to={Path.Number}>
               <IconButton icon={<GithubIcon />} shadow />
             </Link>
           </div>
