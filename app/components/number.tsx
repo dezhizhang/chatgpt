@@ -5,10 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 23:14:07
+ * :date last edited: 2023-08-20 23:48:29
  */
-import qs from 'qs';
-import React, { useRef, useState, useEffect } from "react";
+import qs from "qs";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   Card,
   Box,
@@ -18,7 +18,8 @@ import {
   useDisclosure,
   ChakraProvider,
 } from "@chakra-ui/react";
-import { TableEnum } from '../constant';
+import { clearCookie } from "../utils/index";
+import { TableEnum } from "../constant";
 import { useNavigate } from "react-router-dom";
 import WithdrawIcon from "../icons/withdraw.svg";
 import { Avatar } from "./emoji";
@@ -32,8 +33,6 @@ import { useCopyData } from "../utils/index";
 import { theme } from "../theme";
 import styles from "./number.module.scss";
 import { Path } from "../constant";
-
-
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -55,38 +54,26 @@ const PayRecord = dynamic(
   },
 );
 
-const Promotion = dynamic(
-  async () => (await import("./promotion")).Promotion,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
+const Promotion = dynamic(async () => (await import("./promotion")).Promotion, {
+  loading: () => <Loading noLogo />,
+});
 
-const Inform = dynamic(
-  async () => (await import("./inform")).Inform,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
+const Inform = dynamic(async () => (await import("./inform")).Inform, {
+  loading: () => <Loading noLogo />,
+});
 
-const PayModal = dynamic(
-  async () => (await import("./pay-modal")).PayModal,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
+const PayModal = dynamic(async () => (await import("./pay-modal")).PayModal, {
+  loading: () => <Loading noLogo />,
+});
 
-const WxConcat = dynamic(
-  async () => (await import("./wxconcat")).WxConcat,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
+const WxConcat = dynamic(async () => (await import("./wxconcat")).WxConcat, {
+  loading: () => <Loading noLogo />,
+});
 
 export function Number() {
   const navigate = useNavigate();
   const hash = location.hash;
-  const urlParse:any= qs.parse(hash?.split('?')?.[1]);
+  const urlParse: any = qs.parse(hash?.split("?")?.[1]);
   const { copyData } = useCopyData();
   const userInfo = useAccessStore();
   const config = useAppConfig();
@@ -95,12 +82,12 @@ export function Number() {
   const {
     isOpen: isOpenPayModal,
     onClose: onClosePayModal,
-    onOpen: onOpenPayModal
+    onOpen: onOpenPayModal,
   } = useDisclosure();
   const {
     isOpen: isOpenWxConcat,
     onClose: onCloseWxConcat,
-    onOpen: onOpenWxConcat
+    onOpen: onOpenWxConcat,
   } = useDisclosure();
 
   const [promotion, setPromotion] = useState<{
@@ -122,12 +109,12 @@ export function Number() {
     {
       label: "佣金",
       id: TableEnum.promotion,
-      Component: <Promotion />
+      Component: <Promotion />,
     },
     {
       label: "通知",
       id: TableEnum.inform,
-      Component: <Inform />
+      Component: <Inform />,
     },
   ]);
 
@@ -135,6 +122,11 @@ export function Number() {
     const res = await getPromotionInitData();
     setPromotion({ ...res });
   };
+
+  const onclickLogOut = useCallback(() => {
+    clearCookie();
+    window.location.replace(`/#${Path.Login}`);
+  }, []);
 
   useEffect(() => {
     fetchgPromotionInitData();
@@ -151,12 +143,7 @@ export function Number() {
               <Box fontSize={"xl"} fontWeight={"bold"}>
                 账号信息
               </Box>
-              <Button
-                variant={"base"}
-                size={"xs"}
-
-              // onClick={onclickLogOut}
-              >
+              <Button variant={"base"} size={"xs"} onClick={onclickLogOut}>
                 退出登录
               </Button>
             </Flex>
@@ -166,7 +153,7 @@ export function Number() {
             </Flex>
             <Flex mt={6} alignItems={"center"}>
               <Box flex={"0 0 50px"}>账号:</Box>
-              <Box>{userInfo?.username || '--'}</Box>
+              <Box>{userInfo?.username || "--"}</Box>
             </Flex>
             <Box mt={6}>
               <Flex alignItems={"center"}>
@@ -178,8 +165,7 @@ export function Number() {
                   size={["xs", "sm"]}
                   w={["70px", "80px"]}
                   ml={5}
-
-                onClick={onOpenPayModal}
+                  onClick={onOpenPayModal}
                 >
                   充值
                 </Button>
@@ -249,7 +235,7 @@ export function Number() {
               navigate(`${Path.Number}?type=${id}`);
             }}
           />
-          <Box minH={"300px"} overflowY={'scroll'} maxH={'300px'}>
+          <Box minH={"300px"} overflowY={"scroll"} maxH={"300px"}>
             {(tableList.current || []).map((item: any) => {
               return item.id === tableType ? item?.Component : null;
             })}

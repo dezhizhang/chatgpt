@@ -5,12 +5,13 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 19:48:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 14:42:05
+ * :date last edited: 2023-08-20 23:45:08
  */
 import dayjs from 'dayjs';
-import {useToast} from '../hooks/useToast'
+import { useToast } from '../hooks/useToast'
 import sha256 from 'crypto-js/sha256';
 import Base64 from 'crypto-js/enc-base64';
+import { loginOut } from '../api/user';
 import { PRICE_SCALE } from '../constant';
 
 /**
@@ -43,6 +44,14 @@ export const useCopyData = () => {
     }
   };
 };
+
+export const clearCookie = () => {
+  try {
+    loginOut();
+  } catch (error) {
+    error;
+  }
+}
 
 
 
@@ -140,9 +149,9 @@ export const delay = (ms: number) =>
     }, ms);
   });
 
-  /**
- * 把数据库读取到的price，转化成元
- */
+/**
+* 把数据库读取到的price，转化成元
+*/
 export const formatPrice = (val = 0, multiple = 1) => {
   return Number(((val / PRICE_SCALE) * multiple).toFixed(10));
 };
