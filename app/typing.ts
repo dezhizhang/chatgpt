@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-17 22:37:48
+ * :date last edited: 2023-08-20 15:29:30
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -91,7 +91,7 @@ export type PagingData<T> = {
     total?: number;
   };
   
-  export type RequestPaging = { pageNum: number; pageSize: number; };
+  export type RequestPaging = { pageNum: number; pageSize: number; dateStart: any, dateEnd:any };
   
   declare global {
     var mongodb:  string | null;

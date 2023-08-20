@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 14:23:09
+ * :date last edited: 2023-08-20 14:44:02
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -14,6 +14,7 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 
 export interface AccessControlStore {
+  _id:string;
   balance: number;
   username: string;
   accessCode: string;
@@ -46,6 +47,7 @@ console.log("[API] default openai url", DEFAULT_OPENAI_URL);
 export const useAccessStore = create<AccessControlStore>()(
   persist(
     (set, get) => ({
+      _id:"",
       token: "",
       accessCode: "",
       avatar:"",

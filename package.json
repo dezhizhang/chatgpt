@@ -35,7 +35,7 @@
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.2.3",
-    "mongodb": "^5.7.0",
+    "date-fns": "^2.30.0",
     "mongoose": "^6.10.0",
     "nanoid": "^4.0.2",
     "next": "^13.4.9",

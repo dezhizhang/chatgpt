@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 13:49:54
+ * :date last edited: 2023-08-20 15:45:01
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -37,6 +37,23 @@ export enum UserAuthTypeEnum {
   register = 'register',
   findPassword = 'findPassword'
 }
+
+export enum BillTypeEnum {
+  chat = 'chat',
+  openapiChat = 'openapiChat',
+  QA = 'QA',
+  vector = 'vector',
+  return = 'return'
+}
+
+export const BillTypeMap: Record<`${BillTypeEnum}`, string> = {
+  [BillTypeEnum.chat]: '对话',
+  [BillTypeEnum.openapiChat]: 'api 对话',
+  [BillTypeEnum.QA]: 'QA拆分',
+  [BillTypeEnum.vector]: '索引生成',
+  [BillTypeEnum.return]: '退款'
+};
+
 
 export enum FileName {
   Masks = "masks.json",

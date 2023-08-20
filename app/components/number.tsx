@@ -5,9 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 14:34:38
+ * :date last edited: 2023-08-20 15:09:23
  */
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Card,
   Box,
@@ -20,20 +20,80 @@ import {
 } from "@chakra-ui/react";
 import WithdrawIcon from "../icons/withdraw.svg";
 import { Avatar } from "./emoji";
+import { Tabs } from './tabs';
+import BotIcon from "../icons/bot.svg";
+import LoadingIcon from "../icons/three-dots.svg";
+import dynamic from "next/dynamic";
 import { useAccessStore, useAppConfig } from "../store";
 import { getPromotionInitData } from "../api/user";
+import { useCopyData } from "../utils/index";
 import { theme } from "../theme";
+import styles from './number.module.scss';
 import { useForm } from "react-hook-form";
 
+enum TableEnum {
+  'bill' = 'bill',
+  'pay' = 'pay',
+  'promotion' = 'promotion',
+  'inform' = 'inform'
+}
+
+export function Loading(props: { noLogo?: boolean }) {
+  return (
+    <div className={styles["loading-content"] + " no-dark"}>
+      {!props.noLogo && <BotIcon />}
+      <LoadingIcon />
+    </div>
+  );
+}
+
+
+
+const Bill = dynamic(async () => (await import("./bill")).Bill, {
+  loading: () => <Loading noLogo />,
+});
+
+
 export function Number() {
+  const { copyData } = useCopyData();
   const userInfo = useAccessStore();
   const config = useAppConfig();
+  const [tableType, setTableType] = useState<string>(TableEnum.bill);
+
+  const {
+    isOpen: isOpenWxConcat,
+    onClose: onCloseWxConcat,
+    onOpen: onOpenWxConcat,
+  } = useDisclosure();
 
   const [promotion, setPromotion] = useState<{
     historyAmount: number;
     invitedAmount: number;
     residueAmount: number;
   }>();
+  const tableList = useRef<any>([
+    {
+      label: '账单',
+      id: TableEnum.bill,
+       Component: <Bill />
+    },
+    {
+      label: '充值',
+      id: TableEnum.pay,
+      // Component:
+      // <PayRecordTable /> 
+    },
+    {
+      label: '佣金',
+      id: TableEnum.promotion,
+      //  Component: <PromotionTable />
+    },
+    {
+      label: '通知',
+      id: TableEnum.inform,
+      //  Component: <InformTable /> 
+    }
+  ]);
 
   const fetchgPromotionInitData = async () => {
     const res = await getPromotionInitData();
@@ -44,7 +104,7 @@ export function Number() {
     fetchgPromotionInitData();
   }, []);
 
-  const {historyAmount,invitedAmount,residueAmount} = promotion || {};
+  const { historyAmount, invitedAmount, residueAmount } = promotion || {};
 
   return (
     <ChakraProvider theme={theme}>
@@ -59,7 +119,7 @@ export function Number() {
                 variant={"base"}
                 size={"xs"}
 
-                // onClick={onclickLogOut}
+              // onClick={onclickLogOut}
               >
                 退出登录
               </Button>
@@ -83,7 +143,7 @@ export function Number() {
                   w={["70px", "80px"]}
                   ml={5}
 
-                  // onClick={onOpenPayModal}
+                // onClick={onOpenPayModal}
                 >
                   充值
                 </Button>
@@ -130,35 +190,38 @@ export function Number() {
               复制邀请链接
             </Button>
             <Button
-            mt={4}
-            leftIcon={<WithdrawIcon style={{fontSize:'22px'}}/>}
-            px={4}
-            title={(residueAmount as number) < 50 ? '最低提现额度为50元' : ''}
-            isDisabled={(residueAmount as number) < 50}
-            variant={'base'}
-            colorScheme={'myBlue'}
-            // onClick={onOpenWxConcat}
+              mt={4}
+              leftIcon={<WithdrawIcon style={{ fontSize: "22px" }} />}
+              px={4}
+              title={(residueAmount as number) < 50 ? "最低提现额度为50元" : ""}
+              isDisabled={(residueAmount as number) < 50}
+              variant={"base"}
+              colorScheme={"myBlue"}
+              onClick={onOpenWxConcat}
             >
-              {(residueAmount as number) < 50 ? '50元起提' : '提现'}
+              {(residueAmount as number) < 50 ? "50元起提" : "提现"}
             </Button>
           </Card>
         </Grid>
 
         <Card mt={4} px={[3, 6]} py={4}>
-          {/* <Tabs
-                m={'auto'}
-                w={'200px'}
-                list={tableList.current}
-                activeId={tableType}
-                size={'sm'}
-                onChange={(id: any) => router.replace(`/number?type=${id}`)}
-            /> */}
+          <Tabs
+            m={'auto'}
+            w={'200px'}
+            // list={tableList.current}
+            activeId={tableType}
+            size={'sm'} list={tableList.current as any}
+            onChange={function (id: string): void {
+              throw new Error("Function not implemented.");
+            }}                // onChange={(id: any) => router.replace(`/number?type=${id}`)}
+          />
           <Box minH={"300px"}>
-            {/* {(() => {
-                    const item = tableList.current.find((item) => item.id === tableType);
+            {
+              (tableList.current || []).map((item: any) => {
+                return item.id === tableType ? item?.Component : null
+              })
+            }
 
-                    return item ? item.Component : null;
-                })()} */}
           </Box>
         </Card>
 

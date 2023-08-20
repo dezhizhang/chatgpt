@@ -5,9 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 19:48:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 16:54:31
+ * :date last edited: 2023-08-20 14:42:05
  */
 import dayjs from 'dayjs';
+import {useToast} from '../hooks/useToast'
 import sha256 from 'crypto-js/sha256';
 import Base64 from 'crypto-js/enc-base64';
 import { PRICE_SCALE } from '../constant';
@@ -16,8 +17,7 @@ import { PRICE_SCALE } from '../constant';
  * copy text data
  */
 export const useCopyData = () => {
-//   const { toast } = useToast();
-
+  const { toast } = useToast();
   return {
     copyData: async (data: string, title: string = '复制成功') => {
       try {
@@ -35,14 +35,15 @@ export const useCopyData = () => {
         document.body.removeChild(textarea);
       }
 
-    //   toast({
-    //     title,
-    //     status: 'success',
-    //     duration: 1000
-    //   });
+      toast({
+        title,
+        status: 'success',
+        duration: 1000
+      });
     }
   };
 };
+
 
 
 /**
