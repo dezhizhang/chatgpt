@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 20:58:23
+ * :date last edited: 2023-08-20 22:07:50
  */
 import qs from 'qs';
 import React, { useRef, useState, useEffect } from "react";
@@ -14,7 +14,6 @@ import {
   Box,
   Flex,
   Button,
-  Input,
   Grid,
   useDisclosure,
   ChakraProvider,
@@ -32,7 +31,6 @@ import { getPromotionInitData } from "../api/user";
 import { useCopyData } from "../utils/index";
 import { theme } from "../theme";
 import styles from "./number.module.scss";
-import { useForm } from "react-hook-form";
 import { Path } from "../constant";
 
 
@@ -71,6 +69,15 @@ const Inform = dynamic(
   },
 );
 
+
+
+const PayModal = dynamic(
+  async () => (await import("./pay-modal")).PayModal,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 export function Number() {
   const navigate = useNavigate();
   const hash = location.hash;
@@ -81,9 +88,14 @@ export function Number() {
   const [tableType, setTableType] = useState<string>(urlParse.type);
 
   const {
+    isOpen: isOpenPayModal,
+    onClose: onClosePayModal,
+    onOpen: onOpenPayModal
+  } = useDisclosure();
+  const {
     isOpen: isOpenWxConcat,
     onClose: onCloseWxConcat,
-    onOpen: onOpenWxConcat,
+    onOpen: onOpenWxConcat
   } = useDisclosure();
 
   const [promotion, setPromotion] = useState<{
@@ -162,14 +174,11 @@ export function Number() {
                   w={["70px", "80px"]}
                   ml={5}
 
-                // onClick={onOpenPayModal}
+                onClick={onOpenPayModal}
                 >
                   充值
                 </Button>
               </Flex>
-              {/* <Box fontSize={"xs"} color={"blackAlpha.500"}>
-                如果填写了自己的 openai 账号，网页上 openai 模型对话不会计费。
-              </Box> */}
             </Box>
           </Card>
           <Card px={6} py={4}>
@@ -242,8 +251,8 @@ export function Number() {
           </Box>
         </Card>
 
-        {/* {isOpenPayModal && <PayModal onClose={onClosePayModal} />}
-        {isOpenWxConcat && <WxConcat onClose={onCloseWxConcat} />} */}
+        {isOpenPayModal && <PayModal onClose={onClosePayModal} />}
+        {/* {isOpenWxConcat && <WxConcat onClose={onCloseWxConcat} />} */}
       </Box>
     </ChakraProvider>
   );
