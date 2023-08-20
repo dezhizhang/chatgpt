@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 20:49:30
+ * :date last edited: 2023-08-20 20:58:23
  */
 import qs from 'qs';
 import React, { useRef, useState, useEffect } from "react";
@@ -167,9 +167,9 @@ export function Number() {
                   充值
                 </Button>
               </Flex>
-              <Box fontSize={"xs"} color={"blackAlpha.500"}>
+              {/* <Box fontSize={"xs"} color={"blackAlpha.500"}>
                 如果填写了自己的 openai 账号，网页上 openai 模型对话不会计费。
-              </Box>
+              </Box> */}
             </Box>
           </Card>
           <Card px={6} py={4}>
@@ -243,8 +243,7 @@ export function Number() {
         </Card>
 
         {/* {isOpenPayModal && <PayModal onClose={onClosePayModal} />}
-        {isOpenWxConcat && <WxConcat onClose={onCloseWxConcat} />}
-        <File onSelect={onSelectFile} /> */}
+        {isOpenWxConcat && <WxConcat onClose={onCloseWxConcat} />} */}
       </Box>
     </ChakraProvider>
   );
