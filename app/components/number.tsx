@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 16:50:01
+ * :date last edited: 2023-08-20 17:11:51
  */
 import React, { useRef, useState, useEffect } from "react";
 import {
@@ -240,7 +240,7 @@ export function Number() {
               navigate(`${Path.Number}?type=${id}`);
             }}
           />
-          <Box minH={"300px"}>
+          <Box minH={"300px"} overflowY={'scroll'} maxH={'300px'}>
             {(tableList.current || []).map((item: any) => {
               return item.id === tableType ? item?.Component : null;
             })}
