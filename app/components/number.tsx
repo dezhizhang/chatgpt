@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 15:09:23
+ * :date last edited: 2023-08-20 15:58:34
  */
 import React, { useRef, useState, useEffect } from "react";
 import {
@@ -18,9 +18,10 @@ import {
   useDisclosure,
   ChakraProvider,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import WithdrawIcon from "../icons/withdraw.svg";
 import { Avatar } from "./emoji";
-import { Tabs } from './tabs';
+import { Tabs } from "./tabs";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import dynamic from "next/dynamic";
@@ -28,14 +29,15 @@ import { useAccessStore, useAppConfig } from "../store";
 import { getPromotionInitData } from "../api/user";
 import { useCopyData } from "../utils/index";
 import { theme } from "../theme";
-import styles from './number.module.scss';
+import styles from "./number.module.scss";
 import { useForm } from "react-hook-form";
+import { Path } from "../constant";
 
 enum TableEnum {
-  'bill' = 'bill',
-  'pay' = 'pay',
-  'promotion' = 'promotion',
-  'inform' = 'inform'
+  "bill" = "bill",
+  "pay" = "pay",
+  "promotion" = "promotion",
+  "inform" = "inform",
 }
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -47,14 +49,20 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
-
-
 const Bill = dynamic(async () => (await import("./bill")).Bill, {
   loading: () => <Loading noLogo />,
 });
 
+const PayRecord = dynamic(
+  async () => (await import("./pay-record")).PayRecord,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 
 export function Number() {
+  const navigate = useNavigate();
+  console.log(navigate);
   const { copyData } = useCopyData();
   const userInfo = useAccessStore();
   const config = useAppConfig();
@@ -73,26 +81,25 @@ export function Number() {
   }>();
   const tableList = useRef<any>([
     {
-      label: '账单',
+      label: "账单",
       id: TableEnum.bill,
-       Component: <Bill />
+      Component: <Bill />,
     },
     {
-      label: '充值',
+      label: "充值",
       id: TableEnum.pay,
-      // Component:
-      // <PayRecordTable /> 
+      Component: <PayRecord />,
     },
     {
-      label: '佣金',
+      label: "佣金",
       id: TableEnum.promotion,
       //  Component: <PromotionTable />
     },
     {
-      label: '通知',
+      label: "通知",
       id: TableEnum.inform,
-      //  Component: <InformTable /> 
-    }
+      //  Component: <InformTable />
+    },
   ]);
 
   const fetchgPromotionInitData = async () => {
@@ -119,7 +126,7 @@ export function Number() {
                 variant={"base"}
                 size={"xs"}
 
-              // onClick={onclickLogOut}
+                // onClick={onclickLogOut}
               >
                 退出登录
               </Button>
@@ -143,7 +150,7 @@ export function Number() {
                   w={["70px", "80px"]}
                   ml={5}
 
-                // onClick={onOpenPayModal}
+                  // onClick={onOpenPayModal}
                 >
                   充值
                 </Button>
@@ -206,22 +213,20 @@ export function Number() {
 
         <Card mt={4} px={[3, 6]} py={4}>
           <Tabs
-            m={'auto'}
-            w={'200px'}
-            // list={tableList.current}
+            m={"auto"}
+            w={"200px"}
             activeId={tableType}
-            size={'sm'} list={tableList.current as any}
-            onChange={function (id: string): void {
-              throw new Error("Function not implemented.");
-            }}                // onChange={(id: any) => router.replace(`/number?type=${id}`)}
+            size={"sm"}
+            list={tableList.current as any}
+            onChange={(id: string) => {
+              setTableType(id);
+              navigate(`${Path.Number}?type=${id}`);
+            }}
           />
           <Box minH={"300px"}>
-            {
-              (tableList.current || []).map((item: any) => {
-                return item.id === tableType ? item?.Component : null
-              })
-            }
-
+            {(tableList.current || []).map((item: any) => {
+              return item.id === tableType ? item?.Component : null;
+            })}
           </Box>
         </Card>
 

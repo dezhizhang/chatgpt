@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 15:29:30
+ * :date last edited: 2023-08-20 16:08:49
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -121,6 +121,16 @@ export interface UserUpdateParams {
     avatar?: string;
     openaiKey?: string;
 }
+
+export interface UserPayType {
+  _id: string;
+  userId: string;
+  createTime: Date;
+  price: number;
+  orderId: string;
+  status: 'SUCCESS' | 'REFUND' | 'NOTPAY' | 'CLOSED';
+}
+
 
 export interface UserBillType {
     id: string;
