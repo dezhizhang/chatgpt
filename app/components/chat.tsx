@@ -4,7 +4,6 @@ import React, {
   useRef,
   useEffect,
   useMemo,
-  useCallback,
   Fragment,
 } from "react";
 
@@ -168,9 +167,9 @@ function PromptToast(props: {
           onClick={() => props.setShowModal(true)}
         >
           <BrainIcon />
-          <span className={styles["prompt-toast-content"]}>
+          {/* <span className={styles["prompt-toast-content"]}>
             {Locale.Context.Toast(context?.length)}
-          </span>
+          </span> */}
         </div>
       )}
       {props.showModal && (
@@ -417,21 +416,24 @@ export function ChatActions(props: {
     config.update((config) => (config.theme = nextTheme));
   }
 
+  console.log('config', config);
+
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
 
   // switch model
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const models = useMemo(
-    () =>
-      config
-        .allModels()
-        .filter((m) => m.available)
-        .map((m) => m.name),
-    [config],
-  );
-  const [showModelSelector, setShowModelSelector] = useState(false);
+  // const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  // const models = useMemo(
+  //   () =>
+  //     config
+  //       .allModels()
+  //       .filter((m) => m.available)
+  //       .map((m) => m.name),
+  //   [config],
+  // );
+
+  // const [showModelSelector, setShowModelSelector] = useState(false);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -441,7 +443,7 @@ export function ChatActions(props: {
           text={Locale.Chat.InputActions.Stop}
           icon={<StopIcon />}
         />
-      )}
+      )} 
       {!props.hitBottom && (
         <ChatAction
           onClick={props.scrollToBottom}
@@ -449,13 +451,13 @@ export function ChatActions(props: {
           icon={<BottomIcon />}
         />
       )}
-      {props.hitBottom && (
+      {/* {props.hitBottom && (
         <ChatAction
           onClick={props.showPromptModal}
           text={Locale.Chat.InputActions.Settings}
           icon={<SettingsIcon />}
         />
-      )}
+      )} */}
 
       <ChatAction
         onClick={nextTheme}
@@ -471,7 +473,7 @@ export function ChatActions(props: {
             ) : null}
           </>
         }
-      />
+      /> 
 
       <ChatAction
         onClick={props.showPromptHints}
@@ -479,13 +481,13 @@ export function ChatActions(props: {
         icon={<PromptIcon />}
       />
 
-      <ChatAction
+      {/* <ChatAction
         onClick={() => {
           navigate(Path.Masks);
         }}
         text={Locale.Chat.InputActions.Masks}
         icon={<MaskIcon />}
-      />
+      /> */}
 
       <ChatAction
         text={Locale.Chat.InputActions.Clear}
@@ -502,13 +504,13 @@ export function ChatActions(props: {
         }}
       />
 
-      <ChatAction
+      {/* <ChatAction
         onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
-      />
+      /> */}
 
-      {showModelSelector && (
+      {/* {showModelSelector && (
         <Selector
           defaultSelectedValue={currentModel}
           items={models.map((m) => ({
@@ -525,7 +527,7 @@ export function ChatActions(props: {
             showToast(s[0]);
           }}
         />
-      )}
+      )} */}
     </div>
   );
 }
@@ -827,7 +829,7 @@ function _Chat() {
   const context: RenderMessage[] = useMemo(() => {
     return session.mask.hideContext ? [] : (session.mask?.context || [])?.slice();
   }, [session.mask.context, session.mask.hideContext]);
- 
+
   const renderMessages = useMemo(() => {
     return (context || [])
       .concat(session.messages as RenderMessage[])

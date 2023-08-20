@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-09 04:46:11
  * :last editor: 张德志
- * :date last edited: 2023-08-19 14:05:18
+ * :date last edited: 2023-08-20 10:29:39
  */
 "use client";
 
@@ -18,7 +18,6 @@ import { getCSSVar, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
-import { getLang } from "../locales";
 import {
   HashRouter as Router,
   Routes,
