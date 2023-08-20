@@ -5,12 +5,12 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 16:20:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 16:44:16
+ * :date last edited: 2023-08-20 20:50:50
  */
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import type { UserromotionType } from "../typing";
-import { getPromotionRecords } from '../api/user';
+import { getPromotionRecords } from "../api/user";
 import { PromotionTypeMap } from "../constant";
 import {
   Flex,
@@ -32,12 +32,12 @@ export function Promotion() {
       pageNum: 1,
       pageSize: 10,
     });
-    const { data } = res || {}
+    const { data } = res || {};
     setPromotions(data);
-  }
+  };
   useEffect(() => {
     fetchPromotionRecords();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -51,24 +51,33 @@ export function Promotion() {
             </Tr>
           </Thead>
           <Tbody fontSize={"sm"}>
-            {(promotions || []).map((item) => (
-              <Tr key={item._id}>
-                <Td>
-                  {item.createTime
-                    ? dayjs(item.createTime).format("YYYY/MM/DD HH:mm:ss")
-                    : "-"}
-                </Td>
-                <Td>{(PromotionTypeMap as any)[item.type]}</Td>
-                <Td>{item.amount}</Td>
-              </Tr>
-            ))}
+            {promotions?.length > 0 ? (
+              <>
+                {(promotions || []).map((item) => (
+                  <Tr key={item._id}>
+                    <Td>
+                      {item.createTime
+                        ? dayjs(item.createTime).format("YYYY/MM/DD HH:mm:ss")
+                        : "-"}
+                    </Td>
+                    <Td>{(PromotionTypeMap as any)[item.type]}</Td>
+                    <Td>{item.amount}</Td>
+                  </Tr>
+                ))}
+              </>
+            ) : null}
           </Tbody>
         </Table>
       </TableContainer>
 
-      {promotions.length === 0 && (
+      {promotions?.length === 0 && (
         <Flex flexDirection={"column"} alignItems={"center"}>
-          <Icon as={require('../icons/empty.svg').default} w={'48px'} h={'48px'} color={'transparent'} />
+          <Icon
+            as={require("../icons/empty.svg").default}
+            w={"48px"}
+            h={"48px"}
+            color={"transparent"}
+          />
           <Box mt={2} color={"myGray.500"}>
             无佣金记录~
           </Box>

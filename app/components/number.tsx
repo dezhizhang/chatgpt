@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 17:26:38
+ * :date last edited: 2023-08-20 20:49:30
  */
 import qs from 'qs';
 import React, { useRef, useState, useEffect } from "react";
@@ -149,7 +149,7 @@ export function Number() {
             </Flex>
             <Flex mt={6} alignItems={"center"}>
               <Box flex={"0 0 50px"}>账号:</Box>
-              <Box>{userInfo?.username}</Box>
+              <Box>{userInfo?.username || '--'}</Box>
             </Flex>
             <Box mt={6}>
               <Flex alignItems={"center"}>
@@ -181,9 +181,9 @@ export function Number() {
                 label: "佣金比例",
                 value: `${userInfo?.promotion?.rate || 15}%`,
               },
-              { label: "已注册用户数", value: `${invitedAmount}人` },
-              { label: "累计佣金", value: `￥${historyAmount}` },
-              { label: "可用佣金", value: `￥${residueAmount}` },
+              { label: "已注册用户数", value: `${invitedAmount || 0}人` },
+              { label: "累计佣金", value: `￥${historyAmount || 0}` },
+              { label: "可用佣金", value: `￥${residueAmount || 0}` },
             ].map((item) => (
               <Flex
                 key={item.label}

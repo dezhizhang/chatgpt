@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 15:56:35
  * :last editor: 张德志
- * :date last edited: 2023-08-20 16:14:17
+ * :date last edited: 2023-08-20 20:48:40
  */
 import React, { useState, useCallback, useEffect } from "react";
 import {
@@ -21,7 +21,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { useToast } from '../hooks/useToast';
+import { useToast } from "../hooks/useToast";
 import { formatPrice } from "../utils/index";
 import { UserPayType } from "../typing";
 import { getPayOrders, checkPayResult } from "../api/user";
@@ -34,7 +34,7 @@ export function PayRecord() {
     const data = await checkPayResult(payId);
     toast({
       title: data,
-      status: 'info'
+      status: "info",
     });
     const res = await getPayOrders();
     setPayOrders(res);
@@ -42,7 +42,7 @@ export function PayRecord() {
 
   const fetchPayOrders = async () => {
     const res = await getPayOrders();
-    setPayOrders(res);
+    setPayOrders(res || []);
   };
 
   useEffect(() => {
@@ -62,28 +62,32 @@ export function PayRecord() {
             </Tr>
           </Thead>
           <Tbody fontSize={"sm"}>
-            {payOrders.map((item) => (
-              <Tr key={item._id}>
-                <Td>{item.orderId}</Td>
-                <Td>
-                  {item.createTime
-                    ? dayjs(item.createTime).format("YYYY/MM/DD HH:mm:ss")
-                    : "-"}
-                </Td>
-                <Td>{formatPrice(item.price)}元</Td>
-                <Td>{item.status}</Td>
-                <Td>
-                  {item.status === "NOTPAY" && (
-                    <Button
-                      onClick={() => handleRefreshPayOrder(item._id)}
-                      size={"sm"}
-                    >
-                      更新
-                    </Button>
-                  )}
-                </Td>
-              </Tr>
-            ))}
+            {payOrders.length > 0 ? (
+              <>
+                {(payOrders || []).map((item) => (
+                  <Tr key={item._id}>
+                    <Td>{item.orderId}</Td>
+                    <Td>
+                      {item.createTime
+                        ? dayjs(item.createTime).format("YYYY/MM/DD HH:mm:ss")
+                        : "-"}
+                    </Td>
+                    <Td>{formatPrice(item.price)}元</Td>
+                    <Td>{item.status}</Td>
+                    <Td>
+                      {item.status === "NOTPAY" && (
+                        <Button
+                          onClick={() => handleRefreshPayOrder(item._id)}
+                          size={"sm"}
+                        >
+                          更新
+                        </Button>
+                      )}
+                    </Td>
+                  </Tr>
+                ))}
+              </>
+            ) : null}
           </Tbody>
         </Table>
       </TableContainer>
