@@ -88,7 +88,7 @@ export function ForgetPasswordForm({ setPageType }: ForgetProps) {
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
-        找回晓智GPT账号
+        找回千知GPT账号
       </Box>
       <form onSubmit={handleSubmit(onclickFindPassword)}>
         <FormControl mt={5} isInvalid={!!errors.username}>

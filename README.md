@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 
-<h1 align="center">晓智gpt</h1>
+<h1 align="center">千知GPT</h1>
 
 English / [简体中文](./README_CN.md)
 

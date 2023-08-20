@@ -122,7 +122,7 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          晓智gpt
+          千知GPT
         </div>
         <div className={styles["sidebar-sub-title"]}>
           构建属于你的人工智能助手

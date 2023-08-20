@@ -90,7 +90,7 @@ export function RegisterForm({ setPageType }: RegisterProps) {
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
-        注册晓智GPT账号
+        注册千知GPT账号
       </Box>
       <form onSubmit={handleSubmit(onclickRegister)}>
         <FormControl mt={5} isInvalid={!!errors.username}>

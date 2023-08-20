@@ -74,7 +74,7 @@ export function LoginForm({ setPageType }: LoginProps) {
   return (
     <>
       <Box fontWeight={"bold"} fontSize={"2xl"} textAlign={"center"}>
-        登录晓智GPT
+        登录千知GPT
       </Box>
       <form onSubmit={handleSubmit(onclickLogin)}>
         <FormControl mt={8} isInvalid={!!errors.username}>
