@@ -5,12 +5,12 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-20 16:40:54
+ * :date last edited: 2023-08-20 17:00:16
  */
 import { GET, POST, PUT } from './request';
 import { createHashPassword, Obj2Query } from '../utils/index';
 import { UserAuthTypeEnum } from '../constant';
-import { UserBillType, UserUpdateParams,PagingData, RequestPaging,UserromotionType } from '../typing';
+import { UserBillType, UserUpdateParams,PagingData, RequestPaging,UserromotionType,UserinformType } from '../typing';
 
 export const sendAuthCode = (data: {
   username: string;
@@ -20,7 +20,6 @@ export const sendAuthCode = (data: {
 
 export const getTokenLogin = () => GET<any>('/user/tokenLogin');
 
-/* get promotion init data */
 export const getPromotionInitData = () =>
   GET<{
     invitedAmount: number;
@@ -84,12 +83,11 @@ export const getPayCode = (amount: number) =>
 
 export const checkPayResult = (payId: string) => GET<number>(`/user/checkPayResult?payId=${payId}`);
 
-/* promotion records */
 export const getPromotionRecords = (data: RequestPaging) =>
   GET<PagingData<UserromotionType>>(`/user/promotion/getPromotions?${Obj2Query(data)}`);
 
-// export const getInforms = (data: RequestPaging) =>
-//   POST<PagingData<informSchema>>(`/user/inform/list`, data);
+export const getInforms = (data: RequestPaging) =>
+  POST<PagingData<UserinformType>>(`/user/inform/list`, data);
 
 export const getUnreadCount = () => GET<number>(`/user/inform/countUnread`);
 export const readInform = (id: string) => GET(`/user/inform/read`, { id });

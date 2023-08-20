@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 16:21:29
+ * :date last edited: 2023-08-20 16:50:01
  */
 import React, { useRef, useState, useEffect } from "react";
 import {
@@ -67,6 +67,15 @@ const Promotion = dynamic(
   },
 );
 
+const Inform = dynamic(
+  async () => (await import("./inform")).Inform,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+
+
 
 export function Number() {
   const navigate = useNavigate();
@@ -106,7 +115,7 @@ export function Number() {
     {
       label: "通知",
       id: TableEnum.inform,
-      //  Component: <InformTable />
+       Component: <Inform />
     },
   ]);
 
