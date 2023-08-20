@@ -5,13 +5,13 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 14:02:36
+ * :date last edited: 2023-08-20 17:31:13
  */
 import { useEffect, useRef } from "react";
 import styles from "./home.module.scss";
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
+import UserIcon from "../icons/user.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
@@ -26,6 +26,7 @@ import {
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
   Path,
+  TableEnum,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -178,8 +179,8 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <Link to={Path.Number}>
-              <IconButton icon={<GithubIcon />} shadow />
+            <Link to={`${Path.Number}?type=${TableEnum.bill}`}>
+              <IconButton icon={<UserIcon />} shadow />
             </Link>
           </div>
         </div>

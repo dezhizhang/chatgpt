@@ -5,8 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 17:11:51
+ * :date last edited: 2023-08-20 17:26:38
  */
+import qs from 'qs';
 import React, { useRef, useState, useEffect } from "react";
 import {
   Card,
@@ -18,6 +19,7 @@ import {
   useDisclosure,
   ChakraProvider,
 } from "@chakra-ui/react";
+import { TableEnum } from '../constant';
 import { useNavigate } from "react-router-dom";
 import WithdrawIcon from "../icons/withdraw.svg";
 import { Avatar } from "./emoji";
@@ -33,12 +35,7 @@ import styles from "./number.module.scss";
 import { useForm } from "react-hook-form";
 import { Path } from "../constant";
 
-enum TableEnum {
-  "bill" = "bill",
-  "pay" = "pay",
-  "promotion" = "promotion",
-  "inform" = "inform",
-}
+
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -74,16 +71,14 @@ const Inform = dynamic(
   },
 );
 
-
-
-
 export function Number() {
   const navigate = useNavigate();
-  console.log(navigate);
+  const hash = location.hash;
+  const urlParse:any= qs.parse(hash?.split('?')?.[1]);
   const { copyData } = useCopyData();
   const userInfo = useAccessStore();
   const config = useAppConfig();
-  const [tableType, setTableType] = useState<string>(TableEnum.bill);
+  const [tableType, setTableType] = useState<string>(urlParse.type);
 
   const {
     isOpen: isOpenWxConcat,
@@ -115,7 +110,7 @@ export function Number() {
     {
       label: "通知",
       id: TableEnum.inform,
-       Component: <Inform />
+      Component: <Inform />
     },
   ]);
 

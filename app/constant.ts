@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 16:56:55
+ * :date last edited: 2023-08-20 17:26:14
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -36,6 +36,13 @@ export enum SlotID {
 export enum UserAuthTypeEnum {
   register = 'register',
   findPassword = 'findPassword'
+}
+
+export enum TableEnum {
+  "bill" = "bill",
+  "pay" = "pay",
+  "promotion" = "promotion",
+  "inform" = "inform",
 }
 
 export enum BillTypeEnum {
