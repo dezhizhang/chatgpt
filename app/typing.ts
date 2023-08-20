@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 17:00:25
+ * :date last edited: 2023-08-20 21:58:42
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -64,7 +64,7 @@ export interface ChatCompletionsParams {
 }
 
 export interface UserBillType {
-    id: string;
+    _id: string;
     time: Date;
     modelName: string;
     type: string;

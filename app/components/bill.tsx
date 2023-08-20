@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 15:05:53
  * :last editor: 张德志
- * :date last edited: 2023-08-20 20:52:03
+ * :date last edited: 2023-08-20 21:58:20
  */
 
 import React, { useState, useEffect } from "react";
@@ -79,7 +79,7 @@ export function Bill() {
             {bills?.length > 0 ? (
               <>
                 {(bills || []).map((item) => (
-                  <Tr key={item.id}>
+                  <Tr key={item._id}>
                     <Td>{dayjs(item.time).format("YYYY/MM/DD HH:mm:ss")}</Td>
                     <Td>{(BillTypeMap as any)[item?.type as string] || "-"}</Td>
                     <Td>{item.modelName}</Td>
