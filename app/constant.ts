@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 15:45:01
+ * :date last edited: 2023-08-20 16:27:43
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -52,6 +52,18 @@ export const BillTypeMap: Record<`${BillTypeEnum}`, string> = {
   [BillTypeEnum.QA]: 'QA拆分',
   [BillTypeEnum.vector]: '索引生成',
   [BillTypeEnum.return]: '退款'
+};
+
+export enum PromotionEnum {
+  invite = 'invite',
+  shareModel = 'shareModel',
+  withdraw = 'withdraw'
+}
+
+export const PromotionTypeMap = {
+  [PromotionEnum.invite]: '好友充值',
+  [PromotionEnum.shareModel]: '应用分享',
+  [PromotionEnum.withdraw]: '提现'
 };
 
 

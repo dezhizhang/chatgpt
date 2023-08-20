@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 15:58:34
+ * :date last edited: 2023-08-20 16:21:29
  */
 import React, { useRef, useState, useEffect } from "react";
 import {
@@ -60,6 +60,14 @@ const PayRecord = dynamic(
   },
 );
 
+const Promotion = dynamic(
+  async () => (await import("./promotion")).Promotion,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+
 export function Number() {
   const navigate = useNavigate();
   console.log(navigate);
@@ -93,7 +101,7 @@ export function Number() {
     {
       label: "佣金",
       id: TableEnum.promotion,
-      //  Component: <PromotionTable />
+      Component: <Promotion />
     },
     {
       label: "通知",
@@ -126,7 +134,7 @@ export function Number() {
                 variant={"base"}
                 size={"xs"}
 
-                // onClick={onclickLogOut}
+              // onClick={onclickLogOut}
               >
                 退出登录
               </Button>
@@ -150,7 +158,7 @@ export function Number() {
                   w={["70px", "80px"]}
                   ml={5}
 
-                  // onClick={onOpenPayModal}
+                // onClick={onOpenPayModal}
                 >
                   充值
                 </Button>

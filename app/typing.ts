@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 16:08:49
+ * :date last edited: 2023-08-20 16:38:58
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -91,7 +91,7 @@ export type PagingData<T> = {
     total?: number;
   };
   
-  export type RequestPaging = { pageNum: number; pageSize: number; dateStart: any, dateEnd:any };
+  export type RequestPaging = { pageNum: number; pageSize: number; dateStart?: any, dateEnd?:any };
   
   declare global {
     var mongodb:  string | null;
@@ -130,6 +130,15 @@ export interface UserPayType {
   orderId: string;
   status: 'SUCCESS' | 'REFUND' | 'NOTPAY' | 'CLOSED';
 }
+
+
+export interface UserromotionType {
+  _id: string;
+  type:string;
+  createTime:string;
+  amount: number;
+}
+
 
 
 export interface UserBillType {
