@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 13:55:36
  * :last editor: 张德志
- * :date last edited: 2023-08-20 22:07:50
+ * :date last edited: 2023-08-20 23:14:07
  */
 import qs from 'qs';
 import React, { useRef, useState, useEffect } from "react";
@@ -69,10 +69,15 @@ const Inform = dynamic(
   },
 );
 
-
-
 const PayModal = dynamic(
   async () => (await import("./pay-modal")).PayModal,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+const WxConcat = dynamic(
+  async () => (await import("./wxconcat")).WxConcat,
   {
     loading: () => <Loading noLogo />,
   },
@@ -252,7 +257,7 @@ export function Number() {
         </Card>
 
         {isOpenPayModal && <PayModal onClose={onClosePayModal} />}
-        {/* {isOpenWxConcat && <WxConcat onClose={onCloseWxConcat} />} */}
+        {isOpenWxConcat && <WxConcat onClose={onCloseWxConcat} />}
       </Box>
     </ChakraProvider>
   );
