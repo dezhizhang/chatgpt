@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 21:55:51
  * :last editor: 张德志
- * :date last edited: 2023-08-21 22:46:58
+ * :date last edited: 2023-08-21 22:59:51
  */
 
 import React, { useCallback, useState, useMemo, useEffect } from "react";
@@ -23,9 +23,12 @@ import {
 import { Avatar } from "./emoji";
 import { theme } from "../theme";
 import BotIcon from "../icons/bot.svg";
+import { Path } from '../constant';
+import { useToast } from "../hooks/useToast";
 import LoadingIcon from "../icons/three-dots.svg";
 import type { KbItemType } from "../typing";
-import { getKbList } from "../api/knowledge";
+import { getKbList, postCreateKb } from "../api/knowledge";
+import { useNavigate } from "react-router-dom";
 import { AddIcon } from "@chakra-ui/icons";
 import dynamic from "next/dynamic";
 import styles from "./knowledge-list.module.scss";
@@ -44,8 +47,8 @@ const Tag = dynamic(async () => (await import("./tag")).Tag, {
 });
 
 export function KnowledgeList() {
-  //   const theme = useTheme();
-  // const { myKbList, loadKbList } = useUserStore();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [knowledgeList, setKnowledgeList] = useState<KbItemType[]>([]);
   const [searchText, setSearchText] = useState("");
 
@@ -57,25 +60,19 @@ export function KnowledgeList() {
   useEffect(() => {
     fetchKbList();
   }, []);
-  // const handleCreateModel = useCallback(async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const name = `知识库${myKbList.length + 1}`;
-  //       const id = await postCreateKb({ name });
-  //       await loadKbList(true);
-  //       toast({
-  //         title: '创建成功',
-  //         status: 'success'
-  //       });
-  //       router.replace(`/kb?kbId=${id}`);
-  //     } catch (err: any) {
-  //       toast({
-  //         title: typeof err === 'string' ? err : err.message || '出现了意外',
-  //         status: 'error'
-  //       });
-  //     }
-  //     setIsLoading(false);
-  //   }, [loadKbList, myKbList.length, router, setIsLoading, toast]);
+
+  const handleCreateModel = useCallback(async () => {
+    const name = `知识库${knowledgeList.length + 1}`;
+    const id = await postCreateKb({ name });
+    fetchKbList();
+    toast({
+      title: "创建成功",
+      status: "success",
+    });
+    navigate(`${Path.Knowledge}?kbId=${id}`);
+  }, [knowledgeList]);
+
+  
   return (
     <ChakraProvider theme={theme}>
       <Flex
@@ -114,7 +111,7 @@ export function KnowledgeList() {
               icon={<AddIcon />}
               aria-label={""}
               variant={"base"}
-              //   onClick={handleCreateModel}
+              onClick={handleCreateModel}
             />
           </Tooltip>
         </Flex>
