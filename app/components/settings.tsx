@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 14:17:59
+ * :date last edited: 2023-08-21 22:24:37
  */
 import { useState, useEffect, useMemo } from "react";
 
@@ -397,9 +397,7 @@ export function Settings() {
 
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
-
-  console.log(accessStore.avatar);
-
+  
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>

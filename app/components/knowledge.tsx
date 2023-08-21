@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 20:28:42
  * :last editor: 张德志
- * :date last edited: 2023-08-21 20:52:48
+ * :date last edited: 2023-08-21 21:57:16
  */
 
 import React, { useEffect } from "react";
@@ -31,6 +31,13 @@ const FlexSideBar = dynamic(
   },
 );
 
+const KnowledgeList = dynamic(
+  async () => (await import("./knowledge-list")).KnowledgeList,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 export function Knowledge() {
   const kbId = "";
   return (
@@ -38,8 +45,7 @@ export function Knowledge() {
       {/* 模型列表 */}
       {!kbId && (
         <FlexSideBar w={["100%", "0 0 250px", "0 0 270px", "0 0 290px"]}>
-          2222
-          {/* <KbList kbId={kbId} /> */}
+          <KnowledgeList/>
         </FlexSideBar>
       )}
       {!!kbId && (
