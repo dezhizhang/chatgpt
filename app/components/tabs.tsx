@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 14:47:11
  * :last editor: 张德志
- * :date last edited: 2023-08-20 14:52:11
+ * :date last edited: 2023-08-22 04:53:29
  */
 import React, { useMemo } from 'react';
 import { Box, Grid, useTheme } from '@chakra-ui/react';
@@ -20,7 +20,6 @@ interface Props extends GridProps {
 }
 
 export function Tabs ({ list, size = 'md', activeId, onChange, ...props }: Props) {
-    console.log(list)
   const theme = useTheme();
   const sizeMap = useMemo(() => {
     switch (size) {

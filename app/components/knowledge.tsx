@@ -5,9 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 20:28:42
  * :last editor: 张德志
- * :date last edited: 2023-08-21 21:57:16
+ * :date last edited: 2023-08-22 04:42:34
  */
-
+import qs from 'qs';
 import React, { useEffect } from "react";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -31,6 +31,8 @@ const FlexSideBar = dynamic(
   },
 );
 
+
+
 const KnowledgeList = dynamic(
   async () => (await import("./knowledge-list")).KnowledgeList,
   {
@@ -38,8 +40,17 @@ const KnowledgeList = dynamic(
   },
 );
 
+const KnowledgeDetail = dynamic(
+  async () => (await import("./knowledge-detail")).KnowledgeDetail,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 export function Knowledge() {
-  const kbId = "";
+  const hash = location.hash;
+  const urlParse: any = qs.parse(hash?.split("?")?.[1]);
+  const { kbId } = urlParse || {};
   return (
     <Flex h={"100%"} position={"relative"} overflow={"hidden"}>
       {/* 模型列表 */}
@@ -50,8 +61,8 @@ export function Knowledge() {
       )}
       {!!kbId && (
         <Box flex={"1 0 0"} w={0} h={"100%"} position={"relative"}>
-          1111
-          {/* <KbDetail kbId={kbId} /> */}
+  
+          <KnowledgeDetail kbId={kbId} />
         </Box>
       )}
     </Flex>
