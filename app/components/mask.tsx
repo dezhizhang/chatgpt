@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 07:22:50
+ * :date last edited: 2023-08-22 07:27:24
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -411,18 +411,17 @@ export function MaskPage() {
     .getAll()
     .filter((m) => !filterLang || m.lang === filterLang);
 
-  const [searchMasks, setSearchMasks] = useState<Mask[]>([]);
-  const [searchText, setSearchText] = useState("");
+    const [searchText, setSearchText] = useState("");
   // const masks = searchText.length > 0 ? searchMasks : allMasks;
 
   // simple search, will refactor later
   const onSearch = (text: string) => {
     setSearchText(text);
-    if (text.length > 0) {
-      const result = allMasks.filter((m) => m.name.includes(text));
-      setSearchMasks(result);
-    } else {
-      setSearchMasks(allMasks);
+    if(text?.length) {
+      const result = masks.filter((m) => m.name.includes(text));
+      setMasks(result);
+    }else {
+      fetchModelList();
     }
   };
 
@@ -454,7 +453,7 @@ export function MaskPage() {
       } catch {}
     });
   };
-
+  
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
