@@ -1,3 +1,12 @@
+/*
+ * :file description: 
+ * :name: /chatgpt/app/components/ui-lib.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-08-11 05:21:09
+ * :last editor: 张德志
+ * :date last edited: 2023-08-22 06:46:05
+ */
 /* eslint-disable @next/next/no-img-element */
 import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -13,7 +22,7 @@ import MinIcon from "../icons/min.svg";
 import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
-import React, { HTMLProps, useEffect, useState } from "react";
+import React, { CSSProperties, HTMLProps, useEffect, useState } from "react";
 import { IconButton } from "./button";
 
 export function Popover(props: {
@@ -99,6 +108,7 @@ export function Loading() {
 interface ModalProps {
   title: string;
   children?: any;
+  style?:CSSProperties;
   actions?: JSX.Element[];
   defaultMax?: boolean;
   onClose?: () => void;
@@ -120,7 +130,6 @@ export function Modal(props: ModalProps) {
   }, []);
 
   const [isMax, setMax] = useState(!!props.defaultMax);
-
   return (
     <div
       className={

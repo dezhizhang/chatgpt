@@ -1,13 +1,13 @@
 /*
- * :file description: 
+ * :file description:
  * :name: /chatgpt/app/components/mask.tsx
  * :author: 张德志
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 06:14:43
+ * :date last edited: 2023-08-22 06:52:40
  */
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 
@@ -22,7 +22,8 @@ import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 import DragIcon from "../icons/drag.svg";
-import { getModelList } from '../api/chat';
+import { useToast } from '../hooks/useToast';
+import { getModelList,deleteMode } from "../api/chat";
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import {
   ChatMessage,
@@ -39,6 +40,7 @@ import {
   Modal,
   Popover,
   Select,
+  showToast,
   showConfirm,
 } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
@@ -389,23 +391,21 @@ export function ContextPrompts(props: {
 export function MaskPage() {
   const [masks, setMasks] = useState<any[]>([]);
   const navigate = useNavigate();
-
+  const { toast } = useToast();
   const maskStore = useMaskStore();
   const chatStore = useChatStore();
 
   const [filterLang, setFilterLang] = useState<Lang>();
 
-
   // 获取所有模型
   const fetchModelList = async () => {
     const res = await getModelList();
     setMasks(res?.myModels || []);
-  }
+  };
 
   useEffect(() => {
     fetchModelList();
-  }, [])
-
+  }, []);
 
   const allMasks = maskStore
     .getAll()
@@ -451,7 +451,7 @@ export function MaskPage() {
         if (importMasks.name) {
           maskStore.create(importMasks);
         }
-      } catch { }
+      } catch {}
     });
   };
 
@@ -575,7 +575,9 @@ export function MaskPage() {
                       text={Locale.Mask.Item.Delete}
                       onClick={async () => {
                         if (await showConfirm(Locale.Mask.Item.DeleteConfirm)) {
-                          maskStore.delete(m?._id);
+                          await deleteMode(m?._id);
+                          showToast('删除成功');
+                          fetchModelList();
                         }
                       }}
                     />
