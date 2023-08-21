@@ -5,12 +5,12 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 22:07:03
  * :last editor: 张德志
- * :date last edited: 2023-08-20 23:39:13
+ * :date last edited: 2023-08-21 19:49:33
  */
 
 import React, { useState, useCallback } from "react";
 //@ts-ignore
-import QRCode from "qrcodejs2"; 
+import QRCode from "qrcodejs2";
 import {
   Modal,
   ModalOverlay,
@@ -19,11 +19,13 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  ChakraProvider,
   Button,
   Input,
   Box,
   Grid,
 } from "@chakra-ui/react";
+import { theme } from '../theme';
 import { useToast } from '../hooks/useToast'
 import { getPayCode } from '../api/user';
 
@@ -46,7 +48,7 @@ export function PayModal({ onClose }: { onClose: () => void }) {
       height: 128,
       colorDark: '#000000',
       colorLight: '#ffffff',
-      correctLevel : QRCode?.CorrectLevel?.H
+      correctLevel: QRCode?.CorrectLevel?.H
     });
     setPayId(res.payId);
     setLoading(false);
@@ -54,7 +56,7 @@ export function PayModal({ onClose }: { onClose: () => void }) {
 
 
   return (
-    <>
+    <ChakraProvider theme={theme}>
       <Modal
         isOpen={true}
         onClose={() => {
@@ -83,25 +85,16 @@ export function PayModal({ onClose }: { onClose: () => void }) {
                 </Grid>
                 <Box mb={4}>
                   <Input
-                    //   value={inputVal}
+                    value={inputVal}
                     type={"number"}
                     step={1}
+                    style={{ maxWidth: '100%',borderRadius:'4px' }}
                     placeholder={"其他金额，请取整数"}
                     onChange={(e) => {
                       setInputVal(Math.floor(+e.target.value));
                     }}
                   ></Input>
                 </Box>
-                {/* <Markdown
-                  source={`
-| 计费项 | 价格: 元/ 1K tokens(包含上下文)|
-| --- | --- |
-| 知识库 - 索引 | 0.001 |
-| chatgpt - 对话 | 0.015 |
-| chatgpt16K - 对话 | 0.03 |
-| gpt4 - 对话 | 0.45 |
-| 文件拆分 | 0.03 |`}
-                /> */}
               </>
             )}
             {/* 付费二维码 */}
@@ -132,6 +125,6 @@ export function PayModal({ onClose }: { onClose: () => void }) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </ChakraProvider>
   );
 }
