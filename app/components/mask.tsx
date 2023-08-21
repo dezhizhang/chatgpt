@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 06:52:40
+ * :date last edited: 2023-08-22 06:59:02
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -566,7 +566,10 @@ export function MaskPage() {
                     <IconButton
                       icon={<EditIcon />}
                       text={Locale.Mask.Item.Edit}
-                      onClick={() => setEditingMaskId(m?._id)}
+                      onClick={() =>{
+                        const createdMask = maskStore.create();
+                        setEditingMaskId(createdMask?._id);
+                      }}
                     />
                   )}
                   {!m.builtin && (
