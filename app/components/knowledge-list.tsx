@@ -5,16 +5,14 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 21:55:51
  * :last editor: 张德志
- * :date last edited: 2023-08-21 22:59:51
+ * :date last edited: 2023-08-21 23:32:43
  */
-
-import React, { useCallback, useState, useMemo, useEffect } from "react";
-
+import qs from "qs";
+import React, { useCallback, useState, useEffect } from "react";
 import {
   Box,
   Flex,
   Icon,
-  useTheme,
   Input,
   IconButton,
   Tooltip,
@@ -23,7 +21,7 @@ import {
 import { Avatar } from "./emoji";
 import { theme } from "../theme";
 import BotIcon from "../icons/bot.svg";
-import { Path } from '../constant';
+import { Path } from "../constant";
 import { useToast } from "../hooks/useToast";
 import LoadingIcon from "../icons/three-dots.svg";
 import type { KbItemType } from "../typing";
@@ -47,6 +45,10 @@ const Tag = dynamic(async () => (await import("./tag")).Tag, {
 });
 
 export function KnowledgeList() {
+  const hash = location.hash;
+  const urlParse: any = qs.parse(hash?.split("?")?.[1]);
+  const { kbId } = urlParse || {};
+
   const { toast } = useToast();
   const navigate = useNavigate();
   const [knowledgeList, setKnowledgeList] = useState<KbItemType[]>([]);
@@ -72,7 +74,6 @@ export function KnowledgeList() {
     navigate(`${Path.Knowledge}?kbId=${id}`);
   }, [knowledgeList]);
 
-  
   return (
     <ChakraProvider theme={theme}>
       <Flex
@@ -122,51 +123,58 @@ export function KnowledgeList() {
           overflowY={"scroll"}
           userSelect={"none"}
         >
-          {knowledgeList.map((item) => (
-            <Flex
-              key={item._id}
-              position={"relative"}
-              alignItems={["flex-start", "center"]}
-              p={3}
-              mb={[2, 0]}
-              cursor={"pointer"}
-              transition={"background-color .2s ease-in"}
-              borderRadius={["", "md"]}
-              borderBottom={["1px solid #f4f4f4", "none"]}
-              _hover={{
-                backgroundImage: ["", theme.lgColor.hoverBlueGradient],
-              }}
-              //   {...(kbId === item._id
-              //     ? {
-              //         backgroundImage: `${theme.lgColor.activeBlueGradient} !important`
-              //       }
-              //     : {})}
-              //   onClick={() => {
-              //     // if (item._id === kbId) return;
-              //     // router.push(`/kb?kbId=${item._id}`);
-              //   }}
-            >
-              <Avatar avatar={item.avatar} />
-              <Box flex={"1 0 0"} w={0} ml={3}>
-                <Box className="textEllipsis" color={"myGray.1000"}>
-                  {item.name}
-                </Box>
-                <Box color={"myGray.400"} py={1} fontSize={"sm"}>
-                  {item.tags ? (
-                    <>
-                      {item.tags.split(" ").map((tag, i) => (
-                        <Tag key={i} mr={1} mb={1}>
-                          {tag}
-                        </Tag>
-                      ))}
-                    </>
-                  ) : (
-                    <>你还没设置标签</>
-                  )}
-                </Box>
-              </Box>
-            </Flex>
-          ))}
+          <>
+            {knowledgeList.length > 0 && (
+              <>
+                {knowledgeList.map((item) => (
+                  <Flex
+                    key={item._id}
+                    position={"relative"}
+                    alignItems={["flex-start", "center"]}
+                    p={3}
+                    mb={[2, 0]}
+                    cursor={"pointer"}
+                    transition={"background-color .2s ease-in"}
+                    borderRadius={["", "md"]}
+                    borderBottom={["1px solid #f4f4f4", "none"]}
+                    _hover={{
+                      backgroundImage: ["", theme.lgColor.hoverBlueGradient],
+                    }}
+                    {...(kbId === item._id
+                      ? {
+                          backgroundImage: `${theme.lgColor.activeBlueGradient} !important`,
+                        }
+                      : {})}
+                    onClick={() => {
+                      if (item._id === kbId) return;
+                      navigate(`${Path.Knowledge}?kbId=${item?._id}`);
+                    }}
+                  >
+                    <Avatar avatar={item.avatar} />
+                    <Box flex={"1 0 0"} w={0} ml={3}>
+                      <Box className="textEllipsis" color={"myGray.1000"}>
+                        {item.name}
+                      </Box>
+                      <Box color={"myGray.400"} py={1} fontSize={"sm"}>
+                        {item.tags ? (
+                          <>
+                            {item?.tags?.split(" ").map((tag, i) => (
+                              <Tag key={i} mr={1} mb={1}>
+                                {tag}
+                              </Tag>
+                            ))}
+                          </>
+                        ) : (
+                          <>你还没设置标签</>
+                        )}
+                      </Box>
+                    </Box>
+                  </Flex>
+                ))}
+              </>
+            )}
+          </>
+
           {knowledgeList?.length === 0 && (
             <Flex
               h={"100%"}
