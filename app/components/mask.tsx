@@ -5,8 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 13:59:18
+ * :date last edited: 2023-08-22 06:14:43
  */
+import { useEffect } from 'react';
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 
@@ -21,7 +22,7 @@ import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 import DragIcon from "../icons/drag.svg";
-
+import { getModelList } from '../api/chat';
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import {
   ChatMessage,
@@ -386,6 +387,7 @@ export function ContextPrompts(props: {
 }
 
 export function MaskPage() {
+  const [masks, setMasks] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const maskStore = useMaskStore();
@@ -393,13 +395,25 @@ export function MaskPage() {
 
   const [filterLang, setFilterLang] = useState<Lang>();
 
+
+  // 获取所有模型
+  const fetchModelList = async () => {
+    const res = await getModelList();
+    setMasks(res?.myModels || []);
+  }
+
+  useEffect(() => {
+    fetchModelList();
+  }, [])
+
+
   const allMasks = maskStore
     .getAll()
     .filter((m) => !filterLang || m.lang === filterLang);
 
   const [searchMasks, setSearchMasks] = useState<Mask[]>([]);
   const [searchText, setSearchText] = useState("");
-  const masks = searchText.length > 0 ? searchMasks : allMasks;
+  // const masks = searchText.length > 0 ? searchMasks : allMasks;
 
   // simple search, will refactor later
   const onSearch = (text: string) => {
@@ -437,7 +451,7 @@ export function MaskPage() {
         if (importMasks.name) {
           maskStore.create(importMasks);
         }
-      } catch {}
+      } catch { }
     });
   };
 
@@ -531,11 +545,6 @@ export function MaskPage() {
                   </div>
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{m.name}</div>
-                    <div className={styles["mask-info"] + " one-line"}>
-                      {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                        ALL_LANG_OPTIONS[m.lang]
-                      } / ${m.modelConfig.model}`}
-                    </div>
                   </div>
                 </div>
                 <div className={styles["mask-actions"]}>
