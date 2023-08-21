@@ -1,11 +1,11 @@
 /*
- * :file description: 
+ * :file description:
  * :name: /chatgpt/app/components/ui-lib.tsx
  * :author: 张德志
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 06:46:05
+ * :date last edited: 2023-08-22 07:14:03
  */
 /* eslint-disable @next/next/no-img-element */
 import styles from "./ui-lib.module.scss";
@@ -108,7 +108,7 @@ export function Loading() {
 interface ModalProps {
   title: string;
   children?: any;
-  style?:CSSProperties;
+  style?: CSSProperties;
   actions?: JSX.Element[];
   defaultMax?: boolean;
   onClose?: () => void;
@@ -132,6 +132,7 @@ export function Modal(props: ModalProps) {
   const [isMax, setMax] = useState(!!props.defaultMax);
   return (
     <div
+      style={props?.style}
       className={
         styles["modal-container"] + ` ${isMax && styles["modal-container-max"]}`
       }
@@ -301,7 +302,7 @@ export function Select(
   );
 }
 
-export function showConfirm(content: any) {
+export function showConfirm(content: any, width?: number) {
   const div = document.createElement("div");
   div.className = "modal-mask";
   document.body.appendChild(div);
@@ -316,6 +317,7 @@ export function showConfirm(content: any) {
     root.render(
       <Modal
         title={Locale.UI.Confirm}
+        style={{ width: width }}
         actions={[
           <IconButton
             key="cancel"

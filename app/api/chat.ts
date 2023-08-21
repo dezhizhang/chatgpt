@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-22 06:27:09
+ * :date last edited: 2023-08-22 07:18:20
  */
 import { GET, POST, PUT, DELETE } from "./request";
 
@@ -21,3 +21,6 @@ export const getChatInit = (params: ChatInitParams) =>
 // 删除模型
 export const deleteMode = (modelId:string) =>
   DELETE<any>(`/model/del?modelId=${modelId}`);
+
+// 创建模型
+export const createModel = (params:{name:string}) =>POST('/model/create',params) 

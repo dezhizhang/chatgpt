@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 06:59:02
+ * :date last edited: 2023-08-22 07:22:50
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -23,7 +23,7 @@ import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 import DragIcon from "../icons/drag.svg";
 import { useToast } from '../hooks/useToast';
-import { getModelList,deleteMode } from "../api/chat";
+import { getModelList,deleteMode,createModel } from "../api/chat";
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import {
   ChatMessage,
@@ -529,9 +529,11 @@ export function MaskPage() {
               icon={<AddIcon />}
               text={Locale.Mask.Page.Create}
               bordered
-              onClick={() => {
-                const createdMask = maskStore.create();
-                setEditingMaskId(createdMask?._id);
+              onClick={async() => {
+                if(await showConfirm(Locale.Mask.Item.CreateConfirm,500)) {
+                  await createModel({name:`AI应用${masks.length + 1}`});
+                  await fetchModelList();
+                }
               }}
             />
           </div>
@@ -577,7 +579,7 @@ export function MaskPage() {
                       icon={<DeleteIcon />}
                       text={Locale.Mask.Item.Delete}
                       onClick={async () => {
-                        if (await showConfirm(Locale.Mask.Item.DeleteConfirm)) {
+                        if (await showConfirm(Locale.Mask.Item.DeleteConfirm,500)) {
                           await deleteMode(m?._id);
                           showToast('删除成功');
                           fetchModelList();

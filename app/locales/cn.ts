@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 11:48:51
+ * :date last edited: 2023-08-22 07:15:46
  */
 import { SubmitKey } from "../store/config";
 
@@ -307,6 +307,7 @@ const cn = {
       View: "查看",
       Edit: "编辑",
       Delete: "删除",
+      CreateConfirm:'确定新建面具?',
       DeleteConfirm: "确认删除？",
     },
     EditModal: {
