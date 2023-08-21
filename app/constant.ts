@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 17:26:14
+ * :date last edited: 2023-08-21 20:19:01
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -27,6 +27,7 @@ export enum Path {
   Auth = "/login",
   Login = '/login',
   Number = '/number',
+  Knowledge = '/knowledge'
 }
 
 export enum SlotID {

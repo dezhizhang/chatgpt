@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 17:31:13
+ * :date last edited: 2023-08-21 20:19:52
  */
 import { useEffect, useRef } from "react";
 import styles from "./home.module.scss";
@@ -143,9 +143,9 @@ export function SideBar(props: { className?: string }) {
         />
         <IconButton
           icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
+          text={shouldNarrow ? undefined : '知识库'}
           className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
+          onClick={() => navigate(Path.Knowledge, { state: { fromHome: true } })}
           shadow
         />
       </div>

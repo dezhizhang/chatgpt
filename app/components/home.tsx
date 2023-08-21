@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-09 04:46:11
  * :last editor: 张德志
- * :date last edited: 2023-08-20 13:58:11
+ * :date last edited: 2023-08-21 20:35:56
  */
 "use client";
 
@@ -59,6 +59,11 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
+
+const Knowledge = dynamic(async () => (await import("./knowledge")).Knowledge, {
+  loading: () => <Loading noLogo />,
+});
+
 
 export function useSwitchTheme() {
   const config = useAppConfig();
@@ -146,6 +151,7 @@ function Screen() {
                 <Route path={Path.Chat} element={<Chat />} />
                 <Route path={Path.Number} element={<Number/>}/>
                 <Route path={Path.Settings} element={<Settings />} />
+                <Route path={Path.Knowledge} element={<Knowledge />} />
               </Routes>
             </div>
           </div>
