@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 07:27:24
+ * :date last edited: 2023-08-22 08:59:40
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -22,8 +22,9 @@ import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 import DragIcon from "../icons/drag.svg";
-import { useToast } from '../hooks/useToast';
-import { getModelList,deleteMode,createModel } from "../api/chat";
+import { useToast } from "../hooks/useToast";
+import { Textarea } from "@chakra-ui/react";
+import { getModelList, deleteMode, createModel } from "../api/chat";
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import {
   ChatMessage,
@@ -106,16 +107,7 @@ export function MaskConfig(props: {
   const globalConfig = useAppConfig();
 
   return (
-    <>
-      <ContextPrompts
-        context={props.mask.context}
-        updateContext={(updater) => {
-          const context = props.mask.context.slice();
-          updater(context);
-          props.updateMask((mask) => (mask.context = context));
-        }}
-      />
-
+    <div style={{ height: "600px" }}>
       <List>
         <ListItem title={Locale.Mask.Config.Avatar}>
           <Popover
@@ -138,82 +130,115 @@ export function MaskConfig(props: {
             </div>
           </Popover>
         </ListItem>
-        <ListItem title={Locale.Mask.Config.Name}>
+        <ListItem title={"名称"}>
           <input
             type="text"
-            value={props.mask.name}
-            onInput={(e) =>
-              props.updateMask((mask) => {
-                mask.name = e.currentTarget.value;
-              })
-            }
+            // value={props.name}
+            // onInput={(e) =>
+            //   props.updateMask((mask) => {
+            //     name.name = e.currentTarget.value;
+            //   })
+            // }
+          ></input>
+        </ListItem>
+        <ListItem title={"介绍"}>
+          <Textarea
+            rows={2}
+            // onChange={(e) => {
+            //   props.updateMask((mask) => {
+            //     mask.hideContext = e.currentTarget.checked;
+            //   });
+            // }}
+          ></Textarea>
+        </ListItem>
+        <ListItem title={"对话模型"}>
+          <Textarea
+            rows={2}
+            // onChange={(e) => {
+            //   props.updateMask((mask) => {
+            //     mask.hideContext = e.currentTarget.checked;
+            //   });
+            // }}
+          ></Textarea>
+        </ListItem>
+        <ListItem
+          title={"回复上限"}
+          subTitle={Locale.Settings.MaxTokens.SubTitle}
+        >
+          <input
+            type="number"
+            min={100}
+            max={8000}
+            // value={props.modelConfig.max_tokens}
+            // onChange={(e) =>
+            //   props.updateConfig(
+            //     (config) =>
+            //       (config.max_tokens = ModalConfigValidator.max_tokens(
+            //         e.currentTarget.valueAsNumber,
+            //       )),
+            //   )
+            // }
           ></input>
         </ListItem>
         <ListItem
-          title={Locale.Mask.Config.HideContext.Title}
-          subTitle={Locale.Mask.Config.HideContext.SubTitle}
+          title={"回复上限"}
+          // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
           <input
-            type="checkbox"
-            checked={props.mask.hideContext}
-            onChange={(e) => {
-              props.updateMask((mask) => {
-                mask.hideContext = e.currentTarget.checked;
-              });
-            }}
+            type="number"
+            min={100}
+            max={8000}
+            // value={props.modelConfig.max_tokens}
+            // onChange={(e) =>
+            //   props.updateConfig(
+            //     (config) =>
+            //       (config.max_tokens = ModalConfigValidator.max_tokens(
+            //         e.currentTarget.valueAsNumber,
+            //       )),
+            //   )
+            // }
           ></input>
         </ListItem>
-
-        {!props.shouldSyncFromGlobal ? (
-          <ListItem
-            title={Locale.Mask.Config.Share.Title}
-            subTitle={Locale.Mask.Config.Share.SubTitle}
-          >
-            <IconButton
-              icon={<CopyIcon />}
-              text={Locale.Mask.Config.Share.Action}
-              onClick={copyMaskLink}
-            />
-          </ListItem>
-        ) : null}
-
-        {props.shouldSyncFromGlobal ? (
-          <ListItem
-            title={Locale.Mask.Config.Sync.Title}
-            subTitle={Locale.Mask.Config.Sync.SubTitle}
-          >
-            <input
-              type="checkbox"
-              checked={props.mask.syncGlobalConfig}
-              onChange={async (e) => {
-                const checked = e.currentTarget.checked;
-                if (
-                  checked &&
-                  (await showConfirm(Locale.Mask.Config.Sync.Confirm))
-                ) {
-                  props.updateMask((mask) => {
-                    mask.syncGlobalConfig = checked;
-                    mask.modelConfig = { ...globalConfig.modelConfig };
-                  });
-                } else if (!checked) {
-                  props.updateMask((mask) => {
-                    mask.syncGlobalConfig = checked;
-                  });
-                }
-              }}
-            ></input>
-          </ListItem>
-        ) : null}
+        <ListItem
+          title={"回复上限"}
+          // subTitle={Locale.Settings.MaxTokens.SubTitle}
+        >
+          <input
+            type="提示词"
+            min={100}
+            max={8000}
+            // value={props.modelConfig.max_tokens}
+            // onChange={(e) =>
+            //   props.updateConfig(
+            //     (config) =>
+            //       (config.max_tokens = ModalConfigValidator.max_tokens(
+            //         e.currentTarget.valueAsNumber,
+            //       )),
+            //   )
+            // }
+          ></input>
+        </ListItem>
+        <ListItem
+          title={"回复上限"}
+          // subTitle={Locale.Settings.MaxTokens.SubTitle}
+        >
+          <input
+            type="限定词"
+            min={100}
+            max={8000}
+            // value={props.modelConfig.max_tokens}
+            // onChange={(e) =>
+            //   props.updateConfig(
+            //     (config) =>
+            //       (config.max_tokens = ModalConfigValidator.max_tokens(
+            //         e.currentTarget.valueAsNumber,
+            //       )),
+            //   )
+            // }
+          ></input>
+        </ListItem>
       </List>
-
-      <List>
-        <ModelConfigList
-          modelConfig={{ ...props.mask.modelConfig }}
-          updateConfig={updateConfig}
-        />
-        {props.extraListItems}
-      </List>
-    </>
+    </div>
   );
 }
 
@@ -411,16 +436,16 @@ export function MaskPage() {
     .getAll()
     .filter((m) => !filterLang || m.lang === filterLang);
 
-    const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("");
   // const masks = searchText.length > 0 ? searchMasks : allMasks;
 
   // simple search, will refactor later
   const onSearch = (text: string) => {
     setSearchText(text);
-    if(text?.length) {
+    if (text?.length) {
       const result = masks.filter((m) => m.name.includes(text));
       setMasks(result);
-    }else {
+    } else {
       fetchModelList();
     }
   };
@@ -453,7 +478,7 @@ export function MaskPage() {
       } catch {}
     });
   };
-  
+
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
@@ -528,9 +553,9 @@ export function MaskPage() {
               icon={<AddIcon />}
               text={Locale.Mask.Page.Create}
               bordered
-              onClick={async() => {
-                if(await showConfirm(Locale.Mask.Item.CreateConfirm,500)) {
-                  await createModel({name:`AI应用${masks.length + 1}`});
+              onClick={async () => {
+                if (await showConfirm(Locale.Mask.Item.CreateConfirm, 500)) {
+                  await createModel({ name: `AI应用${masks.length + 1}` });
                   await fetchModelList();
                 }
               }}
@@ -567,7 +592,7 @@ export function MaskPage() {
                     <IconButton
                       icon={<EditIcon />}
                       text={Locale.Mask.Item.Edit}
-                      onClick={() =>{
+                      onClick={() => {
                         const createdMask = maskStore.create();
                         setEditingMaskId(createdMask?._id);
                       }}
@@ -578,9 +603,11 @@ export function MaskPage() {
                       icon={<DeleteIcon />}
                       text={Locale.Mask.Item.Delete}
                       onClick={async () => {
-                        if (await showConfirm(Locale.Mask.Item.DeleteConfirm,500)) {
+                        if (
+                          await showConfirm(Locale.Mask.Item.DeleteConfirm, 500)
+                        ) {
                           await deleteMode(m?._id);
-                          showToast('删除成功');
+                          showToast("删除成功");
                           fetchModelList();
                         }
                       }}

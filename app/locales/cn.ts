@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 07:15:46
+ * :date last edited: 2023-08-22 08:39:07
  */
 import { SubmitKey } from "../store/config";
 
@@ -318,7 +318,7 @@ const cn = {
     },
     Config: {
       Avatar: "角色头像",
-      Name: "角色名称",
+      Name: "名称",
       Sync: {
         Title: "使用全局设置",
         SubTitle: "当前对话是否使用全局模型设置",
