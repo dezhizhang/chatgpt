@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 08:59:40
+ * :date last edited: 2023-08-22 09:18:52
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -152,14 +152,14 @@ export function MaskConfig(props: {
           ></Textarea>
         </ListItem>
         <ListItem title={"对话模型"}>
-          <Textarea
+          <textarea
             rows={2}
             // onChange={(e) => {
             //   props.updateMask((mask) => {
             //     mask.hideContext = e.currentTarget.checked;
             //   });
             // }}
-          ></Textarea>
+          ></textarea>
         </ListItem>
         <ListItem
           title={"回复上限"}
@@ -180,7 +180,7 @@ export function MaskConfig(props: {
             // }
           ></input>
         </ListItem>
-        <ListItem
+        {/* <ListItem
           title={"回复上限"}
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
@@ -188,6 +188,7 @@ export function MaskConfig(props: {
             type="number"
             min={100}
             max={8000}
+            style={{width:'100%'}}
             // value={props.modelConfig.max_tokens}
             // onChange={(e) =>
             //   props.updateConfig(
@@ -198,15 +199,14 @@ export function MaskConfig(props: {
             //   )
             // }
           ></input>
-        </ListItem>
+        </ListItem> */}
         <ListItem
-          title={"回复上限"}
+          title={"提示词"}
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
-          <input
-            type="提示词"
-            min={100}
-            max={8000}
+          <textarea
+           className={styles["mak-textarea"]}
+           placeholder="模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。"
             // value={props.modelConfig.max_tokens}
             // onChange={(e) =>
             //   props.updateConfig(
@@ -216,26 +216,19 @@ export function MaskConfig(props: {
             //       )),
             //   )
             // }
-          ></input>
+          ></textarea>
         </ListItem>
+ 
         <ListItem
-          title={"回复上限"}
+          title={"限定词"}
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
-          <input
-            type="限定词"
-            min={100}
-            max={8000}
-            // value={props.modelConfig.max_tokens}
-            // onChange={(e) =>
-            //   props.updateConfig(
-            //     (config) =>
-            //       (config.max_tokens = ModalConfigValidator.max_tokens(
-            //         e.currentTarget.valueAsNumber,
-            //       )),
-            //   )
-            // }
-          ></input>
+          <textarea
+            className={styles["mak-textarea"]}
+            placeholder='限定模型对话范围，会被放置在本次提问前，拥有强引导和限定性。例如:
+          1. 知识库是关于 Laf 的介绍，参考知识库回答问题，与 "Laf" 无关内容，直接回复: "我不知道"。
+          2. 你仅回答关于 "xxx" 的问题，其他问题回复: "xxxx"'
+          ></textarea>
         </ListItem>
       </List>
     </div>
