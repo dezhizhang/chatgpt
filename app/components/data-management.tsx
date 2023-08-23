@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-23 20:43:01
+ * :date last edited: 2023-08-23 21:01:13
  */
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
@@ -23,9 +23,10 @@ import {
   Grid,
   ChakraProvider,
 } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import styles from './knowledge-list.module.scss';
+import styles from "./knowledge-list.module.scss";
 import { getKbDataList } from "../api/knowledge";
 import { theme } from "../theme";
 
@@ -34,14 +35,20 @@ export interface DataMgProps {
 }
 
 export function Loading(props: { noLogo?: boolean }) {
-    return (
-      <div className={styles["loading-content"] + " no-dark"}>
-        {!props.noLogo && <BotIcon />}
-        <LoadingIcon />
-      </div>
-    );
-  }
-  
+  return (
+    <div className={styles["loading-content"] + " no-dark"}>
+      {!props.noLogo && <BotIcon />}
+      <LoadingIcon />
+    </div>
+  );
+}
+
+const InputModal = dynamic(
+  async () => (await import("./input-modal")).InputDataModal,
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
 
 export function DataManagement({ kbId }: DataMgProps) {
   const [total, setTotal] = useState(0);
@@ -166,15 +173,15 @@ export function DataManagement({ kbId }: DataMgProps) {
               border={"1px solid "}
               borderColor={"myGray.200"}
               onClick={() => {
-                alert('hello')
+                alert("hello");
               }}
-            //   onClick={() =>
-            //     setEditInputData({
-            //       dataId: item.id,
-            //       q: item.q,
-            //       a: item.a,
-            //     })
-            //   }
+              //   onClick={() =>
+              //     setEditInputData({
+              //       dataId: item.id,
+              //       q: item.q,
+              //       a: item.a,
+              //     })
+              //   }
             >
               <Box
                 h={"100px"}
@@ -202,28 +209,28 @@ export function DataManagement({ kbId }: DataMgProps) {
                 <IconButton
                   className="delete"
                   display={["flex", "none"]}
-                //   icon={<DeleteIcon />}
+                  //   icon={<DeleteIcon />}
                   variant={"base"}
                   colorScheme={"gray"}
                   aria-label={"delete"}
                   size={"xs"}
                   borderRadius={"md"}
                   _hover={{ color: "red.600" }}
-                //   isLoading={isDeleting}
-                //   onClick={async (e) => {
-                //     e.stopPropagation();
-                //     try {
-                //       setIsDeleting(true);
-                //       await delOneKbDataByDataId(item.id);
-                //       refetchData(pageNum);
-                //     } catch (error) {
-                //       toast({
-                //         title: getErrText(error),
-                //         status: "error",
-                //       });
-                //     }
-                //     setIsDeleting(false);
-                //   }}
+                  //   isLoading={isDeleting}
+                  //   onClick={async (e) => {
+                  //     e.stopPropagation();
+                  //     try {
+                  //       setIsDeleting(true);
+                  //       await delOneKbDataByDataId(item.id);
+                  //       refetchData(pageNum);
+                  //     } catch (error) {
+                  //       toast({
+                  //         title: getErrText(error),
+                  //         status: "error",
+                  //       });
+                  //     }
+                  //     setIsDeleting(false);
+                  //   }}
                 />
               </Flex>
             </Card>
@@ -233,15 +240,15 @@ export function DataManagement({ kbId }: DataMgProps) {
         <Flex mt={2} justifyContent={"center"}>
           {/* <Pagination /> */}
         </Flex>
-
-        {/* {editInputData !== undefined && (
-      <InputModal
-        kbId={kbId}
-        defaultValues={editInputData}
-        onClose={() => setEditInputData(undefined)}
-        onSuccess={() => refetchData()}
-      />
-    )} */}
+{/* 
+        {editInputData !== undefined && (
+          <InputModal
+            kbId={kbId}
+            defaultValues={editInputData}
+            onClose={() => setEditInputData(undefined)}
+            onSuccess={() => refetchData()}
+          />
+        )} */}
         {/* {isOpenSelectFileModal && (
       <SelectFileModal kbId={kbId} onClose={onCloseSelectFileModal} onSuccess={refetchData} />
     )}
