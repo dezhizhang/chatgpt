@@ -5,8 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-22 05:26:51
+ * :date last edited: 2023-08-24 07:42:22
  */
+import qs from 'qs'
 import React, {
   useCallback,
   useState,
@@ -14,6 +15,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   ForwardedRef,
+  useEffect,
 } from "react";
 import {
   Box,
@@ -29,7 +31,9 @@ import { Avatar } from "./emoji";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import dynamic from "next/dynamic";
+import { useLocation } from "react-router-dom";
 import { KbItemType } from "../typing";
+import { getKbById } from '../api/knowledge';
 import styles from "./knowledge-list.module.scss";
 import { UseFormReturn } from "react-hook-form";
 
@@ -53,11 +57,21 @@ const Tag = dynamic(async () => (await import("./tag")).Tag, {
 });
 
 export function BaseInfo(
-  { kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any> },
+  { form }: { form: UseFormReturn<KbItemType, any> },
   ref: ForwardedRef<ComponentRef>,
 ) {
+
+
   const { getValues, formState, setValue, register, handleSubmit } = form;
   const InputRef = useRef<HTMLInputElement>(null);
+
+
+
+
+
+  // useEffect(() => {
+  //   fetchKbById();
+  // },[kbId]),
 
   const saveSubmitSuccess = useCallback(
     async (data: KbItemType) => {
@@ -100,6 +114,10 @@ export function BaseInfo(
     //   isClosable: true
     // });
   }, [formState.errors]);
+
+
+
+  console.log('getValues("avatar")',getValues("avatar"));
 
   return (
     <Flex px={5} flexDirection={"column"} alignItems={"center"}>

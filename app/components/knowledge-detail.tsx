@@ -5,15 +5,16 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-24 04:18:45
+ * :date last edited: 2023-08-24 07:52:30
  */
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Tabs } from "./tabs";
 import { theme } from "../theme";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import dynamic from "next/dynamic";
+import { getKbById } from "../api/knowledge";
 import { useForm } from "react-hook-form";
 import type { KbItemType } from "../typing";
 import { type ComponentRef } from "./base-info";
@@ -52,7 +53,6 @@ const ExploratoryTesting = dynamic(
   },
 );
 
-
 export interface KbDetailProps {
   kbId: string;
 }
@@ -67,12 +67,12 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
     {
       label: "数据管理",
       id: TabEnum.data,
-      Component: <DataManagement/>,
+      Component: <DataManagement />,
     },
     {
       label: "搜索测试",
       id: TabEnum.test,
-      Component: <ExploratoryTesting/>,
+      Component: <ExploratoryTesting />,
     },
     {
       label: "基本信息",
@@ -85,6 +85,19 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
       ),
     },
   ]);
+  
+  const fetchKbById = async () => {
+    const res = await getKbById(kbId);
+    for (let key in res) {
+      console.log(key);
+      form.setValue(key as any,(res as any)[key])
+    }
+  };
+
+  useEffect(() => {
+    fetchKbById();
+  }, [kbId]);
+
   return (
     <ChakraProvider theme={theme}>
       <Flex
