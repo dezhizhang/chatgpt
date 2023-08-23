@@ -5,10 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 22:09:20
  * :last editor: 张德志
- * :date last edited: 2023-08-23 23:26:07
+ * :date last edited: 2023-08-24 04:34:15
  */
 import { GET, POST, PUT, DELETE } from "./request";
-import type { KbItemType, RequestPaging, } from "../typing";
+import type { KbItemType, RequestPaging } from "../typing";
 
 export const getKbList = () => GET<KbItemType[]>(`/plugins/kb/list`);
 
@@ -38,17 +38,17 @@ export const putKbDataById = (data: {
 export const postKbDataFromList = (data: any) =>
   POST<any>(`/openapi/kb/pushData`, data);
 
-  /**
+/**
  * 获取导出数据（不分页）
  */
 export const getExportDataList = (kbId: string) =>
-GET<[string, string, string][]>(
-  `/plugins/kb/data/exportModelData`,
-  { kbId },
-  {
-    timeout: 600000
-  }
-);
+  GET<[string, string, string][]>(
+    `/plugins/kb/data/exportModelData`,
+    { kbId },
+    {
+      timeout: 600000,
+    },
+  );
 
 /**
  * 获取模型正在拆分数据的数量
@@ -65,5 +65,15 @@ export const getTrainingData = (data: { kbId: string; init: boolean }) =>
 export const delOneKbDataByDataId = (dataId: string) =>
   DELETE(`/openapi/kb/delDataById?dataId=${dataId}`);
 
+/**
+ * 拆分数据
+ */
+export const postSplitData = (data: {
+  kbId: string;
+  chunks: string[];
+  prompt: string;
+  mode: any;
+}) => POST(`/openapi/text/pushData`, data);
 
-
+export const searchText = (data: any) =>
+  POST<any>(`/openapi/kb/searchTest`, data);

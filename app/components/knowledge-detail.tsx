@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-23 22:41:58
+ * :date last edited: 2023-08-24 04:18:45
  */
 
 import React, { useRef, useState } from "react";
@@ -45,6 +45,14 @@ const DataManagement = dynamic(
   },
 );
 
+const ExploratoryTesting = dynamic(
+  async () => (await import("./exploratory-testing")).ExploratoryTesting,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+
 export interface KbDetailProps {
   kbId: string;
 }
@@ -64,7 +72,7 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
     {
       label: "搜索测试",
       id: TabEnum.test,
-      Component: null,
+      Component: <ExploratoryTesting/>,
     },
     {
       label: "基本信息",
