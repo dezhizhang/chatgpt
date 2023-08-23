@@ -5,10 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 22:09:20
  * :last editor: 张德志
- * :date last edited: 2023-08-23 20:30:11
+ * :date last edited: 2023-08-23 22:34:48
  */
 import { GET, POST, PUT, DELETE } from "./request";
-import type { KbItemType, RequestPaging } from "../typing";
+import type { KbItemType, RequestPaging, } from "../typing";
 
 export const getKbList = () => GET<KbItemType[]>(`/plugins/kb/list`);
 
@@ -22,3 +22,19 @@ type GetKbDataListProps = RequestPaging & {
 };
 export const getKbDataList = (data: GetKbDataListProps) =>
   POST<any>(`/plugins/kb/data/getDataList`, data);
+
+/**
+ * 更新一条数据
+ */
+export const putKbDataById = (data: {
+  dataId: string;
+  a: string;
+  q?: string;
+}) => PUT("/openapi/kb/updateData", data);
+
+/**
+ * 直接push数据
+ */
+export const postKbDataFromList = (data: any) =>
+  POST<any>(`/openapi/kb/pushData`, data);
+

@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-21 20:19:01
+ * :date last edited: 2023-08-23 22:36:45
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -45,6 +45,17 @@ export enum TableEnum {
   "promotion" = "promotion",
   "inform" = "inform",
 }
+
+
+export enum TrainingModeEnum {
+  'qa' = 'qa',
+  'index' = 'index'
+}
+export const TrainingTypeMap = {
+  [TrainingModeEnum.qa]: 'qa',
+  [TrainingModeEnum.index]: 'index'
+};
+
 
 export enum BillTypeEnum {
   chat = 'chat',

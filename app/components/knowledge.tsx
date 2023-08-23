@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 20:28:42
  * :last editor: 张德志
- * :date last edited: 2023-08-22 04:55:25
+ * :date last edited: 2023-08-23 22:01:26
  */
 import qs from 'qs';
 import React, { useEffect } from "react";
@@ -53,7 +53,7 @@ export function Knowledge() {
   const { kbId } = urlParse || {};
   return (
     <Flex h={"100%"} position={"relative"} overflow={"hidden"}>
-      {!kbId && (
+      {kbId && (
         <FlexSideBar w={["100%", "0 0 250px", "0 0 270px", "0 0 290px"]}>
           <KnowledgeList/>
         </FlexSideBar>

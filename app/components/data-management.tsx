@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-23 21:01:13
+ * :date last edited: 2023-08-23 22:08:10
  */
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
@@ -28,6 +28,7 @@ import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import styles from "./knowledge-list.module.scss";
 import { getKbDataList } from "../api/knowledge";
+import type { FormData as InputDataType } from "../typing";
 import { theme } from "../theme";
 
 export interface DataMgProps {
@@ -44,7 +45,7 @@ export function Loading(props: { noLogo?: boolean }) {
 }
 
 const InputModal = dynamic(
-  async () => (await import("./input-modal")).InputDataModal,
+  async () => (await import("./input-modal")).InputModal,
   {
     loading: () => <LoadingIcon />,
   },
@@ -53,6 +54,7 @@ const InputModal = dynamic(
 export function DataManagement({ kbId }: DataMgProps) {
   const [total, setTotal] = useState(0);
   const [kbDataList, setKbDataList] = useState<any[]>([]);
+  const [editInputData, setEditInputData] = useState<InputDataType>();
 
   const fetchKbDataList = async () => {
     const res = await getKbDataList({
@@ -172,16 +174,13 @@ export function DataManagement({ kbId }: DataMgProps) {
               _hover={{ boxShadow: "lg", "& .delete": { display: "flex" } }}
               border={"1px solid "}
               borderColor={"myGray.200"}
-              onClick={() => {
-                alert("hello");
-              }}
-              //   onClick={() =>
-              //     setEditInputData({
-              //       dataId: item.id,
-              //       q: item.q,
-              //       a: item.a,
-              //     })
-              //   }
+              onClick={() =>
+                setEditInputData({
+                  dataId: item.id,
+                  q: item.q,
+                  a: item.a,
+                })
+              }
             >
               <Box
                 h={"100px"}
@@ -240,15 +239,15 @@ export function DataManagement({ kbId }: DataMgProps) {
         <Flex mt={2} justifyContent={"center"}>
           {/* <Pagination /> */}
         </Flex>
-{/* 
+
         {editInputData !== undefined && (
           <InputModal
             kbId={kbId}
             defaultValues={editInputData}
             onClose={() => setEditInputData(undefined)}
-            onSuccess={() => refetchData()}
+            // onSuccess={() => refetchData()}
           />
-        )} */}
+        )}
         {/* {isOpenSelectFileModal && (
       <SelectFileModal kbId={kbId} onClose={onCloseSelectFileModal} onSuccess={refetchData} />
     )}
