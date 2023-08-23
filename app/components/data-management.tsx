@@ -5,9 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-23 23:01:48
+ * :date last edited: 2023-08-23 23:27:24
  */
-import qs from 'qs';
+import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
   Box,
@@ -23,13 +23,24 @@ import {
   Input,
   Grid,
   ChakraProvider,
+  Icon,
 } from "@chakra-ui/react";
-import {useLocation} from  "react-router-dom";
+import { useLocation } from "react-router-dom";
 import dynamic from "next/dynamic";
 import BotIcon from "../icons/bot.svg";
+import Papa from "papaparse";
+import { useToast } from "../hooks/useToast";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
 import LoadingIcon from "../icons/three-dots.svg";
 import styles from "./knowledge-list.module.scss";
-import { getKbDataList } from "../api/knowledge";
+import { fileDownload } from "../utils/index";
+import {
+  getKbDataList,
+  getExportDataList,
+  getTrainingData,
+  delOneKbDataByDataId,
+} from "../api/knowledge";
 import type { FormData as InputDataType } from "../typing";
 import { theme } from "../theme";
 
@@ -54,29 +65,73 @@ const InputModal = dynamic(
 );
 
 export function DataManagement() {
-  const location =  useLocation();
+  const location = useLocation();
+  const { toast } = useToast();
   const [total, setTotal] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [kbDataList, setKbDataList] = useState<any[]>([]);
+
   const urlParse: any = qs.parse(location?.search?.split("?")?.[1]);
   const [editInputData, setEditInputData] = useState<InputDataType>();
 
   const { kbId } = urlParse || {};
 
-
-  window.onhashchange = function() {
-    console.log('hello')
-  }
+  const {
+    isOpen: isOpenSelectFileModal,
+    onOpen: onOpenSelectFileModal,
+    onClose: onCloseSelectFileModal,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenSelectCsvModal,
+    onOpen: onOpenSelectCsvModal,
+    onClose: onCloseSelectCsvModal,
+  } = useDisclosure();
 
   const fetchKbDataList = async () => {
+    setIsLoading(true);
     const res = await getKbDataList({
       kbId,
       pageNum: 1,
       pageSize: 24,
       searchText: "",
     });
+    setIsLoading(false);
     setTotal(res?.total);
     setKbDataList(res?.data || []);
   };
+
+  // // // get al data and export csv
+  // const { mutate: onclickExport, isLoading: isLoadingExport = false } =
+  //   useMutation({
+  //     mutationFn: () => getExportDataList(kbId),
+  //     onSuccess(res) {
+  //       try {
+  //         const text = Papa.unparse({
+  //           fields: ["question", "answer", "source"],
+  //           data: res,
+  //         });
+  //         fileDownload({
+  //           text,
+  //           type: "text/csv",
+  //           filename: "data.csv",
+  //         });
+  //         toast({
+  //           title: "导出成功，下次导出需要半小时后",
+  //           status: "success",
+  //         });
+  //       } catch (error) {
+  //         error;
+  //       }
+  //     },
+  //     onError(err: any) {
+  //       toast({
+  //         title: typeof err === "string" ? err : err?.message || "导出异常",
+  //         status: "error",
+  //       });
+  //       console.log(err);
+  //     },
+  //   });
 
   useEffect(() => {
     fetchKbDataList();
@@ -91,49 +146,48 @@ export function DataManagement() {
           </Box>
           <Box>
             <IconButton
-              //   icon={<RepeatIcon />}
+              icon={<RepeatIcon />}
               aria-label={"refresh"}
               variant={"base"}
-              //   isLoading={isLoading}
+              isLoading={isLoading}
               mr={[2, 4]}
               size={"sm"}
-              //   onClick={() => {
-              //     getData(pageNum);
-              //     getTrainingData({ kbId, init: true });
-              //   }}
+              onClick={() => {
+                fetchKbDataList();
+                getTrainingData({ kbId, init: true });
+              }}
             />
             <Button
               variant={"base"}
               mr={2}
               size={"sm"}
-              //   isLoading={isLoadingExport || isLoading}
+              // isLoading={isLoadingExport || isLoading}
               title={"半小时仅能导出1次"}
-              //   onClick={() => onclickExport()}
+              // onClick={() => onclickExport()}
             >
               导出csv
             </Button>
             <Menu autoSelect={false}>
-              <MenuButton
-                as={Button}
-                size={"sm"}
-
-                //   isLoading={isLoading}
-              >
+              <MenuButton as={Button} size={"sm"} isLoading={isLoading}>
                 导入
               </MenuButton>
               <MenuList>
                 <MenuItem
-                //   onClick={() =>
-                //     setEditInputData({
-                //       a: '',
-                //       q: ''
-                //     })
-                //   }
+                  onClick={() =>
+                    setEditInputData({
+                      a: "",
+                      q: "",
+                    })
+                  }
                 >
                   手动输入
                 </MenuItem>
-                {/* <MenuItem onClick={onOpenSelectFileModal}>文本/文件拆分</MenuItem>
-            <MenuItem onClick={onOpenSelectCsvModal}>csv 问答对导入</MenuItem> */}
+                <MenuItem onClick={onOpenSelectFileModal}>
+                  文本/文件拆分
+                </MenuItem>
+                <MenuItem onClick={onOpenSelectCsvModal}>
+                  csv 问答对导入
+                </MenuItem>
               </MenuList>
             </Menu>
           </Box>
@@ -219,28 +273,28 @@ export function DataManagement() {
                 <IconButton
                   className="delete"
                   display={["flex", "none"]}
-                  //   icon={<DeleteIcon />}
+                  icon={<DeleteIcon />}
                   variant={"base"}
                   colorScheme={"gray"}
                   aria-label={"delete"}
                   size={"xs"}
                   borderRadius={"md"}
                   _hover={{ color: "red.600" }}
-                  //   isLoading={isDeleting}
-                  //   onClick={async (e) => {
-                  //     e.stopPropagation();
-                  //     try {
-                  //       setIsDeleting(true);
-                  //       await delOneKbDataByDataId(item.id);
-                  //       refetchData(pageNum);
-                  //     } catch (error) {
-                  //       toast({
-                  //         title: getErrText(error),
-                  //         status: "error",
-                  //       });
-                  //     }
-                  //     setIsDeleting(false);
-                  //   }}
+                  isLoading={isDeleting}
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    try {
+                      setIsDeleting(true);
+                      await delOneKbDataByDataId(item.id);
+                      fetchKbDataList();
+                    } catch (error) {
+                      toast({
+                        title: "删除失败",
+                        status: "error",
+                      });
+                    }
+                    setIsDeleting(false);
+                  }}
                 />
               </Flex>
             </Card>

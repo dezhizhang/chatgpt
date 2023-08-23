@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 19:48:09
  * :last editor: 张德志
- * :date last edited: 2023-08-20 23:45:08
+ * :date last edited: 2023-08-23 23:18:31
  */
 import dayjs from 'dayjs';
 import { useToast } from '../hooks/useToast'
@@ -52,6 +52,32 @@ export const clearCookie = () => {
     error;
   }
 }
+
+/**
+ * file download
+ */
+export const fileDownload = ({
+  text,
+  type,
+  filename
+}: {
+  text: string;
+  type: string;
+  filename: string;
+}) => {
+  // 导出为文件
+  const blob = new Blob([`\uFEFF${text}`], { type: `${type};charset=utf-8;` });
+
+  // 创建下载链接
+  const downloadLink = document.createElement('a');
+  downloadLink.href = window.URL.createObjectURL(blob);
+  downloadLink.download = filename;
+
+  // 添加链接到页面并触发下载
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+};
 
 
 

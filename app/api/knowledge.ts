@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 22:09:20
  * :last editor: 张德志
- * :date last edited: 2023-08-23 22:34:48
+ * :date last edited: 2023-08-23 23:26:07
  */
 import { GET, POST, PUT, DELETE } from "./request";
 import type { KbItemType, RequestPaging, } from "../typing";
@@ -37,4 +37,33 @@ export const putKbDataById = (data: {
  */
 export const postKbDataFromList = (data: any) =>
   POST<any>(`/openapi/kb/pushData`, data);
+
+  /**
+ * 获取导出数据（不分页）
+ */
+export const getExportDataList = (kbId: string) =>
+GET<[string, string, string][]>(
+  `/plugins/kb/data/exportModelData`,
+  { kbId },
+  {
+    timeout: 600000
+  }
+);
+
+/**
+ * 获取模型正在拆分数据的数量
+ */
+export const getTrainingData = (data: { kbId: string; init: boolean }) =>
+  POST<{
+    qaListLen: number;
+    vectorListLen: number;
+  }>(`/plugins/kb/data/getTrainingData`, data);
+
+/**
+ * 删除一条知识库数据
+ */
+export const delOneKbDataByDataId = (dataId: string) =>
+  DELETE(`/openapi/kb/delDataById?dataId=${dataId}`);
+
+
 
