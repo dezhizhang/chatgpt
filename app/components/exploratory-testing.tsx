@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-24 04:15:55
  * :last editor: 张德志
- * :date last edited: 2023-08-24 05:31:23
+ * :date last edited: 2023-08-24 07:25:26
  */
 import qs from "qs";
 import React, { useEffect, useMemo, useState } from "react";
@@ -101,13 +101,13 @@ export function ExploratoryTesting() {
             borderRadius={"md"}
           >
             <Box fontSize={"sm"} fontWeight={"bold"}>
-              {/* <MyIcon
-                mr={2}
-                name={"text"}
+              <Icon
+                as={require("../icons/text.svg").default}
                 w={"18px"}
                 h={"18px"}
-                color={"myBlue.700"}
-              /> */}
+                style={{ color: "blue" }}
+                color={"blue"}
+              />
               测试文本
             </Box>
             <Textarea
@@ -131,7 +131,11 @@ export function ExploratoryTesting() {
           </Box>
           <Box mt={5} display={["none", "block"]}>
             <Flex alignItems={"center"} color={"myGray.600"}>
-              {/* <MyIcon mr={2} name={"history"} w={"16px"} h={"16px"} /> */}
+              <Icon
+                as={require("../icons/history.svg").default}
+                w={"16px"}
+                h={"16px"}
+              />
               <Box fontSize={"2xl"}>测试历史</Box>
             </Flex>
             <Box mt={2}>
