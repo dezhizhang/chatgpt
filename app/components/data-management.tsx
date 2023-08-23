@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-23 20:34:03
+ * :date last edited: 2023-08-23 20:43:01
  */
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
@@ -23,12 +23,25 @@ import {
   Grid,
   ChakraProvider,
 } from "@chakra-ui/react";
+import BotIcon from "../icons/bot.svg";
+import LoadingIcon from "../icons/three-dots.svg";
+import styles from './knowledge-list.module.scss';
 import { getKbDataList } from "../api/knowledge";
 import { theme } from "../theme";
 
 export interface DataMgProps {
   kbId: string;
 }
+
+export function Loading(props: { noLogo?: boolean }) {
+    return (
+      <div className={styles["loading-content"] + " no-dark"}>
+        {!props.noLogo && <BotIcon />}
+        <LoadingIcon />
+      </div>
+    );
+  }
+  
 
 export function DataManagement({ kbId }: DataMgProps) {
   const [total, setTotal] = useState(0);
