@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 21:55:51
  * :last editor: 张德志
- * :date last edited: 2023-08-21 23:32:43
+ * :date last edited: 2023-08-23 22:54:31
  */
 import qs from "qs";
 import React, { useCallback, useState, useEffect } from "react";
@@ -62,6 +62,10 @@ export function KnowledgeList() {
   useEffect(() => {
     fetchKbList();
   }, []);
+
+  window.onhashchange = function() {
+    console.log('hello')
+  }
 
   const handleCreateModel = useCallback(async () => {
     const name = `知识库${knowledgeList.length + 1}`;
@@ -142,12 +146,12 @@ export function KnowledgeList() {
                     }}
                     {...(kbId === item._id
                       ? {
-                          backgroundImage: `${theme.lgColor.activeBlueGradient} !important`,
-                        }
+                        backgroundImage: `${theme.lgColor.activeBlueGradient} !important`,
+                      }
                       : {})}
                     onClick={() => {
                       if (item._id === kbId) return;
-                      navigate(`${Path.Knowledge}?kbId=${item?._id}`);
+                      navigate(`${Path.Knowledge}?kbId=${item?._id}`)
                     }}
                   >
                     <Avatar avatar={item.avatar} />

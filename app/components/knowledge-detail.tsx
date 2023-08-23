@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-23 20:25:06
+ * :date last edited: 2023-08-23 22:41:58
  */
 
 import React, { useRef, useState } from "react";
@@ -59,7 +59,7 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
     {
       label: "数据管理",
       id: TabEnum.data,
-      Component: <DataManagement kbId={kbId} />,
+      Component: <DataManagement/>,
     },
     {
       label: "搜索测试",

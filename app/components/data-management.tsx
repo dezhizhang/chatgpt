@@ -5,8 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-23 22:08:10
+ * :date last edited: 2023-08-23 23:01:48
  */
+import qs from 'qs';
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
   Box,
@@ -23,6 +24,7 @@ import {
   Grid,
   ChakraProvider,
 } from "@chakra-ui/react";
+import {useLocation} from  "react-router-dom";
 import dynamic from "next/dynamic";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -51,10 +53,19 @@ const InputModal = dynamic(
   },
 );
 
-export function DataManagement({ kbId }: DataMgProps) {
+export function DataManagement() {
+  const location =  useLocation();
   const [total, setTotal] = useState(0);
   const [kbDataList, setKbDataList] = useState<any[]>([]);
+  const urlParse: any = qs.parse(location?.search?.split("?")?.[1]);
   const [editInputData, setEditInputData] = useState<InputDataType>();
+
+  const { kbId } = urlParse || {};
+
+
+  window.onhashchange = function() {
+    console.log('hello')
+  }
 
   const fetchKbDataList = async () => {
     const res = await getKbDataList({
@@ -69,14 +80,14 @@ export function DataManagement({ kbId }: DataMgProps) {
 
   useEffect(() => {
     fetchKbDataList();
-  }, []);
+  }, [kbId]);
 
   return (
     <ChakraProvider theme={theme}>
       <Box position={"relative"} px={5} pb={[1, 5]}>
         <Flex justifyContent={"space-between"}>
           <Box fontWeight={"bold"} fontSize={"lg"} mr={2}>
-            知识库数据: {total}组
+            知识库数据:&nbsp;{total}&nbsp;组
           </Box>
           <Box>
             <IconButton
@@ -245,7 +256,7 @@ export function DataManagement({ kbId }: DataMgProps) {
             kbId={kbId}
             defaultValues={editInputData}
             onClose={() => setEditInputData(undefined)}
-            // onSuccess={() => refetchData()}
+            onSuccess={() => fetchKbDataList()}
           />
         )}
         {/* {isOpenSelectFileModal && (
