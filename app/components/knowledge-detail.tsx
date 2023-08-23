@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-22 05:13:26
+ * :date last edited: 2023-08-23 20:25:06
  */
 
 import React, { useRef, useState } from "react";
@@ -38,7 +38,18 @@ const BaseInfo = dynamic(async () => (await import("./base-info")).BaseInfo, {
   loading: () => <Loading noLogo />,
 });
 
-export function KnowledgeDetail() {
+const DataManagement = dynamic(
+  async () => (await import("./data-management")).DataManagement,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+export interface KbDetailProps {
+  kbId: string;
+}
+
+export function KnowledgeDetail({ kbId }: KbDetailProps) {
   const [currentTab, setCurrentTab] = useState(TabEnum.data);
   const form = useForm<KbItemType>({
     defaultValues: {},
@@ -48,7 +59,7 @@ export function KnowledgeDetail() {
     {
       label: "数据管理",
       id: TabEnum.data,
-      Component: null,
+      Component: <DataManagement kbId={kbId} />,
     },
     {
       label: "搜索测试",
