@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-25 06:30:43
+ * :date last edited: 2023-08-25 06:43:37
  */
 import qs from "qs";
 import React, {
@@ -36,7 +36,6 @@ import { delKbById,putKbById } from "../api/knowledge";
 import { useToast } from "../hooks/useToast";
 import { useLocation } from "react-router-dom";
 import { KbItemType } from "../typing";
-import { getKbById } from "../api/knowledge";
 import styles from "./knowledge-list.module.scss";
 import { UseFormReturn } from "react-hook-form";
 
@@ -72,9 +71,13 @@ export function BaseInfo(
     content: "确认删除该知识库？数据将无法恢复，请确认！",
   });
 
-  // useEffect(() => {
-  //   fetchKbById();
-  // },[kbId]),
+  // useImperativeHandle(ref, () => ({
+  //   initInput: (tags: string) => {
+  //     if (InputRef.current) {
+  //       InputRef.current.value = tags;
+  //     }
+  //   }
+  // }));
 
   const saveSubmitSuccess = useCallback(
     async (data: KbItemType) => {
@@ -117,22 +120,6 @@ export function BaseInfo(
     });
   }, [formState.errors]);
 
-  /* 点击删除 */
-  // const onclickDelKb = useCallback(async () => {
-  //   setBtnLoading(true);
-  //   try {
-  //     await delKbById(kbId);
-
-  //     router.replace(`/kb?kbId=${myKbList.find((item) => item._id !== kbId)?._id || ''}`);
-  //     await loadKbList(true);
-  //   } catch (err: any) {
-  //     toast({
-  //       title: err?.message || '删除失败',
-  //       status: 'error'
-  //     });
-  //   }
-  //   setBtnLoading(false);
-  // }, [setBtnLoading, kbId, toast, router, myKbList, loadKbList]);
   const onclickDelKb = useCallback(async () => {
     setBtnLoading(true);
     await delKbById(kbId);
@@ -140,6 +127,7 @@ export function BaseInfo(
       title: "删除成功",
       status: "success",
     });
+    // router.replace(`/kb?kbId=${myKbList.find((item) => item._id !== kbId)?._id || ''}`);
     setBtnLoading(false);
   }, []);
 
@@ -190,6 +178,7 @@ export function BaseInfo(
           placeholder={"标签,使用空格分割。"}
           maxLength={30}
           onChange={(e) => {
+            console.log('e.target.value')
             setValue("tags", e.target.value);
             // setRefresh(!refresh);
           }}
