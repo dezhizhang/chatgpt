@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-24 09:23:18
+ * :date last edited: 2023-08-25 06:25:02
  */
 
 import React, { useRef, useState, useEffect } from "react";
@@ -82,6 +82,7 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
           kbId={kbId}
           form={form} //@ts-ignore
           ref={basicInfo}
+          onSuccess={() =>fetchKbById()}
         />
       ),
     },

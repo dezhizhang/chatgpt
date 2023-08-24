@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-25 06:20:03
+ * :date last edited: 2023-08-25 06:30:43
  */
 import qs from "qs";
 import React, {
@@ -60,7 +60,7 @@ const Tag = dynamic(async () => (await import("./tag")).Tag, {
 });
 
 export function BaseInfo(
-  { kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any> },
+  { kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any>},
   ref: ForwardedRef<ComponentRef>,
 ) {
   const { toast } = useToast();
@@ -140,9 +140,8 @@ export function BaseInfo(
       title: "删除成功",
       status: "success",
     });
+    setBtnLoading(false);
   }, []);
-
-  console.log('getValues("avatar")', getValues("avatar"));
 
   return (
     <Flex px={5} flexDirection={"column"} alignItems={"center"}>
@@ -213,7 +212,7 @@ export function BaseInfo(
       <Flex mt={5} w={"100%"} maxW={"350px"} alignItems={"flex-end"}>
         <Box flex={"0 0 90px"} w={0}></Box>
         <Button
-          // isLoading={btnLoading}
+          isLoading={btnLoading}
           mr={4}
           w={"100px"}
           onClick={handleSubmit(saveSubmitSuccess, saveSubmitError)}
@@ -221,7 +220,7 @@ export function BaseInfo(
           保存
         </Button>
         <IconButton
-          // isLoading={btnLoading}
+          isLoading={btnLoading}
           icon={<DeleteIcon />}
           aria-label={""}
           variant={"outline"}
@@ -234,7 +233,7 @@ export function BaseInfo(
         />
       </Flex>
       {/* <File onSelect={onSelectFile} /> */}
-      {/* <ConfirmChild /> */}
+      <ConfirmChild />
     </Flex>
   );
 }
