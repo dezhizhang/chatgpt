@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-24 07:52:30
+ * :date last edited: 2023-08-24 09:23:18
  */
 
 import React, { useRef, useState, useEffect } from "react";
@@ -79,18 +79,19 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
       id: TabEnum.info,
       Component: (
         <BaseInfo
+          kbId={kbId}
           form={form} //@ts-ignore
           ref={basicInfo}
         />
       ),
     },
   ]);
-  
+
   const fetchKbById = async () => {
     const res = await getKbById(kbId);
     for (let key in res) {
       console.log(key);
-      form.setValue(key as any,(res as any)[key])
+      form.setValue(key as any, (res as any)[key]);
     }
   };
 

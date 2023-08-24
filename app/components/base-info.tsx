@@ -5,9 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-24 07:42:22
+ * :date last edited: 2023-08-24 09:24:53
  */
-import qs from 'qs'
+import qs from "qs";
 import React, {
   useCallback,
   useState,
@@ -29,11 +29,14 @@ import {
 } from "@chakra-ui/react";
 import { Avatar } from "./emoji";
 import BotIcon from "../icons/bot.svg";
+import { useConfirm } from "../hooks/useConfirm";
 import LoadingIcon from "../icons/three-dots.svg";
 import dynamic from "next/dynamic";
+import { delKbById } from "../api/knowledge";
+import { useToast } from "../hooks/useToast";
 import { useLocation } from "react-router-dom";
 import { KbItemType } from "../typing";
-import { getKbById } from '../api/knowledge';
+import { getKbById } from "../api/knowledge";
 import styles from "./knowledge-list.module.scss";
 import { UseFormReturn } from "react-hook-form";
 
@@ -57,17 +60,17 @@ const Tag = dynamic(async () => (await import("./tag")).Tag, {
 });
 
 export function BaseInfo(
-  { form }: { form: UseFormReturn<KbItemType, any> },
+  { kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any> },
   ref: ForwardedRef<ComponentRef>,
 ) {
-
-
+  const { toast } = useToast();
+  const [btnLoading, setBtnLoading] = useState(false);
   const { getValues, formState, setValue, register, handleSubmit } = form;
   const InputRef = useRef<HTMLInputElement>(null);
 
-
-
-
+  const { openConfirm, ConfirmChild } = useConfirm({
+    content: "确认删除该知识库？数据将无法恢复，请确认！",
+  });
 
   // useEffect(() => {
   //   fetchKbById();
@@ -75,33 +78,33 @@ export function BaseInfo(
 
   const saveSubmitSuccess = useCallback(
     async (data: KbItemType) => {
-    //   setBtnLoading(true);
-    //   try {
-    //     await putKbById({
-    //       id: kbId,
-    //       ...data
-    //     });
-    //     await getKbDetail(kbId, true);
-    //     toast({
-    //       title: '更新成功',
-    //       status: 'success'
-    //     });
-    //     loadKbList(true);
-    //   } catch (err: any) {
-    //     toast({
-    //       title: err?.message || '更新失败',
-    //       status: 'error'
-    //     });
-    //   }
-    //   setBtnLoading(false);
+      //   setBtnLoading(true);
+      //   try {
+      //     await putKbById({
+      //       id: kbId,
+      //       ...data
+      //     });
+      //     await getKbDetail(kbId, true);
+      //     toast({
+      //       title: '更新成功',
+      //       status: 'success'
+      //     });
+      //     loadKbList(true);
+      //   } catch (err: any) {
+      //     toast({
+      //       title: err?.message || '更新失败',
+      //       status: 'error'
+      //     });
+      //   }
+      //   setBtnLoading(false);
     },
     // [getKbDetail, kbId, loadKbList, toast],
-    []
+    [],
   );
   const saveSubmitError = useCallback(() => {
     // deep search message
     const deepSearch = (obj: any): string => {
-      if (!obj) return '提交表单错误';
+      if (!obj) return "提交表单错误";
       if (!!obj.message) {
         return obj.message;
       }
@@ -115,9 +118,32 @@ export function BaseInfo(
     // });
   }, [formState.errors]);
 
+  /* 点击删除 */
+  // const onclickDelKb = useCallback(async () => {
+  //   setBtnLoading(true);
+  //   try {
+  //     await delKbById(kbId);
 
+  //     router.replace(`/kb?kbId=${myKbList.find((item) => item._id !== kbId)?._id || ''}`);
+  //     await loadKbList(true);
+  //   } catch (err: any) {
+  //     toast({
+  //       title: err?.message || '删除失败',
+  //       status: 'error'
+  //     });
+  //   }
+  //   setBtnLoading(false);
+  // }, [setBtnLoading, kbId, toast, router, myKbList, loadKbList]);
+  const onclickDelKb = useCallback(async () => {
+    setBtnLoading(true);
+    await delKbById(kbId);
+    toast({
+      title: "删除成功",
+      status: "success",
+    });
+  }, []);
 
-  console.log('getValues("avatar")',getValues("avatar"));
+  console.log('getValues("avatar")', getValues("avatar"));
 
   return (
     <Flex px={5} flexDirection={"column"} alignItems={"center"}>
@@ -205,7 +231,7 @@ export function BaseInfo(
             color: "red.600",
             borderColor: "red.600",
           }}
-        //   onClick={openConfirm(onclickDelKb)}
+          onClick={openConfirm(onclickDelKb)}
         />
       </Flex>
       {/* <File onSelect={onSelectFile} /> */}
