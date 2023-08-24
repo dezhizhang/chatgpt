@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-24 04:37:39
+ * :date last edited: 2023-08-25 06:19:45
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -64,6 +64,12 @@ export type PushProps = {
   prompt?: string;
 };
 
+export type KbUpdateParams = {
+  id: string;
+  name: string;
+  tags: string;
+  avatar: string;
+};
 
 export type KbTestItemType = {
   id: string;

@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-24 09:24:53
+ * :date last edited: 2023-08-25 06:20:03
  */
 import qs from "qs";
 import React, {
@@ -32,7 +32,7 @@ import BotIcon from "../icons/bot.svg";
 import { useConfirm } from "../hooks/useConfirm";
 import LoadingIcon from "../icons/three-dots.svg";
 import dynamic from "next/dynamic";
-import { delKbById } from "../api/knowledge";
+import { delKbById,putKbById } from "../api/knowledge";
 import { useToast } from "../hooks/useToast";
 import { useLocation } from "react-router-dom";
 import { KbItemType } from "../typing";
@@ -78,28 +78,27 @@ export function BaseInfo(
 
   const saveSubmitSuccess = useCallback(
     async (data: KbItemType) => {
-      //   setBtnLoading(true);
-      //   try {
-      //     await putKbById({
-      //       id: kbId,
-      //       ...data
-      //     });
-      //     await getKbDetail(kbId, true);
-      //     toast({
-      //       title: '更新成功',
-      //       status: 'success'
-      //     });
-      //     loadKbList(true);
-      //   } catch (err: any) {
-      //     toast({
-      //       title: err?.message || '更新失败',
-      //       status: 'error'
-      //     });
-      //   }
-      //   setBtnLoading(false);
+        setBtnLoading(true);
+        try {
+          await putKbById({
+            id: kbId,
+            ...data
+          });
+          toast({
+            title: '更新成功',
+            status: 'success'
+          });
+          // loadKbList(true);
+        } catch (err: any) {
+          toast({
+            title: err?.message || '更新失败',
+            status: 'error'
+          });
+        }
+        setBtnLoading(false);
     },
-    // [getKbDetail, kbId, loadKbList, toast],
-    [],
+    [kbId,  toast],
+   
   );
   const saveSubmitError = useCallback(() => {
     // deep search message
@@ -110,12 +109,12 @@ export function BaseInfo(
       }
       return deepSearch(Object.values(obj)[0]);
     };
-    // toast({
-    //   title: deepSearch(formState.errors),
-    //   status: 'error',
-    //   duration: 4000,
-    //   isClosable: true
-    // });
+    toast({
+      title: deepSearch(formState.errors),
+      status: 'error',
+      duration: 4000,
+      isClosable: true
+    });
   }, [formState.errors]);
 
   /* 点击删除 */
