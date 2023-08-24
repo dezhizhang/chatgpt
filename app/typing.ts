@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 06:19:45
+ * :date last edited: 2023-08-25 07:06:31
  */
 export type Updater<T> = (updater: (value: T) => void) => void;
 
@@ -46,6 +46,14 @@ export type FormData = { dataId?: string; a: string; q: string };
 
 
 
+export type ChatModelItemType = {
+  chatModel: string;
+  name: string;
+  contextMaxToken: number;
+  systemMaxToken: number;
+  maxTemperature: number;
+  price: number;
+};
 export interface KbItemType {
   avatar: string;
   name: string;

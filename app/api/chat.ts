@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:12:37
  * :last editor: 张德志
- * :date last edited: 2023-08-22 07:18:20
+ * :date last edited: 2023-08-25 06:56:46
  */
 import { GET, POST, PUT, DELETE } from "./request";
 
@@ -23,4 +23,9 @@ export const deleteMode = (modelId:string) =>
   DELETE<any>(`/model/del?modelId=${modelId}`);
 
 // 创建模型
-export const createModel = (params:{name:string}) =>POST('/model/create',params) 
+export const createModel = (params:{name:string}) =>POST('/model/create',params);
+
+/**
+ * 根据 ID 获取模型
+ */
+export const getModelById = (id: string) => GET<any>(`/model/detail?modelId=${id}`);

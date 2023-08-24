@@ -5,14 +5,12 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 09:18:52
+ * :date last edited: 2023-08-25 07:21:40
  */
-import { useEffect } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
-
 import styles from "./mask.module.scss";
-
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
 import EditIcon from "../icons/edit.svg";
@@ -20,11 +18,18 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
+import { InputRange } from "./input-range";
 import CopyIcon from "../icons/copy.svg";
 import DragIcon from "../icons/drag.svg";
 import { useToast } from "../hooks/useToast";
 import { Textarea } from "@chakra-ui/react";
-import { getModelList, deleteMode, createModel } from "../api/chat";
+import {
+  getModelList,
+  deleteMode,
+  createModel,
+  getModelById,
+} from "../api/chat";
+import { formatPrice } from "../utils/index";
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import {
   ChatMessage,
@@ -52,7 +57,7 @@ import { useState } from "react";
 import { copyToClipboard, downloadAs, readFromFile } from "../utils";
 import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
-import { FileName, Path } from "../constant";
+import { FileName, Path, chatModelList, ChatModelMap } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
 import { nanoid } from "nanoid";
 import {
@@ -106,6 +111,8 @@ export function MaskConfig(props: {
 
   const globalConfig = useAppConfig();
 
+  console.log("chatModelList", chatModelList);
+
   return (
     <div style={{ height: "600px" }}>
       <List>
@@ -142,71 +149,74 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
         <ListItem title={"介绍"}>
-          <Textarea
-            rows={2}
-            // onChange={(e) => {
-            //   props.updateMask((mask) => {
-            //     mask.hideContext = e.currentTarget.checked;
-            //   });
-            // }}
-          ></Textarea>
-        </ListItem>
-        <ListItem title={"对话模型"}>
           <textarea
+            className={styles["mak-textarea"]}
             rows={2}
-            // onChange={(e) => {
-            //   props.updateMask((mask) => {
-            //     mask.hideContext = e.currentTarget.checked;
-            //   });
-            // }}
+            placeholder="给你的 AI 应用一个介绍"
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                mask.hideContext = e.currentTarget.checked;
+              });
+            }}
           ></textarea>
         </ListItem>
-        <ListItem
-          title={"回复上限"}
-          subTitle={Locale.Settings.MaxTokens.SubTitle}
-        >
-          <input
-            type="number"
-            min={100}
-            max={8000}
-            // value={props.modelConfig.max_tokens}
-            // onChange={(e) =>
-            //   props.updateConfig(
-            //     (config) =>
-            //       (config.max_tokens = ModalConfigValidator.max_tokens(
-            //         e.currentTarget.valueAsNumber,
-            //       )),
-            //   )
-            // }
-          ></input>
+        <ListItem title={"对话模型"}>
+          <Select
+          // value={getLang()}
+          // onChange={(e) => {
+          //   changeLang(e.target.value as any);
+          // }}
+          >
+            {chatModelList.map((item) => (
+              <option value={item.chatModel} key={item}>
+                {`${item.name}\t(${formatPrice(
+                  (ChatModelMap as any)[item.chatModel].price,
+                  1000,
+                )}) 元/1k tokens`}
+              </option>
+            ))}
+          </Select>
         </ListItem>
-        {/* <ListItem
-          title={"回复上限"}
-          // subTitle={Locale.Settings.MaxTokens.SubTitle}
-        >
-          <input
-            type="number"
-            min={100}
-            max={8000}
-            style={{width:'100%'}}
-            // value={props.modelConfig.max_tokens}
-            // onChange={(e) =>
-            //   props.updateConfig(
+        <ListItem title={"温度"}>
+          <InputRange
+            value={0}
+            min="0"
+            max="18"
+            step="1"
+            onChange={function (event: ChangeEvent<HTMLInputElement>): void {
+              throw new Error("Function not implemented.");
+            }} // onChange={(e) =>
+            //   updateConfig(
             //     (config) =>
-            //       (config.max_tokens = ModalConfigValidator.max_tokens(
-            //         e.currentTarget.valueAsNumber,
-            //       )),
+            //       (config.fontSize = Number.parseInt(e.currentTarget.value)),
             //   )
             // }
-          ></input>
-        </ListItem> */}
+          ></InputRange>
+        </ListItem>
+        <ListItem title={"回复上限"}>
+          <InputRange
+            value={0}
+            min="0"
+            max="18"
+            step="1"
+            onChange={function (event: ChangeEvent<HTMLInputElement>): void {
+              throw new Error("Function not implemented.");
+            }} // onChange={(e) =>
+            //   updateConfig(
+            //     (config) =>
+            //       (config.fontSize = Number.parseInt(e.currentTarget.value)),
+            //   )
+            // }
+          ></InputRange>
+        </ListItem>
+
         <ListItem
           title={"提示词"}
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
           <textarea
-           className={styles["mak-textarea"]}
-           placeholder="模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。"
+            className={styles["mak-textarea"]}
+            placeholder="模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。"
             // value={props.modelConfig.max_tokens}
             // onChange={(e) =>
             //   props.updateConfig(
@@ -218,7 +228,7 @@ export function MaskConfig(props: {
             // }
           ></textarea>
         </ListItem>
- 
+
         <ListItem
           title={"限定词"}
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
@@ -472,6 +482,11 @@ export function MaskPage() {
     });
   };
 
+  const handleSubmit = () => {
+    alert("hello");
+    closeMaskModal();
+  };
+
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
@@ -620,34 +635,27 @@ export function MaskPage() {
             onClose={closeMaskModal}
             actions={[
               <IconButton
-                icon={<DownloadIcon />}
-                text={Locale.Mask.EditModal.Download}
+                text={"取消"}
                 key="export"
                 bordered
-                onClick={() =>
-                  downloadAs(
-                    JSON.stringify(editingMask),
-                    `${editingMask.name}.json`,
-                  )
-                }
+                onClick={() => closeMaskModal()}
               />,
               <IconButton
                 key="copy"
-                icon={<CopyIcon />}
+                type="primary"
                 bordered
-                text={Locale.Mask.EditModal.Clone}
-                onClick={() => {
-                  navigate(Path.Masks);
-                  maskStore.create(editingMask);
-                  setEditingMaskId(undefined);
-                }}
+                text={"确定"}
+                onClick={handleSubmit}
               />,
             ]}
           >
             <MaskConfig
               mask={editingMask}
-              updateMask={(updater) =>
-                maskStore.update(editingMaskId!, updater)
+              updateMask={
+                (updater) => {
+                  console.log("MaskConfig", updater);
+                }
+                // maskStore.update(editingMaskId!, updater)
               }
               readonly={editingMask.builtin}
             />

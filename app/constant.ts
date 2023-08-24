@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-23 22:36:45
+ * :date last edited: 2023-08-25 07:06:44
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -45,6 +45,56 @@ export enum TableEnum {
   "promotion" = "promotion",
   "inform" = "inform",
 }
+
+export enum OpenAiChatEnum {
+  'GPT35' = 'gpt-3.5-turbo',
+  'GPT3516k' = 'gpt-3.5-turbo-16k',
+  'GPT4' = 'gpt-4',
+  'GPT432k' = 'gpt-4-32k'
+}
+
+export const ChatModelMap = {
+  [OpenAiChatEnum.GPT35]: {
+    chatModel: OpenAiChatEnum.GPT35,
+    name: 'Gpt35-4k',
+    contextMaxToken: 4000,
+    systemMaxToken: 2400,
+    maxTemperature: 1.2,
+    price: 1.5
+  },
+  [OpenAiChatEnum.GPT3516k]: {
+    chatModel: OpenAiChatEnum.GPT3516k,
+    name: 'Gpt35-16k',
+    contextMaxToken: 16000,
+    systemMaxToken: 8000,
+    maxTemperature: 1.2,
+    price: 3
+  },
+  [OpenAiChatEnum.GPT4]: {
+    chatModel: OpenAiChatEnum.GPT4,
+    name: 'Gpt4',
+    contextMaxToken: 8000,
+    systemMaxToken: 4000,
+    maxTemperature: 1.2,
+    price: 45
+  },
+  [OpenAiChatEnum.GPT432k]: {
+    chatModel: OpenAiChatEnum.GPT432k,
+    name: 'Gpt4-32k',
+    contextMaxToken: 32000,
+    systemMaxToken: 8000,
+    maxTemperature: 1.2,
+    price: 90
+  }
+};
+
+export const chatModelList: any[] = [
+  ChatModelMap[OpenAiChatEnum.GPT3516k],
+  ChatModelMap[OpenAiChatEnum.GPT35],
+  ChatModelMap[OpenAiChatEnum.GPT4]
+];
+
+
 
 
 export enum TrainingModeEnum {
