@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 08:22:06
+ * :date last edited: 2023-08-25 09:35:29
  */
 import { ChangeEvent, useEffect } from "react";
 import { IconButton } from "./button";
@@ -85,34 +85,15 @@ export function MaskAvatar(props: { mask: Mask }) {
 
 export function MaskConfig(props: {
   mask: Mask;
-  updateMask: Updater<Mask>;
+  setMaskConfig: any;
   extraListItems?: JSX.Element;
   readonly?: boolean;
   maskConfig:any;
   shouldSyncFromGlobal?: boolean;
 }) {
+
   const [showPicker, setShowPicker] = useState(false);
-
-  const updateConfig = (updater: (config: ModelConfig) => void) => {
-    if (props.readonly) return;
-
-    const config = { ...props.mask.modelConfig };
-    updater(config);
-    props.updateMask((mask) => {
-      mask.modelConfig = config;
-      // if user changed current session mask, it will disable auto sync
-      mask.syncGlobalConfig = false;
-    });
-  };
-
-  const copyMaskLink = () => {
-    const maskLink = `${location.protocol}//${location.host}/#${Path.NewChat}?mask=${props.mask._id}`;
-    copyToClipboard(maskLink);
-  };
-
-  const globalConfig = useAppConfig();
   const { maskConfig } = props;
-  console.log('maskConfig',maskConfig);
 
   return (
     <div style={{ height: "600px" }}>
@@ -122,8 +103,8 @@ export function MaskConfig(props: {
             content={
               <AvatarPicker
                 onEmojiClick={(emoji) => {
-                  props.updateMask((mask) => (mask.avatar = emoji));
-                  setShowPicker(false);
+                  // props.updateMask((mask) => (mask.avatar = emoji));
+                  // setShowPicker(false);
                 }}
               ></AvatarPicker>
             }
@@ -142,11 +123,15 @@ export function MaskConfig(props: {
           <input
             type="text"
             value={maskConfig.name}
-            onInput={(e) =>
-              props.updateMask((mask) => {
-                name.name = e.currentTarget.value;
+            onInput={(e) => {
+              const value = e.currentTarget.value;
+              props.setMaskConfig((old:any) => {
+                return {
+                  ...old,
+                  name:value
+                }
               })
-            }
+            }}
           ></input>
         </ListItem>
         <ListItem title={"介绍"}>
@@ -156,9 +141,11 @@ export function MaskConfig(props: {
             rows={2}
             placeholder="给你的 AI 应用一个介绍"
             onChange={(e) => {
-              props.updateMask((mask) => {
-                mask.hideContext = e.currentTarget.checked;
-              });
+              const value = e.currentTarget.value;
+              console.log('value',value)
+              // props.updateMask((mask) => {
+              //   mask.hideContext = e.currentTarget.checked;
+              // });
             }}
           ></textarea>
         </ListItem>
@@ -171,7 +158,7 @@ export function MaskConfig(props: {
           // }}
           >
             {chatModelList.map((item) => (
-              <option value={item.chatModel} key={item}>
+              <option value={item.chatModel} key={item.chatModel}>
                 {`${item.name}\t(${formatPrice(
                   (ChatModelMap as any)[item.chatModel].price,
                   1000,
@@ -432,6 +419,8 @@ export function MaskPage() {
   const [maskConfig,setMaskConfig] = useState()
 
   // 获取所有模型
+
+  
   const fetchModelList = async () => {
     const res = await getModelList();
     setMasks(res?.myModels || []);
@@ -666,12 +655,7 @@ export function MaskPage() {
             <MaskConfig
               mask={editingMask}
               maskConfig={maskConfig}
-              updateMask={
-                (updater) => {
-                  console.log("MaskConfig", updater);
-                }
-                // maskStore.update(editingMaskId!, updater)
-              }
+              setMaskConfig={setMaskConfig}
               readonly={editingMask.builtin}
             />
           </Modal>
