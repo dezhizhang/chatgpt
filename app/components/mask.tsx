@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 07:21:40
+ * :date last edited: 2023-08-25 08:14:46
  */
 import { ChangeEvent, useEffect } from "react";
 import { IconButton } from "./button";
@@ -88,6 +88,7 @@ export function MaskConfig(props: {
   updateMask: Updater<Mask>;
   extraListItems?: JSX.Element;
   readonly?: boolean;
+  maskConfig:any;
   shouldSyncFromGlobal?: boolean;
 }) {
   const [showPicker, setShowPicker] = useState(false);
@@ -110,8 +111,8 @@ export function MaskConfig(props: {
   };
 
   const globalConfig = useAppConfig();
-
-  console.log("chatModelList", chatModelList);
+  const { maskConfig } = props;
+  console.log('maskConfig',maskConfig);
 
   return (
     <div style={{ height: "600px" }}>
@@ -140,12 +141,12 @@ export function MaskConfig(props: {
         <ListItem title={"名称"}>
           <input
             type="text"
-            // value={props.name}
-            // onInput={(e) =>
-            //   props.updateMask((mask) => {
-            //     name.name = e.currentTarget.value;
-            //   })
-            // }
+            value={props.name}
+            onInput={(e) =>
+              props.updateMask((mask) => {
+                name.name = e.currentTarget.value;
+              })
+            }
           ></input>
         </ListItem>
         <ListItem title={"介绍"}>
@@ -424,11 +425,19 @@ export function MaskPage() {
   const chatStore = useChatStore();
 
   const [filterLang, setFilterLang] = useState<Lang>();
+  const [maskConfig,setMaskConfig] = useState()
 
   // 获取所有模型
   const fetchModelList = async () => {
     const res = await getModelList();
     setMasks(res?.myModels || []);
+  };
+
+  // 编辑模型
+  const handleEdit = async(item:any) => {
+    const res = await getModelById(item?._id);
+    setMaskConfig(res);
+    setEditingMaskId(item?._id)
   };
 
   useEffect(() => {
@@ -461,6 +470,8 @@ export function MaskPage() {
   const downloadAll = () => {
     downloadAs(JSON.stringify(masks), FileName.Masks);
   };
+
+
 
   const importFromFile = () => {
     readFromFile().then((content) => {
@@ -600,10 +611,7 @@ export function MaskPage() {
                     <IconButton
                       icon={<EditIcon />}
                       text={Locale.Mask.Item.Edit}
-                      onClick={() => {
-                        const createdMask = maskStore.create();
-                        setEditingMaskId(createdMask?._id);
-                      }}
+                      onClick={() => handleEdit(m)}
                     />
                   )}
                   {!m.builtin && (
@@ -651,6 +659,7 @@ export function MaskPage() {
           >
             <MaskConfig
               mask={editingMask}
+              maskConfig={maskConfig}
               updateMask={
                 (updater) => {
                   console.log("MaskConfig", updater);
