@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 08:14:46
+ * :date last edited: 2023-08-25 08:22:06
  */
 import { ChangeEvent, useEffect } from "react";
 import { IconButton } from "./button";
@@ -141,7 +141,7 @@ export function MaskConfig(props: {
         <ListItem title={"名称"}>
           <input
             type="text"
-            value={props.name}
+            value={maskConfig.name}
             onInput={(e) =>
               props.updateMask((mask) => {
                 name.name = e.currentTarget.value;
@@ -151,6 +151,7 @@ export function MaskConfig(props: {
         </ListItem>
         <ListItem title={"介绍"}>
           <textarea
+            value={maskConfig.intro}
             className={styles["mak-textarea"]}
             rows={2}
             placeholder="给你的 AI 应用一个介绍"
@@ -163,6 +164,7 @@ export function MaskConfig(props: {
         </ListItem>
         <ListItem title={"对话模型"}>
           <Select
+            value={maskConfig?.chat.chatModel}
           // value={getLang()}
           // onChange={(e) => {
           //   changeLang(e.target.value as any);
@@ -216,6 +218,7 @@ export function MaskConfig(props: {
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
           <textarea
+            value={maskConfig?.systemPrompt}
             className={styles["mak-textarea"]}
             placeholder="模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。"
             // value={props.modelConfig.max_tokens}
@@ -235,6 +238,7 @@ export function MaskConfig(props: {
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
           <textarea
+            value={maskConfig?.limitPrompt}
             className={styles["mak-textarea"]}
             placeholder='限定模型对话范围，会被放置在本次提问前，拥有强引导和限定性。例如:
           1. 知识库是关于 Laf 的介绍，参考知识库回答问题，与 "Laf" 无关内容，直接回复: "我不知道"。
@@ -437,7 +441,9 @@ export function MaskPage() {
   const handleEdit = async(item:any) => {
     const res = await getModelById(item?._id);
     setMaskConfig(res);
-    setEditingMaskId(item?._id)
+    const createdMask = maskStore.create();
+    setEditingMaskId(createdMask?._id);
+    // setEditingMaskId(item?._id)
   };
 
   useEffect(() => {
