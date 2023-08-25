@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-25 23:39:27
+ * :date last edited: 2023-08-25 23:46:23
  */
 
 import React, { useRef, useState, useEffect } from "react";
@@ -92,7 +92,6 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
   const fetchKbById = async () => {
     const res = await getKbById(kbId);
     for (let key in res) {
-      console.log(key);
       form.setValue(key as any, (res as any)[key]);
     }
   };
