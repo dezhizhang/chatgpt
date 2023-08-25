@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 21:42:00
+ * :date last edited: 2023-08-25 22:11:31
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -20,7 +20,7 @@ import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import { InputRange } from "./input-range";
 import DragIcon from "../icons/drag.svg";
-import { useToast } from "../hooks/useToast";
+import { useToast } from '../hooks/useToast';
 import {
   getModelList,
   deleteMode,
@@ -430,11 +430,10 @@ export function MaskPage() {
   const { toast } = useToast();
   const maskStore = useMaskStore();
   const chatStore = useChatStore();
-
   const [filterLang, setFilterLang] = useState<Lang>();
   const [maskConfig, setMaskConfig] = useState();
   const [searchText, setSearchText] = useState("");
-  const [modelId,setModelId] = useState<string>('')
+  const [modelId, setModelId] = useState<string>("");
   const [editingMaskId, setEditingMaskId] = useState<string | undefined>();
   // 获取所有模型
 
@@ -496,23 +495,21 @@ export function MaskPage() {
 
   const handleSubmit = async () => {
     console.log({ modelId });
-    try{
-      await putModelById(modelId,maskConfig);
+    try {
+      await putModelById(modelId, maskConfig);
       toast({
         title:'更新面具成功',
-        status: 'success'
-      });
+        status:'success'
+      })
       fetchModelList();
       closeMaskModal();
-    }catch(error) {
+    } catch (error) {
       toast({
-        title:'更新面具成功',
-        status: 'error'
+        title:'更新面具失败',
+        status:'error'
       });
     }
   };
-
-  console.log(editingMask);
 
   return (
     <ErrorBoundary>
@@ -639,7 +636,10 @@ export function MaskPage() {
                           await showConfirm(Locale.Mask.Item.DeleteConfirm, 500)
                         ) {
                           await deleteMode(m?._id);
-                          showToast("删除成功");
+                          toast({
+                            title:'删除成功',
+                            status:'success',
+                          })
                           fetchModelList();
                         }
                       }}

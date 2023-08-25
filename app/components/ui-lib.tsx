@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-22 07:14:03
+ * :date last edited: 2023-08-25 22:05:05
  */
 /* eslint-disable @next/next/no-img-element */
 import styles from "./ui-lib.module.scss";
@@ -224,6 +224,7 @@ export function Toast(props: ToastProps) {
 
 export function showToast(
   content: string,
+  position: 'top',
   action?: ToastProps["action"],
   delay = 3000,
 ) {
