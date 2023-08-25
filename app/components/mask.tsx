@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 09:35:29
+ * :date last edited: 2023-08-25 20:33:11
  */
 import { ChangeEvent, useEffect } from "react";
 import { IconButton } from "./button";
@@ -88,10 +88,9 @@ export function MaskConfig(props: {
   setMaskConfig: any;
   extraListItems?: JSX.Element;
   readonly?: boolean;
-  maskConfig:any;
+  maskConfig: any;
   shouldSyncFromGlobal?: boolean;
 }) {
-
   const [showPicker, setShowPicker] = useState(false);
   const { maskConfig } = props;
 
@@ -125,12 +124,12 @@ export function MaskConfig(props: {
             value={maskConfig.name}
             onInput={(e) => {
               const value = e.currentTarget.value;
-              props.setMaskConfig((old:any) => {
+              props.setMaskConfig((old: any) => {
                 return {
                   ...old,
-                  name:value
-                }
-              })
+                  name: value,
+                };
+              });
             }}
           ></input>
         </ListItem>
@@ -142,20 +141,32 @@ export function MaskConfig(props: {
             placeholder="给你的 AI 应用一个介绍"
             onChange={(e) => {
               const value = e.currentTarget.value;
-              console.log('value',value)
-              // props.updateMask((mask) => {
-              //   mask.hideContext = e.currentTarget.checked;
-              // });
+              props.setMaskConfig((old: any) => {
+                return {
+                  ...old,
+                  intro: value,
+                };
+              });
             }}
           ></textarea>
         </ListItem>
         <ListItem title={"对话模型"}>
           <Select
-            value={maskConfig?.chat.chatModel}
-          // value={getLang()}
-          // onChange={(e) => {
-          //   changeLang(e.target.value as any);
-          // }}
+            value={maskConfig?.chat?.chatModel}
+            onChange={(e) => {
+              const value = e.target.value;
+              props.setMaskConfig((old: any) => {
+                console.log('value',value)
+                return {
+                  ...old,
+                  maskConfig: {
+                    chat: {
+                      chatModel: value,
+                    },
+                  },
+                };
+              });
+            }}
           >
             {chatModelList.map((item) => (
               <option value={item.chatModel} key={item.chatModel}>
@@ -416,18 +427,17 @@ export function MaskPage() {
   const chatStore = useChatStore();
 
   const [filterLang, setFilterLang] = useState<Lang>();
-  const [maskConfig,setMaskConfig] = useState()
+  const [maskConfig, setMaskConfig] = useState();
 
   // 获取所有模型
 
-  
   const fetchModelList = async () => {
     const res = await getModelList();
     setMasks(res?.myModels || []);
   };
 
   // 编辑模型
-  const handleEdit = async(item:any) => {
+  const handleEdit = async (item: any) => {
     const res = await getModelById(item?._id);
     setMaskConfig(res);
     const createdMask = maskStore.create();
@@ -465,8 +475,6 @@ export function MaskPage() {
   const downloadAll = () => {
     downloadAs(JSON.stringify(masks), FileName.Masks);
   };
-
-
 
   const importFromFile = () => {
     readFromFile().then((content) => {
