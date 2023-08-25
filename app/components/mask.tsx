@@ -5,9 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 20:46:07
+ * :date last edited: 2023-08-25 21:11:02
  */
-import { ChangeEvent, useEffect } from "react";
+import { useEffect } from "react";
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 import styles from "./mask.module.scss";
@@ -29,11 +29,7 @@ import {
 } from "../api/chat";
 import { formatPrice } from "../utils/index";
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
-import {
-  ChatMessage,
-  createMessage,
-  useChatStore,
-} from "../store";
+import { ChatMessage, createMessage, useChatStore } from "../store";
 import { ROLES } from "../client/api";
 import {
   Input,
@@ -50,12 +46,9 @@ import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 import chatStyle from "./chat.module.scss";
 import { useState } from "react";
-import { copyToClipboard, downloadAs, readFromFile } from "../utils";
-import { Updater } from "../typing";
-import { ModelConfigList } from "./model-config";
+import { downloadAs, readFromFile } from "../utils";
 import { FileName, Path, chatModelList, ChatModelMap } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
-import { nanoid } from "nanoid";
 import {
   DragDropContext,
   Droppable,
@@ -176,37 +169,43 @@ export function MaskConfig(props: {
         </ListItem>
         <ListItem title={"温度"}>
           <InputRange
-            value={0}
+            value={maskConfig?.chat?.temperature}
             min="0"
-            max="18"
+            max="10"
             step="1"
-            onChange={function (event: ChangeEvent<HTMLInputElement>): void {
-              throw new Error("Function not implemented.");
-            }} // onChange={(e) =>
-            //   updateConfig(
-            //     (config) =>
-            //       (config.fontSize = Number.parseInt(e.currentTarget.value)),
-            //   )
-            // }
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              props.setMaskConfig((old: any) => {
+                return {
+                  ...old,
+                  chat: {
+                    ...old.chat,
+                    temperature: Number.parseInt(value),
+                  },
+                };
+              });
+            }}
           ></InputRange>
         </ListItem>
         <ListItem title={"回复上限"}>
           <InputRange
-            value={0}
-            min="0"
-            max="18"
-            step="1"
-            onChange={(e) => {}}
-            // onChange={function (event: ChangeEvent<HTMLInputElement>): void {
-            //   throw new Error("Function not implemented.");
-            // }}
-
-            // onChange={(e) =>
-            //   updateConfig(
-            //     (config) =>
-            //       (config.fontSize = Number.parseInt(e.currentTarget.value)),
-            //   )
-            // }
+            value={maskConfig?.chat?.maxToken}
+            min="100"
+            max="8000"
+            step="100"
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              props.setMaskConfig((old: any) => {
+                console.log('old',old);
+                return {
+                  ...old,
+                  chat: {
+                    ...old.chat,
+                    maxToken: value,
+                  },
+                };
+              });
+            }}
           ></InputRange>
         </ListItem>
 
