@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 23:38:54
  * :last editor: 张德志
- * :date last edited: 2023-08-25 06:25:02
+ * :date last edited: 2023-08-25 23:39:27
  */
 
 import React, { useRef, useState, useEffect } from "react";
@@ -18,6 +18,7 @@ import { getKbById } from "../api/knowledge";
 import { useForm } from "react-hook-form";
 import type { KbItemType } from "../typing";
 import { type ComponentRef } from "./base-info";
+import BaseInfo from './base-info';
 import styles from "./knowledge-list.module.scss";
 import { Box, Flex, ChakraProvider } from "@chakra-ui/react";
 
@@ -35,9 +36,9 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
-const BaseInfo = dynamic(async () => (await import("./base-info")).BaseInfo, {
-  loading: () => <Loading noLogo />,
-});
+// const BaseInfo = dynamic(async () => (await import("./base-info")).BaseInfo, {
+//   loading: () => <Loading noLogo />,
+// });
 
 const DataManagement = dynamic(
   async () => (await import("./data-management")).DataManagement,
@@ -82,7 +83,7 @@ export function KnowledgeDetail({ kbId }: KbDetailProps) {
           kbId={kbId}
           form={form} //@ts-ignore
           ref={basicInfo}
-          onSuccess={() =>fetchKbById()}
+          // onSuccess={() =>fetchKbById()}
         />
       ),
     },

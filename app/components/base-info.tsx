@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-25 06:43:37
+ * :date last edited: 2023-08-25 23:43:42
  */
 import qs from "qs";
 import React, {
@@ -58,10 +58,8 @@ const Tag = dynamic(async () => (await import("./tag")).Tag, {
   loading: () => <Loading noLogo />,
 });
 
-export function BaseInfo(
-  { kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any>},
-  ref: ForwardedRef<ComponentRef>,
-) {
+
+const  BaseInfo = forwardRef(({ kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any>},ref) =>{
   const { toast } = useToast();
   const [btnLoading, setBtnLoading] = useState(false);
   const { getValues, formState, setValue, register, handleSubmit } = form;
@@ -71,13 +69,13 @@ export function BaseInfo(
     content: "确认删除该知识库？数据将无法恢复，请确认！",
   });
 
-  // useImperativeHandle(ref, () => ({
-  //   initInput: (tags: string) => {
-  //     if (InputRef.current) {
-  //       InputRef.current.value = tags;
-  //     }
-  //   }
-  // }));
+  useImperativeHandle(ref, () => ({
+    initInput: (tags: string) => {
+      if (InputRef.current) {
+        InputRef.current.value = tags;
+      }
+    }
+  }));
 
   const saveSubmitSuccess = useCallback(
     async (data: KbItemType) => {
@@ -178,7 +176,7 @@ export function BaseInfo(
           placeholder={"标签,使用空格分割。"}
           maxLength={30}
           onChange={(e) => {
-            console.log('e.target.value')
+            console.log(e.target.value)
             setValue("tags", e.target.value);
             // setRefresh(!refresh);
           }}
@@ -225,4 +223,7 @@ export function BaseInfo(
       <ConfirmChild />
     </Flex>
   );
-}
+});
+
+export default BaseInfo;
+
