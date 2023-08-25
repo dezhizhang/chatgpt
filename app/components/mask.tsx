@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 20:33:11
+ * :date last edited: 2023-08-25 20:41:06
  */
 import { ChangeEvent, useEffect } from "react";
 import { IconButton } from "./button";
@@ -216,7 +216,7 @@ export function MaskConfig(props: {
           // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
           <textarea
-            value={maskConfig?.systemPrompt}
+            value={maskConfig?.chat?.systemPrompt}
             className={styles["mak-textarea"]}
             placeholder="模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。"
             // value={props.modelConfig.max_tokens}
@@ -233,10 +233,20 @@ export function MaskConfig(props: {
 
         <ListItem
           title={"限定词"}
-          // subTitle={Locale.Settings.MaxTokens.SubTitle}
         >
           <textarea
-            value={maskConfig?.limitPrompt}
+            value={maskConfig?.chat.limitPrompt}
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              props.setMaskConfig((old:any) => {
+                return {
+                  ...old,
+                  chat:{
+                    limitPrompt:value
+                  }
+                }
+              })
+            }}
             className={styles["mak-textarea"]}
             placeholder='限定模型对话范围，会被放置在本次提问前，拥有强引导和限定性。例如:
           1. 知识库是关于 Laf 的介绍，参考知识库回答问题，与 "Laf" 无关内容，直接回复: "我不知道"。
