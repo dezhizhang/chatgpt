@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 21:11:02
+ * :date last edited: 2023-08-25 21:42:00
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -26,6 +26,7 @@ import {
   deleteMode,
   createModel,
   getModelById,
+  putModelById,
 } from "../api/chat";
 import { formatPrice } from "../utils/index";
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
@@ -145,13 +146,11 @@ export function MaskConfig(props: {
             onChange={(e) => {
               const value = e.target.value;
               props.setMaskConfig((old: any) => {
-                console.log("value", value);
                 return {
                   ...old,
-                  maskConfig: {
-                    chat: {
-                      chatModel: value,
-                    },
+                  chat: {
+                    ...old?.chat,
+                    chatModel: value,
                   },
                 };
               });
@@ -179,7 +178,7 @@ export function MaskConfig(props: {
                 return {
                   ...old,
                   chat: {
-                    ...old.chat,
+                    ...old?.chat,
                     temperature: Number.parseInt(value),
                   },
                 };
@@ -196,11 +195,11 @@ export function MaskConfig(props: {
             onChange={(e) => {
               const value = e.currentTarget.value;
               props.setMaskConfig((old: any) => {
-                console.log('old',old);
+                console.log("old", old);
                 return {
                   ...old,
                   chat: {
-                    ...old.chat,
+                    ...old?.chat,
                     maxToken: value,
                   },
                 };
@@ -220,6 +219,7 @@ export function MaskConfig(props: {
                 return {
                   ...old,
                   chat: {
+                    ...old?.chat,
                     systemPrompt: value,
                   },
                 };
@@ -236,6 +236,7 @@ export function MaskConfig(props: {
                 return {
                   ...old,
                   chat: {
+                    ...old?.chat,
                     limitPrompt: value,
                   },
                 };
@@ -432,7 +433,9 @@ export function MaskPage() {
 
   const [filterLang, setFilterLang] = useState<Lang>();
   const [maskConfig, setMaskConfig] = useState();
-
+  const [searchText, setSearchText] = useState("");
+  const [modelId,setModelId] = useState<string>('')
+  const [editingMaskId, setEditingMaskId] = useState<string | undefined>();
   // 获取所有模型
 
   const fetchModelList = async () => {
@@ -445,22 +448,14 @@ export function MaskPage() {
     const res = await getModelById(item?._id);
     setMaskConfig(res);
     const createdMask = maskStore.create();
-    setEditingMaskId(createdMask?._id);
-    // setEditingMaskId(item?._id)
+    setModelId(item?._id);
+    setEditingMaskId(createdMask._id);
   };
 
   useEffect(() => {
     fetchModelList();
   }, []);
 
-  const allMasks = maskStore
-    .getAll()
-    .filter((m) => !filterLang || m.lang === filterLang);
-
-  const [searchText, setSearchText] = useState("");
-  // const masks = searchText.length > 0 ? searchMasks : allMasks;
-
-  // simple search, will refactor later
   const onSearch = (text: string) => {
     setSearchText(text);
     if (text?.length) {
@@ -471,7 +466,6 @@ export function MaskPage() {
     }
   };
 
-  const [editingMaskId, setEditingMaskId] = useState<string | undefined>();
   const editingMask =
     maskStore.get(editingMaskId) ?? BUILTIN_MASK_STORE.get(editingMaskId);
   const closeMaskModal = () => setEditingMaskId(undefined);
@@ -500,10 +494,25 @@ export function MaskPage() {
     });
   };
 
-  const handleSubmit = () => {
-    alert("hello");
-    closeMaskModal();
+  const handleSubmit = async () => {
+    console.log({ modelId });
+    try{
+      await putModelById(modelId,maskConfig);
+      toast({
+        title:'更新面具成功',
+        status: 'success'
+      });
+      fetchModelList();
+      closeMaskModal();
+    }catch(error) {
+      toast({
+        title:'更新面具成功',
+        status: 'error'
+      });
+    }
   };
+
+  console.log(editingMask);
 
   return (
     <ErrorBoundary>
@@ -514,7 +523,7 @@ export function MaskPage() {
               {Locale.Mask.Page.Title}
             </div>
             <div className="window-header-submai-title">
-              {Locale.Mask.Page.SubTitle(allMasks.length)}
+              {Locale.Mask.Page.SubTitle(masks?.length)}
             </div>
           </div>
 
