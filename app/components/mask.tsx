@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 20:41:06
+ * :date last edited: 2023-08-25 20:46:07
  */
 import { ChangeEvent, useEffect } from "react";
 import { IconButton } from "./button";
@@ -19,10 +19,8 @@ import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import { InputRange } from "./input-range";
-import CopyIcon from "../icons/copy.svg";
 import DragIcon from "../icons/drag.svg";
 import { useToast } from "../hooks/useToast";
-import { Textarea } from "@chakra-ui/react";
 import {
   getModelList,
   deleteMode,
@@ -34,8 +32,6 @@ import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import {
   ChatMessage,
   createMessage,
-  ModelConfig,
-  useAppConfig,
   useChatStore,
 } from "../store";
 import { ROLES } from "../client/api";
@@ -156,7 +152,7 @@ export function MaskConfig(props: {
             onChange={(e) => {
               const value = e.target.value;
               props.setMaskConfig((old: any) => {
-                console.log('value',value)
+                console.log("value", value);
                 return {
                   ...old,
                   maskConfig: {
@@ -200,9 +196,12 @@ export function MaskConfig(props: {
             min="0"
             max="18"
             step="1"
-            onChange={function (event: ChangeEvent<HTMLInputElement>): void {
-              throw new Error("Function not implemented.");
-            }} // onChange={(e) =>
+            onChange={(e) => {}}
+            // onChange={function (event: ChangeEvent<HTMLInputElement>): void {
+            //   throw new Error("Function not implemented.");
+            // }}
+
+            // onChange={(e) =>
             //   updateConfig(
             //     (config) =>
             //       (config.fontSize = Number.parseInt(e.currentTarget.value)),
@@ -211,41 +210,37 @@ export function MaskConfig(props: {
           ></InputRange>
         </ListItem>
 
-        <ListItem
-          title={"提示词"}
-          // subTitle={Locale.Settings.MaxTokens.SubTitle}
-        >
+        <ListItem title={"提示词"}>
           <textarea
             value={maskConfig?.chat?.systemPrompt}
             className={styles["mak-textarea"]}
             placeholder="模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。"
-            // value={props.modelConfig.max_tokens}
-            // onChange={(e) =>
-            //   props.updateConfig(
-            //     (config) =>
-            //       (config.max_tokens = ModalConfigValidator.max_tokens(
-            //         e.currentTarget.valueAsNumber,
-            //       )),
-            //   )
-            // }
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              props.setMaskConfig((old: any) => {
+                return {
+                  ...old,
+                  chat: {
+                    systemPrompt: value,
+                  },
+                };
+              });
+            }}
           ></textarea>
         </ListItem>
-
-        <ListItem
-          title={"限定词"}
-        >
+        <ListItem title={"限定词"}>
           <textarea
             value={maskConfig?.chat.limitPrompt}
             onChange={(e) => {
               const value = e.currentTarget.value;
-              props.setMaskConfig((old:any) => {
+              props.setMaskConfig((old: any) => {
                 return {
                   ...old,
-                  chat:{
-                    limitPrompt:value
-                  }
-                }
-              })
+                  chat: {
+                    limitPrompt: value,
+                  },
+                };
+              });
             }}
             className={styles["mak-textarea"]}
             placeholder='限定模型对话范围，会被放置在本次提问前，拥有强引导和限定性。例如:
