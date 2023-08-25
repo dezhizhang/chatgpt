@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 13:57:06
+ * :date last edited: 2023-08-25 22:24:14
  */
 /* eslint-disable @next/next/no-img-element */
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
@@ -327,7 +327,7 @@ export function PreviewActions(props: {
       })
       .catch((e) => {
         console.error("[Share]", e);
-        showToast(prettyObject(e));
+        // showToast(prettyObject(e));
       })
       .finally(() => setLoading(false));
   };

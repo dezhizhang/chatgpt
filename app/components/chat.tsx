@@ -1,12 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  Fragment,
-} from "react";
-
+import React, { useState, useRef, useEffect, useMemo, Fragment } from "react";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -15,7 +8,6 @@ import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import PromptIcon from "../icons/prompt.svg";
-import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
@@ -68,11 +60,7 @@ import {
   showToast,
 } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
-import {
-  CHAT_PAGE_SIZE,
-  LAST_INPUT_KEY,
-  Path,
-} from "../constant";
+import { CHAT_PAGE_SIZE, LAST_INPUT_KEY, Path } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
@@ -125,11 +113,11 @@ export function SessionConfigModel(props: { onClose: () => void }) {
       >
         <MaskConfig
           mask={session.mask}
-          updateMask={(updater) => {
-            const mask = { ...session.mask };
-            updater(mask);
-            chatStore.updateCurrentSession((session) => (session.mask = mask));
-          }}
+          // updateMask={(updater) => {
+          //   const mask = { ...session.mask };
+          //   updater(mask);
+          //   chatStore.updateCurrentSession((session) => (session.mask = mask));
+          // }}
           shouldSyncFromGlobal
           extraListItems={
             session.mask.modelConfig.sendMemory ? (
@@ -141,6 +129,8 @@ export function SessionConfigModel(props: { onClose: () => void }) {
               <></>
             )
           }
+          setMaskConfig={undefined}
+          maskConfig={undefined}
         ></MaskConfig>
       </Modal>
     </div>
@@ -414,7 +404,7 @@ export function ChatActions(props: {
     config.update((config) => (config.theme = nextTheme));
   }
 
-  console.log('config', config);
+  console.log("config", config);
 
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
@@ -441,7 +431,7 @@ export function ChatActions(props: {
           text={Locale.Chat.InputActions.Stop}
           icon={<StopIcon />}
         />
-      )} 
+      )}
       {!props.hitBottom && (
         <ChatAction
           onClick={props.scrollToBottom}
@@ -471,7 +461,7 @@ export function ChatActions(props: {
             ) : null}
           </>
         }
-      /> 
+      />
 
       <ChatAction
         onClick={props.showPromptHints}
@@ -816,16 +806,18 @@ function _Chat() {
       session.mask.context.push(message),
     );
 
-    showToast(Locale.Chat.Actions.PinToastContent, {
-      text: Locale.Chat.Actions.PinToastAction,
-      onClick: () => {
-        setShowPromptModal(true);
-      },
-    });
+    // showToast(Locale.Chat.Actions.PinToastContent, {
+    //   text: Locale.Chat.Actions.PinToastAction,
+    //   onClick: () => {
+    //     setShowPromptModal(true);
+    //   },
+    // });
   };
 
   const context: RenderMessage[] = useMemo(() => {
-    return session.mask.hideContext ? [] : (session.mask?.context || [])?.slice();
+    return session.mask.hideContext
+      ? []
+      : (session.mask?.context || [])?.slice();
   }, [session.mask.context, session.mask.hideContext]);
 
   const renderMessages = useMemo(() => {
@@ -834,27 +826,27 @@ function _Chat() {
       .concat(
         isLoading
           ? [
-            {
-              ...createMessage({
-                role: "assistant",
-                content: "……",
-              }),
-              preview: true,
-            },
-          ]
+              {
+                ...createMessage({
+                  role: "assistant",
+                  content: "……",
+                }),
+                preview: true,
+              },
+            ]
           : [],
       )
       .concat(
         userInput?.length > 0 && config.sendPreviewBubble
           ? [
-            {
-              ...createMessage({
-                role: "user",
-                content: userInput,
-              }),
-              preview: true,
-            },
-          ]
+              {
+                ...createMessage({
+                  role: "user",
+                  content: userInput,
+                }),
+                preview: true,
+              },
+            ]
           : [],
       );
   }, [
@@ -946,7 +938,7 @@ function _Chat() {
         if (payload.key || payload.url) {
           showConfirm(
             Locale.URLCommand.Settings +
-            `\n${JSON.stringify(payload, null, 4)}`,
+              `\n${JSON.stringify(payload, null, 4)}`,
           ).then((res) => {
             if (!res) return;
             if (payload.key) {
