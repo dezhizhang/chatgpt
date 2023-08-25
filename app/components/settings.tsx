@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-21 22:24:37
+ * :date last edited: 2023-08-25 21:51:48
  */
 import { useState, useEffect, useMemo } from "react";
 
@@ -320,7 +320,6 @@ function SyncItems() {
 
 export function Settings() {
   const navigate = useNavigate();
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
   const updateConfig = config.update;
 

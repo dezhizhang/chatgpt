@@ -5,14 +5,12 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 16:12:11
  * :last editor: 张德志
- * :date last edited: 2023-08-16 04:24:49
+ * :date last edited: 2023-08-25 21:51:08
  */
 import React, { useState, Dispatch, useCallback, CSSProperties } from "react";
 import { PageTypeEnum } from "../constant";
 import { postRegister } from '../api/user';
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { Path } from "../constant";
 import { useToast } from '../hooks/useToast';
 import { useSendCode } from '../hooks/useSendCode';
 import {
@@ -49,7 +47,6 @@ export function RegisterForm({ setPageType }: RegisterProps) {
     mode: "onBlur",
   });
   const { toast } = useToast();
-  const navigate = useNavigate();
   const { codeSending, sendCodeText, sendCode, codeCountDown } = useSendCode();
   const onclickSendCode = useCallback(async () => {
     const check = await trigger('username');
