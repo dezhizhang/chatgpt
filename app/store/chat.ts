@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 17:06:48
+ * :date last edited: 2023-08-26 21:37:20
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -29,6 +29,8 @@ import { nanoid } from "nanoid";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
+
+
 export type ChatMessage = RequestMessage & {
   streaming?: boolean;
   _id: string;
@@ -36,7 +38,6 @@ export type ChatMessage = RequestMessage & {
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
-  console.log(override);
   return {
     _id: String(new Types.ObjectId()),
     role: override.role as MessageRole,
@@ -231,10 +232,12 @@ export const useChatStore = create<ChatStore>()(
           currentIndex - Number(index < currentIndex),
           sessions.length - 1,
         );
-
+        
+        // 最后一个不能删除
         if (deletingLastSession) {
           nextIndex = 0;
-          sessions.push(createEmptySession());
+          showToast('至少保留一个面具');
+          return;
         }
 
         // for undo delete action
