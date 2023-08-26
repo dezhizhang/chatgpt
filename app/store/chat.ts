@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 15:50:23
+ * :date last edited: 2023-08-26 17:06:48
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -286,8 +286,7 @@ export const useChatStore = create<ChatStore>()(
       async onUserInput(content) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
-        const { _id: modelId } = session.mask || {}
-
+     
         const userContent = fillTemplateWith(content, modelConfig);
 
         console.log("[User Input] after template: ", userContent);
@@ -306,10 +305,7 @@ export const useChatStore = create<ChatStore>()(
      
    
         const sendMessages = recentMessages.concat(userMessage);
-
-        console.log({sendMessages});
         
-
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -327,7 +323,7 @@ export const useChatStore = create<ChatStore>()(
         api.llm.chat({
           messages: sendMessages,
         
-          config: {  stream: true,  appId:modelId,model:'',chatId:'' },
+          config: {  stream: true,  appId:session?.mask?._id,model:'',chatId:'' },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {
@@ -353,7 +349,7 @@ export const useChatStore = create<ChatStore>()(
                 message: error.message,
               });
             botMessage.streaming = false;
-            
+
             get().updateCurrentSession((session) => {
               session.messages = session.messages.concat();
             });
@@ -488,7 +484,6 @@ export const useChatStore = create<ChatStore>()(
 
       summarizeSession() {
         const session = get().currentSession();
-
         // remove error messages if any
         const messages = session.messages;
 
@@ -508,7 +503,7 @@ export const useChatStore = create<ChatStore>()(
             messages: topicMessages,
             config: {
               model: "gpt-3.5-turbo",
-              appId: "",
+              appId: session?.mask?._id,
               chatId: ""
             },
             onFinish(message) {
@@ -564,7 +559,7 @@ export const useChatStore = create<ChatStore>()(
             ),
             config: {
               ...modelConfig, stream: true, model: "gpt-3.5-turbo",
-              appId: "",
+              appId: session?.mask?._id,
               chatId: ""
             },
             onUpdate(message) {
