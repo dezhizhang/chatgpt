@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-25 23:45:47
+ * :date last edited: 2023-08-26 14:44:37
  */
 import React, {
   useCallback,
@@ -13,7 +13,6 @@ import React, {
   useRef,
   forwardRef,
   useImperativeHandle,
-  useEffect,
 } from "react";
 import {
   Box,
@@ -23,7 +22,6 @@ import {
   IconButton,
   Tooltip,
   Input,
-  Card,
 } from "@chakra-ui/react";
 import { Avatar } from "./emoji";
 import BotIcon from "../icons/bot.svg";
@@ -32,7 +30,6 @@ import LoadingIcon from "../icons/three-dots.svg";
 import dynamic from "next/dynamic";
 import { delKbById,putKbById } from "../api/knowledge";
 import { useToast } from "../hooks/useToast";
-import { useLocation } from "react-router-dom";
 import { KbItemType } from "../typing";
 import styles from "./knowledge-list.module.scss";
 import { UseFormReturn } from "react-hook-form";
