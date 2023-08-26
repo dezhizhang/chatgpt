@@ -32,7 +32,6 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
-  ModelType,
 } from "../store";
 
 import {
@@ -41,29 +40,19 @@ import {
   autoGrowTextArea,
   useMobileScreen,
 } from "../utils";
-
 import dynamic from "next/dynamic";
-
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
-
-import {
-  List,
-  ListItem,
-  Modal,
-  Selector,
-  showConfirm,
-  showPrompt,
-  showToast,
-} from "./ui-lib";
+import { useToast } from "../hooks/useToast";
+import { List, ListItem, Modal, showConfirm, showPrompt } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
+import { getModelById, putModelById } from "../api/chat";
 import { CHAT_PAGE_SIZE, LAST_INPUT_KEY, Path } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
-import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
@@ -74,9 +63,37 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
+  const { toast } = useToast();
   const session = chatStore.currentSession();
-  const maskStore = useMaskStore();
-  const navigate = useNavigate();
+  const [maskConfig, setMaskConfig] = useState();
+  const modelId = session?.mask?._id;
+  const fetchMaskConfig = async () => {
+    const res = await getModelById(session?.mask?._id);
+    setMaskConfig(res);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await putModelById(modelId, maskConfig);
+
+      toast({
+        title: "更新面具成功",
+        status: "success",
+      });
+
+      props.onClose();
+    } catch (error) {
+      props.onClose();
+      toast({
+        title: "更新面具失败",
+        status: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchMaskConfig();
+  }, [modelId]);
 
   return (
     <div className="modal-mask">
@@ -85,52 +102,25 @@ export function SessionConfigModel(props: { onClose: () => void }) {
         onClose={() => props.onClose()}
         actions={[
           <IconButton
-            key="reset"
-            icon={<ResetIcon />}
+            text={"取消"}
+            key="export"
             bordered
-            text={Locale.Chat.Config.Reset}
-            onClick={async () => {
-              if (await showConfirm(Locale.Memory.ResetConfirm)) {
-                chatStore.updateCurrentSession(
-                  (session) => (session.memoryPrompt = ""),
-                );
-              }
-            }}
+            onClick={() => props.onClose()}
           />,
           <IconButton
             key="copy"
-            icon={<CopyIcon />}
+            type="primary"
             bordered
-            text={Locale.Chat.Config.SaveAs}
-            onClick={() => {
-              navigate(Path.Masks);
-              setTimeout(() => {
-                maskStore.create(session.mask);
-              }, 500);
-            }}
+            text={"确定"}
+            onClick={handleSubmit}
           />,
         ]}
       >
         <MaskConfig
           mask={session.mask}
-          // updateMask={(updater) => {
-          //   const mask = { ...session.mask };
-          //   updater(mask);
-          //   chatStore.updateCurrentSession((session) => (session.mask = mask));
-          // }}
           shouldSyncFromGlobal
-          extraListItems={
-            session.mask.modelConfig.sendMemory ? (
-              <ListItem
-                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session?.messages?.length})`}
-                subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
-              ></ListItem>
-            ) : (
-              <></>
-            )
-          }
-          setMaskConfig={undefined}
-          maskConfig={undefined}
+          setMaskConfig={setMaskConfig}
+          maskConfig={maskConfig}
         ></MaskConfig>
       </Modal>
     </div>
@@ -405,7 +395,6 @@ export function ChatActions(props: {
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
 
-
   return (
     <div className={styles["chat-input-actions"]}>
       {couldStop && (
@@ -438,21 +427,11 @@ export function ChatActions(props: {
           </>
         }
       />
-
       <ChatAction
         onClick={props.showPromptHints}
         text={Locale.Chat.InputActions.Prompt}
         icon={<PromptIcon />}
       />
-
-      {/* <ChatAction
-        onClick={() => {
-          navigate(Path.Masks);
-        }}
-        text={Locale.Chat.InputActions.Masks}
-        icon={<MaskIcon />}
-      /> */}
-
       <ChatAction
         text={Locale.Chat.InputActions.Clear}
         icon={<BreakIcon />}
@@ -467,31 +446,6 @@ export function ChatActions(props: {
           });
         }}
       />
-
-      {/* <ChatAction
-        onClick={() => setShowModelSelector(true)}
-        text={currentModel}
-        icon={<RobotIcon />}
-      /> */}
-
-      {/* {showModelSelector && (
-        <Selector
-          defaultSelectedValue={currentModel}
-          items={models.map((m) => ({
-            title: m,
-            value: m,
-          }))}
-          onClose={() => setShowModelSelector(false)}
-          onSelection={(s) => {
-            if (s.length === 0) return;
-            chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
-              session.mask.syncGlobalConfig = false;
-            });
-            showToast(s[0]);
-          }}
-        />
-      )} */}
     </div>
   );
 }

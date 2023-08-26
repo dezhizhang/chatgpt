@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 16:09:19
+ * :date last edited: 2023-08-26 16:39:02
  */
 import { useEffect,useMemo } from "react";
 import { IconButton } from "./button";
@@ -225,7 +225,7 @@ export function MaskConfig(props: {
         </ListItem>
         <ListItem title={"限定词"}>
           <textarea
-            value={maskConfig?.chat.limitPrompt}
+            value={maskConfig?.chat?.limitPrompt}
             onChange={(e) => {
               const value = e.currentTarget.value;
               props.setMaskConfig((old: any) => {
