@@ -144,7 +144,7 @@ function PromptToast(props: {
           role="button"
           onClick={() => props.setShowModal(true)}
         >
-          <BrainIcon />
+          <BrainIcon />&nbsp;&nbsp;包含&nbsp;1&nbsp;条预设提示词
         </div>
       )}
       {props.showModal && (
