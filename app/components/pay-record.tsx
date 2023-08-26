@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 15:56:35
  * :last editor: 张德志
- * :date last edited: 2023-08-20 20:48:40
+ * :date last edited: 2023-08-26 11:36:54
  */
 import React, { useState, useCallback, useEffect } from "react";
 import {
@@ -19,6 +19,7 @@ import {
   TableContainer,
   Flex,
   Box,
+  Icon,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { useToast } from "../hooks/useToast";
@@ -27,19 +28,27 @@ import { UserPayType } from "../typing";
 import { getPayOrders, checkPayResult } from "../api/user";
 
 export function PayRecord() {
+  const [Loading,setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const [payOrders, setPayOrders] = useState<UserPayType[]>([]);
 
   const handleRefreshPayOrder = useCallback(async (payId: string) => {
-    const data = await checkPayResult(payId);
-    toast({
-      title: data,
-      status: "info",
-    });
-    const res = await getPayOrders();
-    setPayOrders(res);
-  }, []);
-
+    try{
+      setLoading(true);
+      const data = await checkPayResult(payId);
+      toast({
+        title: data,
+        status: "info",
+      });
+      fetchPayOrders();
+    }catch(error:any) {
+      toast({
+        title: error?.message,
+        status: 'warning'
+      });
+    }
+  }, [Loading,toast]);
+  
   const fetchPayOrders = async () => {
     const res = await getPayOrders();
     setPayOrders(res || []);
@@ -48,6 +57,7 @@ export function PayRecord() {
   useEffect(() => {
     fetchPayOrders();
   }, []);
+
   return (
     <>
       <TableContainer>
@@ -65,19 +75,19 @@ export function PayRecord() {
             {payOrders.length > 0 ? (
               <>
                 {(payOrders || []).map((item) => (
-                  <Tr key={item._id}>
-                    <Td>{item.orderId}</Td>
+                  <Tr key={item?._id}>
+                    <Td>{item?.orderId}</Td>
                     <Td>
-                      {item.createTime
+                      {item?.createTime
                         ? dayjs(item.createTime).format("YYYY/MM/DD HH:mm:ss")
                         : "-"}
                     </Td>
-                    <Td>{formatPrice(item.price)}元</Td>
-                    <Td>{item.status}</Td>
+                    <Td>{formatPrice(item?.price)}元</Td>
+                    <Td>{item?.status}</Td>
                     <Td>
-                      {item.status === "NOTPAY" && (
+                      {item?.status === "NOTPAY" && (
                         <Button
-                          onClick={() => handleRefreshPayOrder(item._id)}
+                          onClick={() => handleRefreshPayOrder(item?._id)}
                           size={"sm"}
                         >
                           更新
@@ -91,14 +101,20 @@ export function PayRecord() {
           </Tbody>
         </Table>
       </TableContainer>
-      {/* {payOrders.length === 0 && (
+      {payOrders.length === 0 && (
       <Flex h={'100%'} flexDirection={'column'} alignItems={'center'} pt={'100px'}>
-        <MyIcon name="empty" w={'48px'} h={'48px'} color={'transparent'} />
+        <Icon
+            as={require("../icons/empty.svg").default}
+            name="empty"
+            w={"48px"}
+            h={"48px"}
+            color={"transparent"}
+          />
         <Box mt={2} color={'myGray.500'}>
           无支付记录~
         </Box>
       </Flex>
-    )} */}
+    )}
     </>
   );
 }

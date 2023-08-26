@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-13 17:15:43
  * :last editor: 张德志
- * :date last edited: 2023-08-19 00:25:24
+ * :date last edited: 2023-08-26 11:35:34
  */
 import axios, { Method, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { TOKEN_ERROR_CODE } from '../constant';
@@ -68,7 +68,7 @@ function responseError(err: any) {
       `/#/login`
     );
   }
-  return err;
+  return Promise.reject({ message: err?.message });
 }
 
 /* 创建请求实例 */
