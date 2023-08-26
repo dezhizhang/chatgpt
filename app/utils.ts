@@ -5,27 +5,22 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 17:44:57
+ * :date last edited: 2023-08-26 22:09:53
  */
 import { useEffect, useState } from "react";
-import { useToast } from "./hooks/useToast";
 
 export function trimTopic(topic: string) {
   return topic.replace(/[，。！？”“"、,.!?]*$/, "");
 }
 
 export async function copyToClipboard(text: string) {
-  const { toast } = useToast();
   try {
     if (window.__TAURI__) {
       window.__TAURI__.writeText(text);
     } else {
       await navigator.clipboard.writeText(text);
     }
-    toast({
-      title: "复制成功",
-      status: "success",
-    });
+
   } catch (error) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
@@ -34,15 +29,7 @@ export async function copyToClipboard(text: string) {
     textArea.select();
     try {
       document.execCommand("copy");
-      toast({
-        title: "复制成功",
-        status: "success",
-      });
     } catch (error) {
-      toast({
-        title: "复制失败",
-        status: "success",
-      });
     }
     document.body.removeChild(textArea);
   }
