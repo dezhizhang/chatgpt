@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-26 14:44:37
+ * :date last edited: 2023-08-26 14:53:08
  */
 import React, {
   useCallback,
@@ -120,7 +120,6 @@ const  BaseInfo = forwardRef(({ kbId, form }: { kbId: string; form: UseFormRetur
       title: "删除成功",
       status: "success",
     });
-    // router.replace(`/kb?kbId=${myKbList.find((item) => item._id !== kbId)?._id || ''}`);
     setBtnLoading(false);
   }, []);
 
