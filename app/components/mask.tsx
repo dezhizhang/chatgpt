@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 22:11:31
+ * :date last edited: 2023-08-26 09:57:27
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
@@ -525,20 +525,6 @@ export function MaskPage() {
           </div>
 
           <div className="window-actions">
-            <div className="window-action-button">
-              <IconButton
-                icon={<DownloadIcon />}
-                bordered
-                onClick={downloadAll}
-              />
-            </div>
-            <div className="window-action-button">
-              <IconButton
-                icon={<UploadIcon />}
-                bordered
-                onClick={() => importFromFile()}
-              />
-            </div>
             <div className="window-action-button">
               <IconButton
                 icon={<CloseIcon />}
