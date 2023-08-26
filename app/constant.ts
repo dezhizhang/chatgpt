@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-25 07:06:44
+ * :date last edited: 2023-08-26 22:39:49
  */
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
@@ -167,6 +167,8 @@ export const NARROW_SIDEBAR_WIDTH = 100;
 
 export const PRICE_SCALE = 100000;
 
+export const embeddingPrice = 0.1;
+
 
 export const ACCESS_CODE_PREFIX = "ak-";
 
@@ -182,6 +184,7 @@ export const OpenaiPath = {
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
 };
+
 
 export const TOKEN_ERROR_CODE: Record<number, string> = {
   403: '登录状态无效,请重新登录'

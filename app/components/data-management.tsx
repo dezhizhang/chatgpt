@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-23 23:27:24
+ * :date last edited: 2023-08-26 22:32:27
  */
 import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -59,6 +59,20 @@ export function Loading(props: { noLogo?: boolean }) {
 
 const InputModal = dynamic(
   async () => (await import("./input-modal")).InputModal,
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
+
+const SelectFileModal = dynamic(
+  async () => (await import("./select-file-modal")).SelectFileModal,
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
+
+const SelectCsvModal = dynamic(
+  async () => (await import("./select-csv-modal")).SelectCsvModal,
   {
     loading: () => <LoadingIcon />,
   },
@@ -313,12 +327,12 @@ export function DataManagement() {
             onSuccess={() => fetchKbDataList()}
           />
         )}
-        {/* {isOpenSelectFileModal && (
-      <SelectFileModal kbId={kbId} onClose={onCloseSelectFileModal} onSuccess={refetchData} />
-    )}
-    {isOpenSelectCsvModal && (
-      <SelectCsvModal kbId={kbId} onClose={onCloseSelectCsvModal} onSuccess={refetchData} />
-    )} */}
+        {isOpenSelectFileModal && (
+          <SelectFileModal kbId={kbId} onClose={onCloseSelectFileModal} />
+        )}
+        {isOpenSelectCsvModal && (
+          <SelectCsvModal kbId={kbId} onClose={onCloseSelectCsvModal} />
+        )}
       </Box>
     </ChakraProvider>
   );
