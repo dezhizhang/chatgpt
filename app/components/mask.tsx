@@ -5,9 +5,9 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 10:08:13
+ * :date last edited: 2023-08-26 10:22:53
  */
-import { useEffect } from "react";
+import { useEffect,useMemo } from "react";
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 import styles from "./mask.module.scss";
@@ -451,20 +451,13 @@ export function MaskPage() {
     fetchModelList();
   }, []);
 
-  const onSearch = (text: string) => {
-    setSearchText(text);
-    if (text) {      
-      const result = masks.filter((m) => m.name.includes(text));
-      setMasks(result)
-    } else {
-      fetchModelList();
-    }
-  };
+  const currentMask = useMemo(()=>{
+    return masks.filter((item) => new RegExp(searchText,'ig').test(item.name + item.icons))
+  },[masks,searchText]);
 
   const editingMask =
     maskStore.get(editingMaskId) ?? BUILTIN_MASK_STORE.get(editingMaskId);
   const closeMaskModal = () => setEditingMaskId(undefined);
-
 
   const handleSubmit = async () => {
     console.log({ modelId });
@@ -484,6 +477,8 @@ export function MaskPage() {
     }
   };
 
+  const allMask = searchText ? currentMask:masks;
+  
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
@@ -515,7 +510,7 @@ export function MaskPage() {
               className={styles["search-bar"]}
               placeholder={Locale.Mask.Page.Search}
               autoFocus
-              onInput={(e) => onSearch(e.currentTarget.value)}
+              onInput={(e) => setSearchText(e.currentTarget.value)}
             />
             <Select
               className={styles["mask-filter-lang"]}
@@ -554,7 +549,7 @@ export function MaskPage() {
           </div>
 
           <div>
-            {masks.map((m) => (
+            {allMask.map((m) => (
               <div className={styles["mask-item"]} key={m?._id}>
                 <div className={styles["mask-header"]}>
                   <div className={styles["mask-icon"]}>
