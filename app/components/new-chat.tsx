@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 15:19:54
+ * :date last edited: 2023-08-26 15:41:10
  */
 import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
@@ -114,10 +114,7 @@ export function NewChat() {
         (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
     }
   }, [groups]);
-
-  console.log(groups);
   
-
   return (
     <div className={styles["new-chat"]}>
       <div className={styles["mask-header"]}>

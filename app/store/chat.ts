@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 15:13:35
+ * :date last edited: 2023-08-26 15:50:23
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -26,6 +26,9 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 
+export const ROLES = ["system", "user", "assistant"] as const;
+export type MessageRole = (typeof ROLES)[number];
+
 export type ChatMessage = RequestMessage & {
   streaming?: boolean;
   _id: string;
@@ -33,10 +36,11 @@ export type ChatMessage = RequestMessage & {
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
+  console.log(override);
   return {
     _id: String(new Types.ObjectId()),
-    role: "user",
-    content: "",
+    role: override.role as MessageRole,
+    content: override.content as string,
     date:'',
   };
 }
@@ -299,8 +303,10 @@ export const useChatStore = create<ChatStore>()(
         });
         
         const recentMessages = get().getMessagesWithMemory();
-
+     
+   
         const sendMessages = recentMessages.concat(userMessage);
+
         console.log({sendMessages});
         
 
@@ -326,10 +332,8 @@ export const useChatStore = create<ChatStore>()(
             botMessage.streaming = true;
             if (message) {
               botMessage.content = message;
-              botMessage.role = 'assistant';
             }
             get().updateCurrentSession((session) => {
-              console.log({session});
               session.messages = session.messages.concat();
             });
           },
@@ -337,7 +341,6 @@ export const useChatStore = create<ChatStore>()(
             botMessage.streaming = false;
             if (message) {
               botMessage.content = message;
-              botMessage.role = 'assistant';
               get().onNewMessage(botMessage);
             }
             ChatControllerPool.remove(session._id, botMessage._id);
@@ -350,8 +353,7 @@ export const useChatStore = create<ChatStore>()(
                 message: error.message,
               });
             botMessage.streaming = false;
-            botMessage.role = 'assistant';
-          
+            
             get().updateCurrentSession((session) => {
               session.messages = session.messages.concat();
             });

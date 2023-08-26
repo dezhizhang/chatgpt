@@ -401,24 +401,10 @@ export function ChatActions(props: {
     config.update((config) => (config.theme = nextTheme));
   }
 
-  console.log("config", config);
-
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
 
-  // switch model
-  // const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  // const models = useMemo(
-  //   () =>
-  //     config
-  //       .allModels()
-  //       .filter((m) => m.available)
-  //       .map((m) => m.name),
-  //   [config],
-  // );
-
-  // const [showModelSelector, setShowModelSelector] = useState(false);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -436,13 +422,6 @@ export function ChatActions(props: {
           icon={<BottomIcon />}
         />
       )}
-      {/* {props.hitBottom && (
-        <ChatAction
-          onClick={props.showPromptModal}
-          text={Locale.Chat.InputActions.Settings}
-          icon={<SettingsIcon />}
-        />
-      )} */}
 
       <ChatAction
         onClick={nextTheme}
