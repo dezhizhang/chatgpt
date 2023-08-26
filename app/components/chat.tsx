@@ -155,9 +155,6 @@ function PromptToast(props: {
           onClick={() => props.setShowModal(true)}
         >
           <BrainIcon />
-          {/* <span className={styles["prompt-toast-content"]}>
-            {Locale.Context.Toast(context?.length)}
-          </span> */}
         </div>
       )}
       {props.showModal && (

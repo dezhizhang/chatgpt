@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 14:09:36
+ * :date last edited: 2023-08-26 14:19:22
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -297,12 +297,10 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           streaming: true,
         });
-
-        // const params = { appId, chatId: '', messages: [userMessage, botMessage], model: "", stream: true };
-        // console.log(params);
-        // get recent messages
+        
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
+
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -325,6 +323,7 @@ export const useChatStore = create<ChatStore>()(
             botMessage.streaming = true;
             if (message) {
               botMessage.content = message;
+              botMessage.role = 'assistant';
             }
             get().updateCurrentSession((session) => {
               session.messages = session.messages.concat();
