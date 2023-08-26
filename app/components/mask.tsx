@@ -5,14 +5,12 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 09:57:27
+ * :date last edited: 2023-08-26 10:08:13
  */
 import { useEffect } from "react";
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 import styles from "./mask.module.scss";
-import DownloadIcon from "../icons/download.svg";
-import UploadIcon from "../icons/upload.svg";
 import EditIcon from "../icons/edit.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
@@ -39,7 +37,6 @@ import {
   Modal,
   Popover,
   Select,
-  showToast,
   showConfirm,
 } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
@@ -47,8 +44,7 @@ import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 import chatStyle from "./chat.module.scss";
 import { useState } from "react";
-import { downloadAs, readFromFile } from "../utils";
-import { FileName, Path, chatModelList, ChatModelMap } from "../constant";
+import { Path, chatModelList, ChatModelMap } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
 import {
   DragDropContext,
@@ -457,9 +453,9 @@ export function MaskPage() {
 
   const onSearch = (text: string) => {
     setSearchText(text);
-    if (text?.length) {
+    if (text) {      
       const result = masks.filter((m) => m.name.includes(text));
-      setMasks(result);
+      setMasks(result)
     } else {
       fetchModelList();
     }
@@ -469,29 +465,6 @@ export function MaskPage() {
     maskStore.get(editingMaskId) ?? BUILTIN_MASK_STORE.get(editingMaskId);
   const closeMaskModal = () => setEditingMaskId(undefined);
 
-  const downloadAll = () => {
-    downloadAs(JSON.stringify(masks), FileName.Masks);
-  };
-
-  const importFromFile = () => {
-    readFromFile().then((content) => {
-      try {
-        const importMasks = JSON.parse(content);
-        if (Array.isArray(importMasks)) {
-          for (const mask of importMasks) {
-            if (mask.name) {
-              maskStore.create(mask);
-            }
-          }
-          return;
-        }
-        //if the content is a single mask.
-        if (importMasks.name) {
-          maskStore.create(importMasks);
-        }
-      } catch {}
-    });
-  };
 
   const handleSubmit = async () => {
     console.log({ modelId });
