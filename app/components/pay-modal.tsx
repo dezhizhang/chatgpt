@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-20 22:07:03
  * :last editor: 张德志
- * :date last edited: 2023-08-21 19:49:33
+ * :date last edited: 2023-08-26 11:45:08
  */
 
 import React, { useState, useCallback } from "react";
@@ -25,14 +25,14 @@ import {
   Box,
   Grid,
 } from "@chakra-ui/react";
-import { theme } from '../theme';
-import { useToast } from '../hooks/useToast'
-import { getPayCode } from '../api/user';
+import { theme } from "../theme";
+import { useToast } from "../hooks/useToast";
+import { getPayCode } from "../api/user";
 
 export function PayModal({ onClose }: { onClose: () => void }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [inputVal, setInputVal] = useState<number | ''>('');
+  const [inputVal, setInputVal] = useState<number | "">("");
   const [payId, setPayId] = useState("");
 
   const handleClickPay = useCallback(async () => {
@@ -41,19 +41,17 @@ export function PayModal({ onClose }: { onClose: () => void }) {
     // 获取支付二维码
     const res = await getPayCode(inputVal);
 
-
-    new QRCode(document.getElementById('payQRCode') as HTMLElement, {
+    new QRCode(document.getElementById("payQRCode") as HTMLElement, {
       text: res.codeUrl,
       width: 128,
       height: 128,
-      colorDark: '#000000',
-      colorLight: '#ffffff',
-      correctLevel: QRCode?.CorrectLevel?.H
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode?.CorrectLevel?.H,
     });
     setPayId(res.payId);
     setLoading(false);
   }, [inputVal, toast]);
-
 
   return (
     <ChakraProvider theme={theme}>
@@ -67,8 +65,7 @@ export function PayModal({ onClose }: { onClose: () => void }) {
         <ModalOverlay />
         <ModalContent minW={"auto"}>
           <ModalHeader>充值</ModalHeader>
-          {!payId && <ModalCloseButton />}
-
+          <ModalCloseButton onClick={() => onClose()} />
           <ModalBody py={0}>
             {!payId && (
               <>
@@ -76,7 +73,7 @@ export function PayModal({ onClose }: { onClose: () => void }) {
                   {[10, 20, 50, 100].map((item) => (
                     <Button
                       key={item}
-                      variant={item === inputVal ? 'solid' : 'outline'}
+                      variant={item === inputVal ? "solid" : "outline"}
                       onClick={() => setInputVal(item)}
                     >
                       {item}元
@@ -88,7 +85,7 @@ export function PayModal({ onClose }: { onClose: () => void }) {
                     value={inputVal}
                     type={"number"}
                     step={1}
-                    style={{ maxWidth: '100%',borderRadius:'4px' }}
+                    style={{ maxWidth: "100%", borderRadius: "4px" }}
                     placeholder={"其他金额，请取整数"}
                     onChange={(e) => {
                       setInputVal(Math.floor(+e.target.value));
