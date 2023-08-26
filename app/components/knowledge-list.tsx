@@ -5,10 +5,10 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 21:55:51
  * :last editor: 张德志
- * :date last edited: 2023-08-23 22:54:31
+ * :date last edited: 2023-08-26 11:06:49
  */
 import qs from "qs";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect,useMemo } from "react";
 import {
   Box,
   Flex,
@@ -16,6 +16,7 @@ import {
   Input,
   IconButton,
   Tooltip,
+  InputRightAddon,
   ChakraProvider,
 } from "@chakra-ui/react";
 import { Avatar } from "./emoji";
@@ -63,9 +64,11 @@ export function KnowledgeList() {
     fetchKbList();
   }, []);
 
-  window.onhashchange = function() {
-    console.log('hello')
-  }
+  const knowledgeLists = useMemo(
+    () => knowledgeList.filter((item) => new RegExp(searchText, 'ig').test(item.name + item.tags)),
+    [knowledgeList, searchText]
+  );
+
 
   const handleCreateModel = useCallback(async () => {
     const name = `知识库${knowledgeList.length + 1}`;
@@ -96,19 +99,17 @@ export function KnowledgeList() {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
-            {/* {searchText && (
-          <MyIcon
-            zIndex={10}
-            position={'absolute'}
-            right={3}
-            name={'closeSolid'}
-            w={'16px'}
-            h={'16px'}
-            color={'myGray.500'}
-            cursor={'pointer'}
-            onClick={() => setSearchText('')}
-          />
-        )} */}
+            {searchText && (
+              <Icon
+                as={require("../icons/close.svg").default}
+                color={"#ccc"}
+                position="absolute"
+                right={3}
+                zIndex={10}
+                onClick={() => setSearchText("")}
+                cursor={"pointer"}
+              />
+            )}
           </Flex>
           <Tooltip label={"新建一个知识库"}>
             <IconButton
@@ -128,9 +129,9 @@ export function KnowledgeList() {
           userSelect={"none"}
         >
           <>
-            {knowledgeList.length > 0 && (
+            {knowledgeLists.length > 0 && (
               <>
-                {knowledgeList.map((item) => (
+                {knowledgeLists.map((item) => (
                   <Flex
                     key={item._id}
                     position={"relative"}
@@ -146,12 +147,12 @@ export function KnowledgeList() {
                     }}
                     {...(kbId === item._id
                       ? {
-                        backgroundImage: `${theme.lgColor.activeBlueGradient} !important`,
-                      }
+                          backgroundImage: `${theme.lgColor.activeBlueGradient} !important`,
+                        }
                       : {})}
                     onClick={() => {
                       if (item._id === kbId) return;
-                      navigate(`${Path.Knowledge}?kbId=${item?._id}`)
+                      navigate(`${Path.Knowledge}?kbId=${item?._id}`);
                     }}
                   >
                     <Avatar avatar={item.avatar} />
@@ -179,7 +180,7 @@ export function KnowledgeList() {
             )}
           </>
 
-          {knowledgeList?.length === 0 && (
+          {knowledgeLists?.length === 0 && (
             <Flex
               h={"100%"}
               flexDirection={"column"}

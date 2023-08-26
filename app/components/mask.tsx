@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 10:22:53
+ * :date last edited: 2023-08-26 11:08:35
  */
 import { useEffect,useMemo } from "react";
 import { IconButton } from "./button";
@@ -452,7 +452,7 @@ export function MaskPage() {
   }, []);
 
   const currentMask = useMemo(()=>{
-    return masks.filter((item) => new RegExp(searchText,'ig').test(item.name + item.icons))
+    return masks.filter((item) => new RegExp(searchText,'ig').test(item.name + item.intro))
   },[masks,searchText]);
 
   const editingMask =
@@ -476,8 +476,6 @@ export function MaskPage() {
       });
     }
   };
-
-  const allMask = searchText ? currentMask:masks;
   
   return (
     <ErrorBoundary>
@@ -549,7 +547,7 @@ export function MaskPage() {
           </div>
 
           <div>
-            {allMask.map((m) => (
+            {currentMask.map((m) => (
               <div className={styles["mask-item"]} key={m?._id}>
                 <div className={styles["mask-header"]}>
                   <div className={styles["mask-icon"]}>
