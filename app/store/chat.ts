@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 14:56:04
+ * :date last edited: 2023-08-26 15:13:35
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -329,6 +329,7 @@ export const useChatStore = create<ChatStore>()(
               botMessage.role = 'assistant';
             }
             get().updateCurrentSession((session) => {
+              console.log({session});
               session.messages = session.messages.concat();
             });
           },
@@ -342,7 +343,6 @@ export const useChatStore = create<ChatStore>()(
             ChatControllerPool.remove(session._id, botMessage._id);
           },
           onError(error) {
-            const isAborted = error.message.includes("aborted");
             botMessage.content +=
               "\n\n" +
               prettyObject({
@@ -351,8 +351,7 @@ export const useChatStore = create<ChatStore>()(
               });
             botMessage.streaming = false;
             botMessage.role = 'assistant';
-            // userMessage.isError = !isAborted;
-            // botMessage.isError = !isAborted;
+          
             get().updateCurrentSession((session) => {
               session.messages = session.messages.concat();
             });

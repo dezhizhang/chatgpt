@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-22 05:00:39
  * :last editor: 张德志
- * :date last edited: 2023-08-26 14:53:08
+ * :date last edited: 2023-08-26 15:27:48
  */
 import React, {
   useCallback,
@@ -54,7 +54,7 @@ const Tag = dynamic(async () => (await import("./tag")).Tag, {
 });
 
 
-const  BaseInfo = forwardRef(({ kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any>},ref) =>{
+export function  BaseInfo ({ kbId, form }: { kbId: string; form: UseFormReturn<KbItemType, any>}){
   const { toast } = useToast();
   const [btnLoading, setBtnLoading] = useState(false);
   const { getValues, formState, setValue, register, handleSubmit } = form;
@@ -64,13 +64,13 @@ const  BaseInfo = forwardRef(({ kbId, form }: { kbId: string; form: UseFormRetur
     content: "确认删除该知识库？数据将无法恢复，请确认！",
   });
 
-  useImperativeHandle(ref, () => ({
-    initInput: (tags: string) => {
-      if (InputRef.current) {
-        InputRef.current.value = tags;
-      }
-    }
-  }));
+  // useImperativeHandle(ref, () => ({
+  //   initInput: (tags: string) => {
+  //     if (InputRef.current) {
+  //       InputRef.current.value = tags;
+  //     }
+  //   }
+  // }));
 
   const saveSubmitSuccess = useCallback(
     async (data: KbItemType) => {
@@ -217,7 +217,7 @@ const  BaseInfo = forwardRef(({ kbId, form }: { kbId: string; form: UseFormRetur
       <ConfirmChild />
     </Flex>
   );
-});
+};
 
 export default BaseInfo;
 

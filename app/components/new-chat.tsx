@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-19 00:19:45
+ * :date last edited: 2023-08-26 15:19:54
  */
 import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
@@ -115,6 +115,9 @@ export function NewChat() {
     }
   }, [groups]);
 
+  console.log(groups);
+  
+
   return (
     <div className={styles["new-chat"]}>
       <div className={styles["mask-header"]}>
@@ -163,7 +166,7 @@ export function NewChat() {
 
         <IconButton
           text={Locale.NewChat.Skip}
-          onClick={() => startChat()}
+          onClick={() => startChat(groups?.[0]?.[0])}
           icon={<LightningIcon />}
           type="primary"
           shadow
