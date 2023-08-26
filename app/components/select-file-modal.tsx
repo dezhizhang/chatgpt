@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:19:04
  * :last editor: 张德志
- * :date last edited: 2023-08-26 22:48:21
+ * :date last edited: 2023-08-26 23:00:53
  */
 import React, { useState, useCallback, useRef } from "react";
 import {
@@ -46,6 +46,10 @@ export function Loading(props: { noLogo?: boolean }) {
 }
 
 const Radio = dynamic(async () => (await import("./radio")).Radio, {
+  loading: () => <Loading noLogo />,
+});
+
+const MySlider = dynamic(async () => (await import("./my-slider")).MySlider, {
   loading: () => <Loading noLogo />,
 });
 
@@ -151,33 +155,32 @@ export function SelectFileModal({ onClose }: any) {
                 />
               </>
             )}
-            {/* chunk size */}
             {mode === TrainingModeEnum.index && (
               <Flex mt={5}>
                 <Box w={["70px"]} flexShrink={0}>
                   段落长度
                 </Box>
                 <Box flex={1} ml={"10px"}>
-                  {/* <MySlider
-                  markList={[
-                    { label: '300', value: 300 },
-                    { label: '1000', value: 1000 }
-                  ]}
-                  width={['100%', '260px']}
-                  min={300}
-                  max={1000}
-                  step={50}
-                  activeVal={modeMap[TrainingModeEnum.index].maxLen}
-                  setVal={(val) => {
-                    setModeMap((state) => ({
-                      ...state,
-                      [TrainingModeEnum.index]: {
-                        maxLen: val,
-                        price: embeddingPrice
-                      }
-                    }));
-                  }}
-                /> */}
+                  <MySlider
+                    markList={[
+                      { label: "300", value: 300 },
+                      { label: "1000", value: 1000 },
+                    ]}
+                    width={["100%", "260px"]}
+                    min={300}
+                    max={1000}
+                    step={50}
+                    activeVal={modeMap[TrainingModeEnum.index].maxLen}
+                    setVal={(val) => {
+                      setModeMap((state) => ({
+                        ...state,
+                        [TrainingModeEnum.index]: {
+                          maxLen: val,
+                          price: embeddingPrice,
+                        },
+                      }));
+                    }}
+                  />
                 </Box>
               </Flex>
             )}
