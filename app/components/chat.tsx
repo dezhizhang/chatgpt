@@ -103,12 +103,10 @@ export function SessionConfigModel(props: { onClose: () => void }) {
         actions={[
           <IconButton
             text={"取消"}
-            key="export"
             bordered
             onClick={() => props.onClose()}
           />,
           <IconButton
-            key="copy"
             type="primary"
             bordered
             text={"确定"}
