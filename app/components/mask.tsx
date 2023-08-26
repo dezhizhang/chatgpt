@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 11:08:35
+ * :date last edited: 2023-08-26 16:09:19
  */
 import { useEffect,useMemo } from "react";
 import { IconButton } from "./button";
@@ -78,7 +78,7 @@ export function MaskConfig(props: {
   shouldSyncFromGlobal?: boolean;
 }) {
   const [showPicker, setShowPicker] = useState(false);
-  const { maskConfig } = props;
+  const { maskConfig } = props || {};
 
   return (
     <div style={{ height: "600px" }}>
@@ -107,7 +107,7 @@ export function MaskConfig(props: {
         <ListItem title={"名称"}>
           <input
             type="text"
-            value={maskConfig.name}
+            value={maskConfig?.name}
             onInput={(e) => {
               const value = e.currentTarget.value;
               props.setMaskConfig((old: any) => {
@@ -121,7 +121,7 @@ export function MaskConfig(props: {
         </ListItem>
         <ListItem title={"介绍"}>
           <textarea
-            value={maskConfig.intro}
+            value={maskConfig?.intro}
             className={styles["mak-textarea"]}
             rows={2}
             placeholder="给你的 AI 应用一个介绍"
@@ -554,7 +554,7 @@ export function MaskPage() {
                     <MaskAvatar mask={m} />
                   </div>
                   <div className={styles["mask-title"]}>
-                    <div className={styles["mask-name"]}>{m.name}</div>
+                    <div className={styles["mask-name"]}>{m?.name}</div>
                   </div>
                 </div>
                 <div className={styles["mask-actions"]}>
