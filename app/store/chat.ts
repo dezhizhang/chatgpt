@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-26 14:19:22
+ * :date last edited: 2023-08-26 14:28:13
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -494,7 +494,7 @@ export const useChatStore = create<ChatStore>()(
         ) {
           const topicMessages = messages.concat(
             createMessage({
-              role: "user",
+              role: "assistant",
               content: Locale.Store.Prompt.Topic,
             }),
           );
