@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:19:04
  * :last editor: 张德志
- * :date last edited: 2023-08-26 22:43:55
+ * :date last edited: 2023-08-26 22:48:21
  */
 import React, { useState, useCallback, useRef } from "react";
 import {
@@ -27,10 +27,27 @@ import {
   OpenAiChatEnum,
   embeddingPrice,
 } from "../constant";
+import dynamic from "next/dynamic";
+import BotIcon from "../icons/bot.svg";
+import LoadingIcon from "../icons/three-dots.svg";
 import { useConfirm } from "../hooks/useConfirm";
 import { useSelectFile } from "../hooks/useSelectFile";
+import styles from "./knowledge.module.scss";
 
 const fileExtension = ".txt,.doc,.docx,.pdf,.md";
+
+export function Loading(props: { noLogo?: boolean }) {
+  return (
+    <div className={styles["loading-content"] + " no-dark"}>
+      {!props.noLogo && <BotIcon />}
+      <LoadingIcon />
+    </div>
+  );
+}
+
+const Radio = dynamic(async () => (await import("./radio")).Radio, {
+  loading: () => <Loading noLogo />,
+});
 
 export function SelectFileModal({ onClose }: any) {
   const [uploading, setUploading] = useState();
@@ -109,15 +126,15 @@ export function SelectFileModal({ onClose }: any) {
           {/* 拆分模式 */}
           <Flex w={"100%"} px={5} alignItems={"center"} mt={4}>
             <Box flex={"0 0 70px"}>分段模式:</Box>
-            {/* <Radio
-            ml={3}
-            list={[
-              { label: '直接分段', value: 'index' },
-              { label: 'QA拆分', value: 'qa' }
-            ]}
-            value={mode}
-            onChange={(e) => setMode(e as 'index' | 'qa')}
-          /> */}
+            <Radio
+              ml={3}
+              list={[
+                { label: "直接分段", value: "index" },
+                { label: "QA拆分", value: "qa" },
+              ]}
+              value={mode}
+              onChange={(e) => setMode(e as "index" | "qa")}
+            />
           </Flex>
           {/* 内容介绍 */}
           <Flex w={"100%"} px={5} alignItems={"center"} mt={4}>
