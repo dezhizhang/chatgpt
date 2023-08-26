@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-26 22:32:27
+ * :date last edited: 2023-08-26 23:21:12
  */
 import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -331,7 +331,13 @@ export function DataManagement() {
           <SelectFileModal kbId={kbId} onClose={onCloseSelectFileModal} />
         )}
         {isOpenSelectCsvModal && (
-          <SelectCsvModal kbId={kbId} onClose={onCloseSelectCsvModal} />
+          <SelectCsvModal
+            kbId={kbId}
+            onClose={onCloseSelectCsvModal}
+            onSuccess={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
         )}
       </Box>
     </ChakraProvider>
