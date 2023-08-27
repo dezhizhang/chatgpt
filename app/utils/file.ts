@@ -5,10 +5,11 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 23:17:51
  * :last editor: 张德志
- * :date last edited: 2023-08-26 23:19:29
+ * :date last edited: 2023-08-27 09:54:06
  */
 import mammoth from 'mammoth';
 import Papa from 'papaparse';
+// import { encoding_for_model } from '@dqbd/tiktoken';
 
 
 /**
@@ -30,6 +31,73 @@ export const readTxtContent = (file: File) => {
       reject('浏览器不支持文件内容读取');
     }
   });
+};
+
+export const getOpenAiEncMap = () => {
+  if (typeof window !== 'undefined' && window.OpenAiEncMap) {
+    return window.OpenAiEncMap;
+  }
+  if (typeof global !== 'undefined' && global.OpenAiEncMap) {
+    return global.OpenAiEncMap;
+  }
+  // const enc = encoding_for_model('gpt-3.5-turbo', {
+  //   '<|im_start|>': 100264,
+  //   '<|im_end|>': 100265,
+  //   '<|im_sep|>': 100266
+  // });
+
+  // if (typeof window !== 'undefined') {
+  //   window.OpenAiEncMap = enc;
+  // }
+  // if (typeof global !== 'undefined') {
+  //   global.OpenAiEncMap = enc;
+  // }
+
+  // return enc;
+};
+
+/**
+ * text split into chunks
+ * maxLen - one chunk len. max: 3500
+ * slideLen - The size of the before and after Text
+ * maxLen > slideLen
+ */
+export const splitText_token = ({ text, maxLen }: { text: string; maxLen: number }) => {
+  const slideLen = Math.floor(maxLen * 0.3);
+
+  try {
+    const enc = getOpenAiEncMap();
+    // filter empty text. encode sentence
+    const encodeText = enc.encode(text);
+
+    const chunks: string[] = [];
+    let tokens = 0;
+
+    let startIndex = 0;
+    let endIndex = Math.min(startIndex + maxLen, encodeText.length);
+    let chunkEncodeArr = encodeText.slice(startIndex, endIndex);
+
+    const decoder = new TextDecoder();
+
+    while (startIndex < encodeText.length) {
+      tokens += chunkEncodeArr.length;
+      chunks.push(decoder.decode(enc.decode(chunkEncodeArr)));
+
+      startIndex += maxLen - slideLen;
+      endIndex = Math.min(startIndex + maxLen, encodeText.length);
+      chunkEncodeArr = encodeText.slice(
+        Math.min(encodeText.length - slideLen, startIndex),
+        endIndex
+      );
+    }
+
+    return {
+      chunks,
+      tokens
+    };
+  } catch (err) {
+    throw new Error('解析失败');
+  }
 };
 
 /**

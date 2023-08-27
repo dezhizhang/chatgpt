@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:19:04
  * :last editor: 张德志
- * :date last edited: 2023-08-27 09:32:19
+ * :date last edited: 2023-08-27 09:57:07
  */
 import React, { useState, useCallback, useRef } from "react";
 import {
@@ -28,8 +28,14 @@ import {
   embeddingPrice,
 } from "../constant";
 import dynamic from "next/dynamic";
-import { readTxtContent, readPdfContent, readDocContent } from "../utils/file";
+import {
+  readTxtContent,
+  readPdfContent,
+  readDocContent,
+  splitText_token,
+} from "../utils/file";
 import BotIcon from "../icons/bot.svg";
+import { formatPrice } from "../utils/index";
 import { useToast } from "../hooks/useToast";
 import LoadingIcon from "../icons/three-dots.svg";
 import { useConfirm } from "../hooks/useConfirm";
@@ -137,6 +143,54 @@ export function SelectFileModal({ onClose }: any) {
     },
     [toast],
   );
+
+  const onclickImport = useCallback(async () => {
+    setBtnLoading(true);
+    try {
+      const splitRes = files
+        .map((item) =>
+          splitText_token({
+            text: item.text,
+            ...modeMap[mode],
+          }),
+        )
+        .map((item, i) => ({
+          ...item,
+          filename: files[i].filename,
+        }))
+        .filter((item) => item.tokens > 0);
+
+      let price = formatPrice(
+        splitRes.reduce((sum, item) => sum + item.tokens, 0) *
+          modeMap[mode].price,
+      );
+
+      if (mode === "qa") {
+        price *= 1.2;
+      }
+
+      setSplitRes({
+        price,
+        chunks: splitRes
+          .map((item) =>
+            item.chunks.map((chunk) => ({
+              filename: item.filename,
+              value: chunk,
+            })),
+          )
+          .flat(),
+        successChunks: 0,
+      });
+
+      // openConfirm(mutate)();
+    } catch (error) {
+      toast({
+        status: "warning",
+        title: "拆分文本异常",
+      });
+    }
+    setBtnLoading(false);
+  }, [files, mode, modeMap, openConfirm, toast]);
 
   return (
     <Modal isOpen={true} onClose={onClose} isCentered>
@@ -284,7 +338,7 @@ export function SelectFileModal({ onClose }: any) {
           </Button>
           <Button
             isDisabled={uploading || btnLoading || files[0]?.text === ""}
-            //   onClick={onclickImport}
+            onClick={onclickImport}
           >
             {uploading ? (
               <Box>
