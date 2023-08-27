@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-27 10:58:43
+ * :date last edited: 2023-08-27 11:05:11
  */
 import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -29,6 +29,7 @@ import { useLocation } from "react-router-dom";
 import dynamic from "next/dynamic";
 import BotIcon from "../icons/bot.svg";
 import Papa from "papaparse";
+import { debounce } from 'lodash';
 import { useToast } from "../hooks/useToast";
 import { DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -78,9 +79,11 @@ const SelectCsvModal = dynamic(
 );
 
 export function DataManagement() {
+  const lastSearch = useRef('');
   const location = useLocation();
   const { toast } = useToast();
   const [total, setTotal] = useState(0);
+  const [searchText, setSearchText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [training,setTraining] = useState<any>({});
@@ -109,7 +112,7 @@ export function DataManagement() {
       kbId,
       pageNum: 1,
       pageSize: 24,
-      searchText: "",
+      searchText: lastSearch.current,
     });
     setIsLoading(false);
     setTotal(res?.total);
@@ -150,6 +153,13 @@ export function DataManagement() {
     }
   };
 
+  const getFirstData = useCallback(
+    debounce(() => {
+      fetchKbDataList();
+      lastSearch.current = searchText;
+    }, 300),
+    []
+  );
 
   useEffect(() => {
     fetchKbDataList();
@@ -227,22 +237,22 @@ export function DataManagement() {
           <Input
             maxW={["60%", "300px"]}
             size={"sm"}
-            // value={searchText}
+            value={searchText}
             placeholder="根据匹配知识，补充知识和来源搜索"
-            // onChange={(e) => {
-            //   setSearchText(e.target.value);
-            //   getFirstData();
-            // }}
-            // onBlur={() => {
-            //   if (searchText === lastSearch.current) return;
-            //   getFirstData();
-            // }}
-            // onKeyDown={(e) => {
-            //   if (searchText === lastSearch.current) return;
-            //   if (e.key === "Enter") {
-            //     getFirstData();
-            //   }
-            // }}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              getFirstData();
+            }}
+            onBlur={() => {
+              if (searchText === lastSearch.current) return;
+              getFirstData();
+            }}
+            onKeyDown={(e) => {
+              if (searchText === lastSearch.current) return;
+              if (e.key === "Enter") {
+                getFirstData();
+              }
+            }}
           />
         </Flex>
         <Grid
