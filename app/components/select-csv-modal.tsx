@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:29:59
  * :last editor: 张德志
- * :date last edited: 2023-08-27 10:14:48
+ * :date last edited: 2023-08-27 10:42:54
  */
 import React, { useState, useCallback } from "react";
 import {
@@ -19,13 +19,19 @@ import {
   ModalCloseButton,
   ModalBody,
 } from "@chakra-ui/react";
-import { TrainingModeEnum } from '../constant';
+import { TrainingModeEnum } from "../constant";
 import { fileDownload } from "../utils/index";
 import { readCsvContent } from "../utils/file";
 import { useToast } from "../hooks/useToast";
-import { postKbDataFromList } from '../api/knowledge';
+import { postKbDataFromList } from "../api/knowledge";
 import { useConfirm } from "../hooks/useConfirm";
 import { useSelectFile } from "../hooks/useSelectFile";
+
+const tableStyle = {
+  border: "1px solid #ccc",
+  height: "32px",
+  padding:'0px 10px'
+};
 
 const csvTemplate = `question,answer\n"什么是 laf","laf 是一个云函数开发平台……"\n"什么是 sealos","Sealos 是以 kubernetes 为内核的云操作系统发行版,可以……"`;
 
@@ -87,9 +93,9 @@ export function SelectCsvModal({
           kbId,
           data: fileData.slice(i, i + step).map((item) => ({
             ...item,
-            source: fileName
+            source: fileName,
           })),
-          mode: TrainingModeEnum.index
+          mode: TrainingModeEnum.index,
         });
         success += insertLen || 0;
         setSuccessData((state) => state + step);
@@ -97,8 +103,8 @@ export function SelectCsvModal({
 
       toast({
         title: `导入数据成功，最终导入: ${success} 条数据。需要一段时间训练`,
-        status: 'success',
-        duration: 4000
+        status: "success",
+        duration: 4000,
       });
       onClose?.();
       onSuccess?.();
@@ -109,7 +115,6 @@ export function SelectCsvModal({
       });
     }
   };
-
 
   return (
     <Modal isOpen={true} onClose={onClose} isCentered>
@@ -125,6 +130,48 @@ export function SelectCsvModal({
           overflowY={"auto"}
         >
           <Box flex={"2 0 0"} w={["100%", 0]} mr={[0, 4]} mb={[4, 0]}>
+            <p>
+              接受一个 csv 文件，表格头包含 question 和 answer。question
+              代表问题，answer 代表答案。
+            </p>
+            <p style={{ marginBottom: "10px" }}>
+              导入前会进行去重，如果问题和答案完全相同，则不会被导入，所以最终导入的内容可能会比文件的内容少。但是，对于带有换行的内容，目前无法去重。
+            </p>
+            <h3
+              style={{
+                fontSize: "18px",
+                fontWeight: 700,
+                marginBottom: "16px",
+              }}
+            >
+              请保证 csv 文件为 utf-8 编码
+            </h3>
+            <table
+              style={{ ...tableStyle, borderRadius: "4px", width: "100%" }}
+            >
+              <thead style={{ ...tableStyle, background: "#f0f0f0" }}>
+                <tr style={tableStyle}>
+                  <th style={tableStyle}>question</th>
+                  <th style={tableStyle}>answer</th>
+                </tr>
+              </thead>
+              <tbody style={tableStyle}>
+                <tr style={tableStyle}>
+                  <td style={tableStyle}>
+                    什么是 laf
+                  </td>
+                  <td style={tableStyle}>laf 是一个云函数开发平台……</td>
+                </tr>
+                <tr style={{ ...tableStyle, background: "#f0f0f0" }}>
+                  <td style={tableStyle}>
+                    什么是 sealos
+                  </td>
+                  <td style={tableStyle}>
+                    Sealos 是以 kubernetes 为内核的云操作系统发行版,可以……
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <Box
               my={3}
               cursor={"pointer"}
