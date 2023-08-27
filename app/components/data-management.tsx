@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-26 23:21:12
+ * :date last edited: 2023-08-27 10:16:42
  */
 import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -207,37 +207,37 @@ export function DataManagement() {
           </Box>
         </Flex>
         {/* <Flex my={4}>
-      {qaListLen > 0 || vectorListLen > 0 ? (
-        <Box fontSize={'xs'}>
-          {qaListLen > 0 ? `${qaListLen}条数据正在拆分，` : ''}
-          {vectorListLen > 0 ? `${vectorListLen}条数据正在生成索引，` : ''}
-          请耐心等待...
-        </Box>
-      ) : (
-        <Box fontSize={'xs'}>所有数据已就绪~</Box>
-      )}
-      <Box flex={1} mr={1} />
-      <Input
-        maxW={['60%', '300px']}
-        size={'sm'}
-        value={searchText}
-        placeholder="根据匹配知识，补充知识和来源搜索"
-        onChange={(e) => {
-          setSearchText(e.target.value);
-          getFirstData();
-        }}
-        onBlur={() => {
-          if (searchText === lastSearch.current) return;
-          getFirstData();
-        }}
-        onKeyDown={(e) => {
-          if (searchText === lastSearch.current) return;
-          if (e.key === 'Enter') {
-            getFirstData();
-          }
-        }}
-      />
-    </Flex> */}
+          {qaListLen > 0 || vectorListLen > 0 ? (
+            <Box fontSize={"xs"}>
+              {qaListLen > 0 ? `${qaListLen}条数据正在拆分，` : ""}
+              {vectorListLen > 0 ? `${vectorListLen}条数据正在生成索引，` : ""}
+              请耐心等待...
+            </Box>
+          ) : (
+            <Box fontSize={"xs"}>所有数据已就绪~</Box>
+          )}
+          <Box flex={1} mr={1} />
+          <Input
+            maxW={["60%", "300px"]}
+            size={"sm"}
+            value={searchText}
+            placeholder="根据匹配知识，补充知识和来源搜索"
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              getFirstData();
+            }}
+            onBlur={() => {
+              if (searchText === lastSearch.current) return;
+              getFirstData();
+            }}
+            onKeyDown={(e) => {
+              if (searchText === lastSearch.current) return;
+              if (e.key === "Enter") {
+                getFirstData();
+              }
+            }}
+          />
+        </Flex> */}
         <Grid
           minH={"100px"}
           gridTemplateColumns={["1fr", "repeat(2,1fr)", "repeat(3,1fr)"]}
@@ -334,9 +334,7 @@ export function DataManagement() {
           <SelectCsvModal
             kbId={kbId}
             onClose={onCloseSelectCsvModal}
-            onSuccess={function (): void {
-              throw new Error("Function not implemented.");
-            }}
+            onSuccess={() => fetchKbDataList()}
           />
         )}
       </Box>

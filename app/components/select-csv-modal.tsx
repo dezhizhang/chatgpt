@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:29:59
  * :last editor: 张德志
- * :date last edited: 2023-08-26 23:26:38
+ * :date last edited: 2023-08-27 10:14:48
  */
 import React, { useState, useCallback } from "react";
 import {
@@ -19,10 +19,11 @@ import {
   ModalCloseButton,
   ModalBody,
 } from "@chakra-ui/react";
-
+import { TrainingModeEnum } from '../constant';
 import { fileDownload } from "../utils/index";
 import { readCsvContent } from "../utils/file";
 import { useToast } from "../hooks/useToast";
+import { postKbDataFromList } from '../api/knowledge';
 import { useConfirm } from "../hooks/useConfirm";
 import { useSelectFile } from "../hooks/useSelectFile";
 
@@ -76,6 +77,39 @@ export function SelectCsvModal({
     [setSelecting, toast],
   );
 
+  const handleImpot = async () => {
+    try {
+      if (!fileData || fileData.length === 0) return;
+      let success = 0;
+      const step = 100;
+      for (let i = 0; i < fileData.length; i += step) {
+        const { insertLen } = await postKbDataFromList({
+          kbId,
+          data: fileData.slice(i, i + step).map((item) => ({
+            ...item,
+            source: fileName
+          })),
+          mode: TrainingModeEnum.index
+        });
+        success += insertLen || 0;
+        setSuccessData((state) => state + step);
+      }
+
+      toast({
+        title: `导入数据成功，最终导入: ${success} 条数据。需要一段时间训练`,
+        status: 'success',
+        duration: 4000
+      });
+      onClose?.();
+      onSuccess?.();
+    } catch (error) {
+      toast({
+        title: "导入文件失败",
+        status: "error",
+      });
+    }
+  };
+
 
   return (
     <Modal isOpen={true} onClose={onClose} isCentered>
@@ -91,7 +125,6 @@ export function SelectCsvModal({
           overflowY={"auto"}
         >
           <Box flex={"2 0 0"} w={["100%", 0]} mr={[0, 4]} mb={[4, 0]}>
-       
             <Box
               my={3}
               cursor={"pointer"}
@@ -153,7 +186,7 @@ export function SelectCsvModal({
           </Button>
           <Button
             isDisabled={fileData.length === 0 || uploading}
-            // onClick={openConfirm(mutate)}
+            onClick={openConfirm(handleImpot)}
           >
             {uploading ? (
               <Box>{Math.round((successData / fileData.length) * 100)}%</Box>

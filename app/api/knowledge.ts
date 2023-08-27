@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-21 22:09:20
  * :last editor: 张德志
- * :date last edited: 2023-08-25 06:19:53
+ * :date last edited: 2023-08-27 10:12:38
  */
 import { GET, POST, PUT, DELETE } from "./request";
 import type { KbItemType, RequestPaging,KbUpdateParams } from "../typing";
@@ -83,4 +83,5 @@ export const getKbById = (id: string) => GET<KbItemType>(`/plugins/kb/detail?id=
 export const delKbById = (id: string) => DELETE(`/plugins/kb/delete?id=${id}`);
 
 export const putKbById = (data: KbUpdateParams) => PUT(`/plugins/kb/update`, data);
+
 
