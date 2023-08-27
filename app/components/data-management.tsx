@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-27 10:50:43
+ * :date last edited: 2023-08-27 10:58:43
  */
 import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -83,7 +83,9 @@ export function DataManagement() {
   const [total, setTotal] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [training,setTraining] = useState<any>({});
   const [kbDataList, setKbDataList] = useState<any[]>([]);
+
 
   const urlParse: any = qs.parse(location?.search?.split("?")?.[1]);
   const [editInputData, setEditInputData] = useState<InputDataType>();
@@ -114,6 +116,15 @@ export function DataManagement() {
     setKbDataList(res?.data || []);
   };
 
+  const fetchTrainingData = async() => {
+    try{
+      const res = await getTrainingData({ kbId, init: false });
+      setTraining(res)
+    }catch(err) {
+      toast({title:'获取数据失败',status:'error'})
+    }
+  }
+
   const onclickExport = async () => {
     try {
       const res = await getExportDataList(kbId);
@@ -139,10 +150,13 @@ export function DataManagement() {
     }
   };
 
-  
+
   useEffect(() => {
     fetchKbDataList();
+    fetchTrainingData();
   }, [kbId]);
+
+  const {qaListLen,vectorListLen} = training || {};
 
   return (
     <ChakraProvider theme={theme}>
@@ -199,7 +213,7 @@ export function DataManagement() {
             </Menu>
           </Box>
         </Flex>
-        {/* <Flex my={4}>
+        <Flex my={4}>
           {qaListLen > 0 || vectorListLen > 0 ? (
             <Box fontSize={"xs"}>
               {qaListLen > 0 ? `${qaListLen}条数据正在拆分，` : ""}
@@ -213,24 +227,24 @@ export function DataManagement() {
           <Input
             maxW={["60%", "300px"]}
             size={"sm"}
-            value={searchText}
+            // value={searchText}
             placeholder="根据匹配知识，补充知识和来源搜索"
-            onChange={(e) => {
-              setSearchText(e.target.value);
-              getFirstData();
-            }}
-            onBlur={() => {
-              if (searchText === lastSearch.current) return;
-              getFirstData();
-            }}
-            onKeyDown={(e) => {
-              if (searchText === lastSearch.current) return;
-              if (e.key === "Enter") {
-                getFirstData();
-              }
-            }}
+            // onChange={(e) => {
+            //   setSearchText(e.target.value);
+            //   getFirstData();
+            // }}
+            // onBlur={() => {
+            //   if (searchText === lastSearch.current) return;
+            //   getFirstData();
+            // }}
+            // onKeyDown={(e) => {
+            //   if (searchText === lastSearch.current) return;
+            //   if (e.key === "Enter") {
+            //     getFirstData();
+            //   }
+            // }}
           />
-        </Flex> */}
+        </Flex>
         <Grid
           minH={"100px"}
           gridTemplateColumns={["1fr", "repeat(2,1fr)", "repeat(3,1fr)"]}
