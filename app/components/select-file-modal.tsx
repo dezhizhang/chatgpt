@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:19:04
  * :last editor: 张德志
- * :date last edited: 2023-08-27 11:41:46
+ * :date last edited: 2023-08-27 13:48:00
  */
 import React, { useState, useCallback, useRef } from "react";
 import {
@@ -105,7 +105,6 @@ export function SelectFileModal({ onClose, kbId }: any) {
   const onSelectFile = useCallback(
     async (files: File[]) => {
       setBtnLoading(true);
-      debugger;
       try {
         let promise = Promise.resolve();
         files.forEach((file) => {
@@ -172,7 +171,7 @@ export function SelectFileModal({ onClose, kbId }: any) {
         status: "success",
       });
       onClose();
-      onSuccess();
+      // onSuccess();
     } catch (error) {
       toast({
         title: "导入文件失败",

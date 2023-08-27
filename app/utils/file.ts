@@ -1,16 +1,15 @@
 /*
- * :file description: 
+ * :file description:
  * :name: /chatgpt/app/utils/file.ts
  * :author: 张德志
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 23:17:51
  * :last editor: 张德志
- * :date last edited: 2023-08-27 11:22:46
+ * :date last edited: 2023-08-27 14:52:16
  */
-import mammoth from 'mammoth';
-import Papa from 'papaparse';
-import { encoding_for_model } from '@dqbd/tiktoken';
-
+import mammoth from "mammoth";
+import Papa from "papaparse";
+import { encoding_for_model } from "@dqbd/tiktoken";
 
 /**
  * 读取 txt 文件内容
@@ -23,33 +22,33 @@ export const readTxtContent = (file: File) => {
         resolve(reader.result as string);
       };
       reader.onerror = (err) => {
-        console.log('error txt read:', err);
-        reject('读取 txt 文件失败');
+        console.log("error txt read:", err);
+        reject("读取 txt 文件失败");
       };
       reader.readAsText(file);
     } catch (error) {
-      reject('浏览器不支持文件内容读取');
+      reject("浏览器不支持文件内容读取");
     }
   });
 };
 
 export const getOpenAiEncMap = () => {
-  if (typeof window !== 'undefined' && window.OpenAiEncMap) {
+  if (typeof window !== "undefined" && window.OpenAiEncMap) {
     return window.OpenAiEncMap;
   }
-  if (typeof global !== 'undefined' && global.OpenAiEncMap) {
+  if (typeof global !== "undefined" && global.OpenAiEncMap) {
     return global.OpenAiEncMap;
   }
-  const enc = encoding_for_model('gpt-3.5-turbo', {
-    '<|im_start|>': 100264,
-    '<|im_end|>': 100265,
-    '<|im_sep|>': 100266
+  const enc = encoding_for_model("gpt-3.5-turbo", {
+    "<|im_start|>": 100264,
+    "<|im_end|>": 100265,
+    "<|im_sep|>": 100266,
   });
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     window.OpenAiEncMap = enc;
   }
-  if (typeof global !== 'undefined') {
+  if (typeof global !== "undefined") {
     global.OpenAiEncMap = enc;
   }
 
@@ -62,7 +61,13 @@ export const getOpenAiEncMap = () => {
  * slideLen - The size of the before and after Text
  * maxLen > slideLen
  */
-export const splitText_token = ({ text, maxLen }: { text: string; maxLen: number }) => {
+export const splitText_token = ({
+  text,
+  maxLen,
+}: {
+  text: string;
+  maxLen: number;
+}) => {
   const slideLen = Math.floor(maxLen * 0.3);
 
   try {
@@ -87,16 +92,16 @@ export const splitText_token = ({ text, maxLen }: { text: string; maxLen: number
       endIndex = Math.min(startIndex + maxLen, encodeText.length);
       chunkEncodeArr = encodeText.slice(
         Math.min(encodeText.length - slideLen, startIndex),
-        endIndex
+        endIndex,
       );
     }
 
     return {
       chunks,
-      tokens
+      tokens,
     };
   } catch (err) {
-    throw new Error('解析失败');
+    throw new Error("解析失败");
   }
 };
 
@@ -104,22 +109,24 @@ export const splitText_token = ({ text, maxLen }: { text: string; maxLen: number
  * 读取 pdf 内容
  */
 export const readPdfContent = (file: File) =>
-  new Promise<string>((resolve, reject) => {
+  new Promise<string>(async(resolve, reject) => {
     try {
-      const pdfjsLib = window['pdfjs-dist/build/pdf'];
-      pdfjsLib.workerSrc = '/js/pdf.worker.js';
-
+      const pdfjsLib = window['pdfjs-dist/build/pdf'] || {};
+      pdfjsLib.workerSrc = '/pdf.worker.js';
+      
       const readPDFPage = async (doc: any, pageNo: number) => {
         const page = await doc.getPage(pageNo);
         const tokenizedText = await page.getTextContent();
-        const pageText = tokenizedText.items.map((token: any) => token.str).join(' ');
+        const pageText = tokenizedText.items
+          .map((token: any) => token.str)
+          .join(" ");
         return pageText;
       };
 
       let reader = new FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = async (event) => {
-        if (!event?.target?.result) return reject('解析 PDF 失败');
+        if (!event?.target?.result) return reject("解析 PDF 失败");
         try {
           const doc = await pdfjsLib.getDocument(event.target.result).promise;
           const pageTextPromises = [];
@@ -127,18 +134,19 @@ export const readPdfContent = (file: File) =>
             pageTextPromises.push(readPDFPage(doc, pageNo));
           }
           const pageTexts = await Promise.all(pageTextPromises);
-          resolve(pageTexts.join('\n'));
+          resolve(pageTexts.join("\n"));
         } catch (err) {
-          console.log(err, 'pdfjs error');
-          reject('解析 PDF 失败');
+          console.log(err, "pdfjs error");
+          reject("解析 PDF 失败");
         }
       };
       reader.onerror = (err) => {
-        console.log(err, 'reader error');
-        reject('解析 PDF 失败');
+        console.log(err, "reader error");
+        reject("解析 PDF 失败");
       };
     } catch (error) {
-      reject('浏览器不支持文件内容读取');
+      console.log(error);
+      reject("浏览器不支持文件内容读取");
     }
   });
 
@@ -151,23 +159,23 @@ export const readDocContent = (file: File) =>
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = async ({ target }) => {
-        if (!target?.result) return reject('读取 doc 文件失败');
+        if (!target?.result) return reject("读取 doc 文件失败");
         try {
           const res = await mammoth.extractRawText({
-            arrayBuffer: target.result as ArrayBuffer
+            arrayBuffer: target.result as ArrayBuffer,
           });
           resolve(res?.value);
         } catch (error) {
-          reject('读取 doc 文件失败, 请转换成 PDF');
+          reject("读取 doc 文件失败, 请转换成 PDF");
         }
       };
       reader.onerror = (err) => {
-        console.log('error doc read:', err);
+        console.log("error doc read:", err);
 
-        reject('读取 doc 文件失败');
+        reject("读取 doc 文件失败");
       };
     } catch (error) {
-      reject('浏览器不支持文件内容读取');
+      reject("浏览器不支持文件内容读取");
     }
   });
 
@@ -179,14 +187,14 @@ export const readCsvContent = async (file: File) => {
     const textArr = await readTxtContent(file);
     const json = Papa.parse(textArr).data as string[][];
     if (json.length === 0) {
-      throw new Error('csv 解析失败');
+      throw new Error("csv 解析失败");
     }
     return {
       header: json.shift()?.filter((item) => item) as string[],
-      data: json.map((item) => item?.filter((item) => item))
+      data: json.map((item) => item?.filter((item) => item)),
     };
   } catch (error) {
-    return Promise.reject('解析 csv 文件失败');
+    return Promise.reject("解析 csv 文件失败");
   }
 };
 
@@ -196,7 +204,7 @@ export const readCsvContent = async (file: File) => {
 export const fileDownload = ({
   text,
   type,
-  filename
+  filename,
 }: {
   text: string;
   type: string;
@@ -206,7 +214,7 @@ export const fileDownload = ({
   const blob = new Blob([`\uFEFF${text}`], { type: `${type};charset=utf-8;` });
 
   // 创建下载链接
-  const downloadLink = document.createElement('a');
+  const downloadLink = document.createElement("a");
   downloadLink.href = window.URL.createObjectURL(blob);
   downloadLink.download = filename;
 
@@ -231,4 +239,3 @@ export const fileToBase64 = (file: File) => {
     reader.onerror = (error) => reject(error);
   });
 };
-
