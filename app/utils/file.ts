@@ -5,11 +5,11 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 23:17:51
  * :last editor: 张德志
- * :date last edited: 2023-08-27 09:54:06
+ * :date last edited: 2023-08-27 11:22:46
  */
 import mammoth from 'mammoth';
 import Papa from 'papaparse';
-// import { encoding_for_model } from '@dqbd/tiktoken';
+import { encoding_for_model } from '@dqbd/tiktoken';
 
 
 /**
@@ -40,20 +40,20 @@ export const getOpenAiEncMap = () => {
   if (typeof global !== 'undefined' && global.OpenAiEncMap) {
     return global.OpenAiEncMap;
   }
-  // const enc = encoding_for_model('gpt-3.5-turbo', {
-  //   '<|im_start|>': 100264,
-  //   '<|im_end|>': 100265,
-  //   '<|im_sep|>': 100266
-  // });
+  const enc = encoding_for_model('gpt-3.5-turbo', {
+    '<|im_start|>': 100264,
+    '<|im_end|>': 100265,
+    '<|im_sep|>': 100266
+  });
 
-  // if (typeof window !== 'undefined') {
-  //   window.OpenAiEncMap = enc;
-  // }
-  // if (typeof global !== 'undefined') {
-  //   global.OpenAiEncMap = enc;
-  // }
+  if (typeof window !== 'undefined') {
+    window.OpenAiEncMap = enc;
+  }
+  if (typeof global !== 'undefined') {
+    global.OpenAiEncMap = enc;
+  }
 
-  // return enc;
+  return enc;
 };
 
 /**

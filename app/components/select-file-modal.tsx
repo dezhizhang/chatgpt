@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:19:04
  * :last editor: 张德志
- * :date last edited: 2023-08-27 09:57:07
+ * :date last edited: 2023-08-27 11:41:46
  */
 import React, { useState, useCallback, useRef } from "react";
 import {
@@ -34,6 +34,7 @@ import {
   readDocContent,
   splitText_token,
 } from "../utils/file";
+import { postKbDataFromList } from "../api/knowledge";
 import BotIcon from "../icons/bot.svg";
 import { formatPrice } from "../utils/index";
 import { useToast } from "../hooks/useToast";
@@ -61,7 +62,7 @@ const MySlider = dynamic(async () => (await import("./my-slider")).MySlider, {
   loading: () => <Loading noLogo />,
 });
 
-export function SelectFileModal({ onClose }: any) {
+export function SelectFileModal({ onClose, kbId }: any) {
   const { toast } = useToast();
   const [uploading, setUploading] = useState();
   const [modeMap, setModeMap] = useState({
@@ -144,6 +145,43 @@ export function SelectFileModal({ onClose }: any) {
     [toast],
   );
 
+  const handleImpot = async () => {
+    if (splitRes.chunks.length === 0) return;
+    try {
+      let success = 0;
+      const step = 100;
+      for (let i = 0; i < splitRes.chunks.length; i += step) {
+        const { insertLen } = await postKbDataFromList({
+          kbId,
+          data: splitRes.chunks
+            .slice(i, i + step)
+            .map((item) => ({ q: item.value, a: "", source: item.filename })),
+          prompt: `下面是"${prompt || "一段长文本"}"`,
+          mode,
+        });
+
+        success += insertLen;
+        setSplitRes((state) => ({
+          ...state,
+          successChunks: state.successChunks + step,
+        }));
+      }
+
+      toast({
+        title: `去重后共导入 ${success} 条数据,需要一段拆解和训练.`,
+        status: "success",
+      });
+      onClose();
+      onSuccess();
+    } catch (error) {
+      toast({
+        title: "导入文件失败",
+        status: "error",
+      });
+    }
+  };
+
+
   const onclickImport = useCallback(async () => {
     setBtnLoading(true);
     try {
@@ -181,14 +219,14 @@ export function SelectFileModal({ onClose }: any) {
           .flat(),
         successChunks: 0,
       });
-
-      // openConfirm(mutate)();
+      openConfirm(handleImpot)();
     } catch (error) {
       toast({
         status: "warning",
         title: "拆分文本异常",
       });
     }
+
     setBtnLoading(false);
   }, [files, mode, modeMap, openConfirm, toast]);
 

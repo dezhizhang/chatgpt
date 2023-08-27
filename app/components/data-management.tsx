@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-27 11:05:11
+ * :date last edited: 2023-08-27 11:42:08
  */
 import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -23,13 +23,12 @@ import {
   Input,
   Grid,
   ChakraProvider,
-  Icon,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import dynamic from "next/dynamic";
 import BotIcon from "../icons/bot.svg";
 import Papa from "papaparse";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 import { useToast } from "../hooks/useToast";
 import { DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -79,16 +78,15 @@ const SelectCsvModal = dynamic(
 );
 
 export function DataManagement() {
-  const lastSearch = useRef('');
+  const lastSearch = useRef("");
   const location = useLocation();
   const { toast } = useToast();
   const [total, setTotal] = useState(0);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [training,setTraining] = useState<any>({});
+  const [training, setTraining] = useState<any>({});
   const [kbDataList, setKbDataList] = useState<any[]>([]);
-
 
   const urlParse: any = qs.parse(location?.search?.split("?")?.[1]);
   const [editInputData, setEditInputData] = useState<InputDataType>();
@@ -119,14 +117,14 @@ export function DataManagement() {
     setKbDataList(res?.data || []);
   };
 
-  const fetchTrainingData = async() => {
-    try{
+  const fetchTrainingData = async () => {
+    try {
       const res = await getTrainingData({ kbId, init: false });
-      setTraining(res)
-    }catch(err) {
-      toast({title:'获取数据失败',status:'error'})
+      setTraining(res);
+    } catch (err) {
+      toast({ title: "获取数据失败", status: "error" });
     }
-  }
+  };
 
   const onclickExport = async () => {
     try {
@@ -158,7 +156,7 @@ export function DataManagement() {
       fetchKbDataList();
       lastSearch.current = searchText;
     }, 300),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -166,7 +164,7 @@ export function DataManagement() {
     fetchTrainingData();
   }, [kbId]);
 
-  const {qaListLen,vectorListLen} = training || {};
+  const { qaListLen, vectorListLen } = training || {};
 
   return (
     <ChakraProvider theme={theme}>
@@ -345,7 +343,11 @@ export function DataManagement() {
           />
         )}
         {isOpenSelectFileModal && (
-          <SelectFileModal kbId={kbId} onClose={onCloseSelectFileModal} />
+          <SelectFileModal
+            kbId={kbId}
+            onClose={onCloseSelectFileModal}
+            onSuccess={() => fetchKbDataList()}
+          />
         )}
         {isOpenSelectCsvModal && (
           <SelectCsvModal
