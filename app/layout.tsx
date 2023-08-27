@@ -5,12 +5,13 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-11 05:21:09
  * :last editor: 张德志
- * :date last edited: 2023-08-27 14:48:37
+ * :date last edited: 2023-08-27 15:27:06
  */
 /* eslint-disable @next/next/no-page-custom-font */
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
+import Script from 'next/script'
 import { getClientConfig } from "./config/client";
 import { type Metadata } from 'next';
 
@@ -44,8 +45,8 @@ export default function RootLayout({
       <head>
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
-        <script src="/serviceWorkerRegister.js" defer></script>
-        <script src="/pdf.js"></script>
+        <Script src="/serviceWorkerRegister.js" defer></Script>
+        <Script src="/pdf.js"></Script>
       </head>
       <body>
       {children}

@@ -253,12 +253,13 @@ export function PromptHints(props: {
     <div className={styles["prompt-hints"]}>
       {props.prompts.map((prompt, i) => (
         <div
+        
           ref={i === selectIndex ? selectedRef : null}
           className={
             styles["prompt-hint"] +
             ` ${i === selectIndex ? styles["prompt-hint-selected"] : ""}`
           }
-          key={prompt.title + i.toString()}
+          key={prompt.title}
           onClick={() => props.onPromptSelect(prompt)}
           onMouseEnter={() => setSelectIndex(i)}
         >
@@ -980,6 +981,7 @@ function _Chat() {
           return (
             <Fragment key={message._id}>
               <div
+                key={message?._id}
                 className={
                   isUser ? styles["chat-message-user"] : styles["chat-message"]
                 }
