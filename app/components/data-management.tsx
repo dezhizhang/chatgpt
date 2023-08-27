@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-23 20:03:26
  * :last editor: 张德志
- * :date last edited: 2023-08-27 10:16:42
+ * :date last edited: 2023-08-27 10:50:43
  */
 import qs from "qs";
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -30,7 +30,6 @@ import dynamic from "next/dynamic";
 import BotIcon from "../icons/bot.svg";
 import Papa from "papaparse";
 import { useToast } from "../hooks/useToast";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
 import LoadingIcon from "../icons/three-dots.svg";
 import styles from "./knowledge-list.module.scss";
@@ -115,38 +114,32 @@ export function DataManagement() {
     setKbDataList(res?.data || []);
   };
 
-  // // // get al data and export csv
-  // const { mutate: onclickExport, isLoading: isLoadingExport = false } =
-  //   useMutation({
-  //     mutationFn: () => getExportDataList(kbId),
-  //     onSuccess(res) {
-  //       try {
-  //         const text = Papa.unparse({
-  //           fields: ["question", "answer", "source"],
-  //           data: res,
-  //         });
-  //         fileDownload({
-  //           text,
-  //           type: "text/csv",
-  //           filename: "data.csv",
-  //         });
-  //         toast({
-  //           title: "导出成功，下次导出需要半小时后",
-  //           status: "success",
-  //         });
-  //       } catch (error) {
-  //         error;
-  //       }
-  //     },
-  //     onError(err: any) {
-  //       toast({
-  //         title: typeof err === "string" ? err : err?.message || "导出异常",
-  //         status: "error",
-  //       });
-  //       console.log(err);
-  //     },
-  //   });
+  const onclickExport = async () => {
+    try {
+      const res = await getExportDataList(kbId);
+      console.log(res);
+      const text = Papa.unparse({
+        fields: ["question", "answer", "source"],
+        data: res,
+      });
+      fileDownload({
+        text,
+        type: "text/csv",
+        filename: "data.csv",
+      });
+      toast({
+        title: "导出成功，下次导出需要半小时后",
+        status: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "导出异常",
+        status: "error",
+      });
+    }
+  };
 
+  
   useEffect(() => {
     fetchKbDataList();
   }, [kbId]);
@@ -175,9 +168,9 @@ export function DataManagement() {
               variant={"base"}
               mr={2}
               size={"sm"}
-              // isLoading={isLoadingExport || isLoading}
+              isLoading={isLoading}
               title={"半小时仅能导出1次"}
-              // onClick={() => onclickExport()}
+              onClick={() => onclickExport()}
             >
               导出csv
             </Button>
