@@ -5,7 +5,7 @@
  * :copyright: (c) 2023, Tungee
  * :date created: 2023-08-26 22:19:04
  * :last editor: 张德志
- * :date last edited: 2023-08-26 23:00:53
+ * :date last edited: 2023-08-27 09:32:19
  */
 import React, { useState, useCallback, useRef } from "react";
 import {
@@ -28,7 +28,9 @@ import {
   embeddingPrice,
 } from "../constant";
 import dynamic from "next/dynamic";
+import { readTxtContent, readPdfContent, readDocContent } from "../utils/file";
 import BotIcon from "../icons/bot.svg";
+import { useToast } from "../hooks/useToast";
 import LoadingIcon from "../icons/three-dots.svg";
 import { useConfirm } from "../hooks/useConfirm";
 import { useSelectFile } from "../hooks/useSelectFile";
@@ -54,6 +56,7 @@ const MySlider = dynamic(async () => (await import("./my-slider")).MySlider, {
 });
 
 export function SelectFileModal({ onClose }: any) {
+  const { toast } = useToast();
   const [uploading, setUploading] = useState();
   const [modeMap, setModeMap] = useState({
     [TrainingModeEnum.qa]: {
@@ -91,6 +94,49 @@ export function SelectFileModal({ onClose }: any) {
       splitRes.chunks.length
     } 组。${splitRes.price ? `大约 ${splitRes.price} 元。` : ""}`,
   });
+
+  const onSelectFile = useCallback(
+    async (files: File[]) => {
+      setBtnLoading(true);
+      debugger;
+      try {
+        let promise = Promise.resolve();
+        files.forEach((file) => {
+          promise = promise.then(async () => {
+            const extension = file?.name?.split(".")?.pop()?.toLowerCase();
+            const text = await (async () => {
+              switch (extension) {
+                case "txt":
+                case "md":
+                  return readTxtContent(file);
+                case "pdf":
+                  return readPdfContent(file);
+                case "doc":
+                case "docx":
+                  return readDocContent(file);
+              }
+              return "";
+            })();
+
+            text &&
+              setFiles((state) =>
+                [{ filename: file.name, text }].concat(state),
+              );
+            return;
+          });
+        });
+        await promise;
+      } catch (error: any) {
+        console.log(error);
+        toast({
+          title: typeof error === "string" ? error : "解析文件失败",
+          status: "error",
+        });
+      }
+      setBtnLoading(false);
+    },
+    [toast],
+  );
 
   return (
     <Modal isOpen={true} onClose={onClose} isCentered>
@@ -254,7 +300,7 @@ export function SelectFileModal({ onClose }: any) {
         </Flex>
       </ModalContent>
       <ConfirmChild />
-      {/* <File onSelect={onSelectFile} /> */}
+      <File onSelect={onSelectFile} />
     </Modal>
   );
 }
